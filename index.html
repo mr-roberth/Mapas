@@ -6,7 +6,7 @@
     <title>Auditoría PPR TS FSSC 22002</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <style>
         :root {
             --primary: #2c3e50;
@@ -162,6 +162,12 @@
             color: white;
         }
         
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+        }
+        
         .btn:hover {
             opacity: 0.9;
             transform: translateY(-2px);
@@ -255,6 +261,18 @@
         }
         
         /* Dashboard */
+        .filtros-dashboard {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filtro-item {
+            flex: 1;
+            min-width: 200px;
+        }
+        
         .dashboard-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -307,33 +325,10 @@
             gap: 10px;
         }
         
-        .chart {
+        .chart-wrapper {
+            width: 100%;
             height: 300px;
-            display: flex;
-            align-items: flex-end;
-            gap: 20px;
-            padding: 20px 0;
-        }
-        
-        .bar {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .bar-value {
-            background: var(--secondary);
-            width: 80%;
-            border-radius: 4px 4px 0 0;
-            transition: height 0.5s;
-        }
-        
-        .bar-label {
-            margin-top: 10px;
-            font-size: 14px;
-            text-align: center;
-            color: var(--gray);
+            position: relative;
         }
         
         /* Footer */
@@ -406,6 +401,10 @@
             .opciones {
                 flex-direction: column;
             }
+            
+            .filtros-dashboard {
+                flex-direction: column;
+            }
         }
         
         /* Ocultar secciones */
@@ -421,6 +420,22 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--secondary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -517,81 +532,95 @@
             <div class="form-section">
                 <h2 class="form-title"><i class="fas fa-chart-bar"></i> Dashboard de Cumplimiento</h2>
                 
-                <div class="dashboard-stats">
-                    <div class="stat-card stat-success">
-                        <i class="fas fa-check-circle fa-2x"></i>
-                        <h3>Cumplimiento Total</h3>
-                        <div class="stat-value">78%</div>
-                        <p>Porcentaje de requisitos cumplidos</p>
+                <div class="filtros-dashboard">
+                    <div class="filtro-item">
+                        <label for="filtro-fecha">Filtrar por Fecha</label>
+                        <input type="date" id="filtro-fecha">
                     </div>
                     
-                    <div class="stat-card stat-warning">
-                        <i class="fas fa-exclamation-circle fa-2x"></i>
-                        <h3>Cumplimiento Parcial</h3>
-                        <div class="stat-value">15%</div>
-                        <p>Requisitos con cumplimiento parcial</p>
+                    <div class="filtro-item">
+                        <label for="filtro-area">Filtrar por Área</label>
+                        <select id="filtro-area">
+                            <option value="">Todas las áreas</option>
+                            <option value="produccion">Producción</option>
+                            <option value="almacen">Almacén</option>
+                            <option value="calidad">Control de Calidad</option>
+                            <option value="mantenimiento">Mantenimiento</option>
+                            <option value="logistica">Logística</option>
+                        </select>
                     </div>
                     
-                    <div class="stat-card stat-danger">
-                        <i class="fas fa-times-circle fa-2x"></i>
-                        <h3>No Cumplimiento</h3>
-                        <div class="stat-value">7%</div>
-                        <p>Requisitos no cumplidos</p>
+                    <div class="filtro-item">
+                        <label>&nbsp;</label>
+                        <button class="btn btn-primary" id="aplicar-filtros">
+                            <i class="fas fa-filter"></i> Aplicar Filtros
+                        </button>
                     </div>
                 </div>
                 
-                <div class="chart-container">
-                    <h3 class="chart-title"><i class="fas fa-chart-line"></i> Cumplimiento por Área</h3>
-                    <div class="chart" id="chart-area">
-                        <!-- Gráfico se generará con JavaScript -->
-                    </div>
-                </div>
+                <div class="loader" id="dashboard-loader"></div>
                 
-                <div class="chart-container">
-                    <h3 class="chart-title"><i class="fas fa-calendar-alt"></i> Tendencia Mensual de Cumplimiento</h3>
-                    <div class="chart" id="chart-tendencia">
-                        <!-- Gráfico se generará con JavaScript -->
+                <div id="dashboard-content">
+                    <div class="dashboard-stats">
+                        <div class="stat-card stat-success">
+                            <i class="fas fa-check-circle fa-2x"></i>
+                            <h3>Cumplimiento Total</h3>
+                            <div class="stat-value" id="stat-cumple">0%</div>
+                            <p>Porcentaje de requisitos cumplidos</p>
+                        </div>
+                        
+                        <div class="stat-card stat-warning">
+                            <i class="fas fa-exclamation-circle fa-2x"></i>
+                            <h3>Cumplimiento Parcial</h3>
+                            <div class="stat-value" id="stat-parcial">0%</div>
+                            <p>Requisitos con cumplimiento parcial</p>
+                        </div>
+                        
+                        <div class="stat-card stat-danger">
+                            <i class="fas fa-times-circle fa-2x"></i>
+                            <h3>No Cumplimiento</h3>
+                            <div class="stat-value" id="stat-no-cumple">0%</div>
+                            <p>Requisitos no cumplidos</p>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="form-section">
-                    <h3 class="form-title"><i class="fas fa-list"></i> Requisitos con Mayor Incumplimiento</h3>
-                    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                        <thead>
-                            <tr style="background: var(--primary); color: white;">
-                                <th style="padding: 12px; text-align: left;">Requisito</th>
-                                <th style="padding: 12px; text-align: center;">Área</th>
-                                <th style="padding: 12px; text-align: center;">% Incumplimiento</th>
-                                <th style="padding: 12px; text-align: center;">Auditorías</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr style="border-bottom: 1px solid #eee;">
-                                <td style="padding: 12px;">Control de plagas documentado</td>
-                                <td style="padding: 12px; text-align: center;">Almacén</td>
-                                <td style="padding: 12px; text-align: center; color: var(--danger);">24%</td>
-                                <td style="padding: 12px; text-align: center;">18</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #eee;">
-                                <td style="padding: 12px;">Programa de limpieza y desinfección</td>
-                                <td style="padding: 12px; text-align: center;">Producción</td>
-                                <td style="padding: 12px; text-align: center; color: var(--danger);">18%</td>
-                                <td style="padding: 12px; text-align: center;">15</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #eee;">
-                                <td style="padding: 12px;">Registros de capacitación</td>
-                                <td style="padding: 12px; text-align: center;">Todas</td>
-                                <td style="padding: 12px; text-align: center; color: var(--danger);">15%</td>
-                                <td style="padding: 12px; text-align: center;">22</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #eee;">
-                                <td style="padding: 12px;">Verificación de proveedores</td>
-                                <td style="padding: 12px; text-align: center;">Calidad</td>
-                                <td style="padding: 12px; text-align: center; color: var(--danger);">12%</td>
-                                <td style="padding: 12px; text-align: center;">10</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    
+                    <div class="chart-container">
+                        <h3 class="chart-title"><i class="fas fa-chart-pie"></i> Distribución de Cumplimiento</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="chart-distribucion"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Cumplimiento por Área</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="chart-areas"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <h3 class="chart-title"><i class="fas fa-calendar-alt"></i> Tendencia Mensual</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="chart-tendencia"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3 class="form-title"><i class="fas fa-list"></i> Requisitos con Mayor Incumplimiento</h3>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                            <thead>
+                                <tr style="background: var(--primary); color: white;">
+                                    <th style="padding: 12px; text-align: left;">Requisito</th>
+                                    <th style="padding: 12px; text-align: center;">Área</th>
+                                    <th style="padding: 12px; text-align: center;">% Incumplimiento</th>
+                                    <th style="padding: 12px; text-align: center;">Ocurrencias</th>
+                                </tr>
+                            </thead>
+                            <tbody id="incumplimientos-table">
+                                <!-- Datos se generarán dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </section>
@@ -611,22 +640,22 @@
                         </div>
                         <div style="text-align: right;">
                             <p><strong>Estado:</strong> <span style="color: var(--success);">Completado</span></p>
-                            <p><strong>Resultado:</strong> <span style="color: var(--warning);">Cumplimiento Parcial</span></p>
+                            <p><strong>Resultado:</strong> <span id="reporte-resultado" style="color: var(--warning);">-</span></p>
                         </div>
                     </div>
                     
                     <h4 style="color: var(--dark); border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 15px;">Resumen de Cumplimiento</h4>
                     <div style="display: flex; justify-content: space-around; margin-bottom: 20px;">
                         <div style="text-align: center;">
-                            <div style="font-size: 1.8rem; color: var(--success); font-weight: bold;">85%</div>
+                            <div style="font-size: 1.8rem; color: var(--success); font-weight: bold;" id="reporte-cumple">0%</div>
                             <div>Cumple</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 1.8rem; color: var(--warning); font-weight: bold;">10%</div>
+                            <div style="font-size: 1.8rem; color: var(--warning); font-weight: bold;" id="reporte-parcial">0%</div>
                             <div>Cumple Parcial</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 1.8rem; color: var(--danger); font-weight: bold;">5%</div>
+                            <div style="font-size: 1.8rem; color: var(--danger); font-weight: bold;" id="reporte-no-cumple">0%</div>
                             <div>No Cumple</div>
                         </div>
                     </div>
@@ -700,7 +729,7 @@
     </footer>
     
     <script>
-        // URL de tu Google Apps Script (ACTUALIZADA)
+        // URL de tu Google Apps Script
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHdPxorU-5fsKq-yUMOm1WXfYwF-rlDaA-cNDuZjCW5j71D0q7fjcZjD_YcaQVuDorrw/exec";
         
         // Datos de ejemplo para la aplicación
@@ -760,6 +789,7 @@
         // Variables globales
         let auditorData = {};
         let respuestas = {};
+        let chartDistribucion, chartAreas, chartTendencia;
         
         // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
@@ -777,6 +807,11 @@
                     // Actualizar navegación activa
                     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
                     this.classList.add('active');
+                    
+                    // Cargar datos del dashboard si es necesario
+                    if (page === 'dashboard') {
+                        cargarDashboard();
+                    }
                 });
             });
             
@@ -789,8 +824,11 @@
             // Event listener para generar PDF
             document.getElementById('generar-pdf').addEventListener('click', generarPDF);
             
-            // Generar gráficos del dashboard
-            generarGraficos();
+            // Event listener para aplicar filtros
+            document.getElementById('aplicar-filtros').addEventListener('click', cargarDashboard);
+            
+            // Inicializar gráficos vacíos
+            inicializarGraficos();
         });
         
         // Mostrar página específica
@@ -960,6 +998,34 @@
                 return;
             }
             
+            // Calcular estadísticas
+            const totalPreguntas = preguntasAuditoria.length;
+            const cumple = Object.values(respuestas).filter(r => r.estado === 'cumple').length;
+            const parcial = Object.values(respuestas).filter(r => r.estado === 'parcial').length;
+            const noCumple = Object.values(respuestas).filter(r => r.estado === 'no_cumple').length;
+            
+            // Actualizar reporte con estadísticas reales
+            document.getElementById('reporte-cumple').textContent = Math.round((cumple / totalPreguntas) * 100) + '%';
+            document.getElementById('reporte-parcial').textContent = Math.round((parcial / totalPreguntas) * 100) + '%';
+            document.getElementById('reporte-no-cumple').textContent = Math.round((noCumple / totalPreguntas) * 100) + '%';
+            
+            // Determinar resultado general
+            let resultado = "Cumplimiento Total";
+            let color = "var(--success)";
+            
+            if (noCumple > 0 || parcial > totalPreguntas * 0.2) {
+                resultado = "Cumplimiento Parcial";
+                color = "var(--warning)";
+            }
+            
+            if (noCumple > totalPreguntas * 0.1) {
+                resultado = "No Cumple";
+                color = "var(--danger)";
+            }
+            
+            document.getElementById('reporte-resultado').textContent = resultado;
+            document.getElementById('reporte-resultado').style.color = color;
+            
             // Preparar datos para enviar al backend
             const preguntasData = [];
             
@@ -1041,54 +1107,232 @@
             });
         }
         
-        // Generar gráficos para el dashboard
-        function generarGraficos() {
-            // Gráfico por área
-            const areas = ['Producción', 'Almacén', 'Calidad', 'Mantenimiento', 'Logística'];
-            const cumplimiento = [85, 70, 92, 78, 65];
-            const chartArea = document.getElementById('chart-area');
+        // Inicializar gráficos
+        function inicializarGraficos() {
+            const ctxDistribucion = document.getElementById('chart-distribucion').getContext('2d');
+            const ctxAreas = document.getElementById('chart-areas').getContext('2d');
+            const ctxTendencia = document.getElementById('chart-tendencia').getContext('2d');
             
-            areas.forEach((area, index) => {
-                const bar = document.createElement('div');
-                bar.className = 'bar';
-                
-                const barValue = document.createElement('div');
-                barValue.className = 'bar-value';
-                barValue.style.height = `${cumplimiento[index]}%`;
-                barValue.style.backgroundColor = cumplimiento[index] > 80 ? '#27ae60' : 
-                                              cumplimiento[index] > 60 ? '#f39c12' : '#e74c3c';
-                
-                const barLabel = document.createElement('div');
-                barLabel.className = 'bar-label';
-                barLabel.textContent = area;
-                
-                bar.appendChild(barValue);
-                bar.appendChild(barLabel);
-                chartArea.appendChild(bar);
+            // Gráfico de distribución
+            chartDistribucion = new Chart(ctxDistribucion, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Cumple', 'Cumple Parcial', 'No Cumple'],
+                    datasets: [{
+                        data: [0, 0, 0],
+                        backgroundColor: [
+                            'rgba(39, 174, 96, 0.8)',
+                            'rgba(243, 156, 18, 0.8)',
+                            'rgba(231, 76, 60, 0.8)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico por áreas
+            chartAreas = new Chart(ctxAreas, {
+                type: 'bar',
+                data: {
+                    labels: ['Producción', 'Almacén', 'Calidad', 'Mantenimiento', 'Logística'],
+                    datasets: [{
+                        label: 'Porcentaje de Cumplimiento',
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: 'rgba(52, 152, 219, 0.8)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
             });
             
             // Gráfico de tendencia
-            const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'];
-            const tendencia = [65, 70, 72, 75, 78, 80];
-            const chartTendencia = document.getElementById('chart-tendencia');
-            
-            meses.forEach((mes, index) => {
-                const bar = document.createElement('div');
-                bar.className = 'bar';
-                
-                const barValue = document.createElement('div');
-                barValue.className = 'bar-value';
-                barValue.style.height = `${tendencia[index]}%`;
-                barValue.style.backgroundColor = '#3498db';
-                
-                const barLabel = document.createElement('div');
-                barLabel.className = 'bar-label';
-                barLabel.textContent = mes;
-                
-                bar.appendChild(barValue);
-                bar.appendChild(barLabel);
-                chartTendencia.appendChild(bar);
+            chartTendencia = new Chart(ctxTendencia, {
+                type: 'line',
+                data: {
+                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                    datasets: [{
+                        label: 'Cumplimiento Promedio',
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
             });
+        }
+        
+        // Cargar datos para el dashboard
+        async function cargarDashboard() {
+            const loader = document.getElementById('dashboard-loader');
+            const content = document.getElementById('dashboard-content');
+            const fecha = document.getElementById('filtro-fecha').value;
+            const area = document.getElementById('filtro-area').value;
+            
+            // Mostrar loader y ocultar contenido
+            loader.style.display = 'block';
+            content.style.opacity = '0.3';
+            
+            try {
+                // Simular obtención de datos (en un caso real, harías una petición a tu backend)
+                // Datos simulados para demostración
+                const datosAuditorias = [
+                    { area: 'produccion', fecha: '2023-10-01', cumple: 8, parcial: 1, noCumple: 1 },
+                    { area: 'almacen', fecha: '2023-10-05', cumple: 7, parcial: 2, noCumple: 1 },
+                    { area: 'calidad', fecha: '2023-10-10', cumple: 9, parcial: 1, noCumple: 0 },
+                    { area: 'mantenimiento', fecha: '2023-10-15', cumple: 6, parcial: 3, noCumple: 1 },
+                    { area: 'logistica', fecha: '2023-10-20', cumple: 7, parcial: 2, noCumple: 1 }
+                ];
+                
+                // Filtrar datos según los filtros seleccionados
+                let datosFiltrados = datosAuditorias;
+                
+                if (fecha) {
+                    datosFiltrados = datosFiltrados.filter(a => a.fecha === fecha);
+                }
+                
+                if (area) {
+                    datosFiltrados = datosFiltrados.filter(a => a.area === area);
+                }
+                
+                // Calcular estadísticas generales
+                let totalCumple = 0;
+                let totalParcial = 0;
+                let totalNoCumple = 0;
+                let totalRequisitos = 0;
+                
+                datosFiltrados.forEach(audit => {
+                    totalCumple += audit.cumple;
+                    totalParcial += audit.parcial;
+                    totalNoCumple += audit.noCumple;
+                    totalRequisitos += (audit.cumple + audit.parcial + audit.noCumple);
+                });
+                
+                const porcCumple = totalRequisitos > 0 ? Math.round((totalCumple / totalRequisitos) * 100) : 0;
+                const porcParcial = totalRequisitos > 0 ? Math.round((totalParcial / totalRequisitos) * 100) : 0;
+                const porcNoCumple = totalRequisitos > 0 ? Math.round((totalNoCumple / totalRequisitos) * 100) : 0;
+                
+                // Actualizar estadísticas
+                document.getElementById('stat-cumple').textContent = porcCumple + '%';
+                document.getElementById('stat-parcial').textContent = porcParcial + '%';
+                document.getElementById('stat-no-cumple').textContent = porcNoCumple + '%';
+                
+                // Actualizar gráfico de distribución
+                chartDistribucion.data.datasets[0].data = [porcCumple, porcParcial, porcNoCumple];
+                chartDistribucion.update();
+                
+                // Calcular cumplimiento por área
+                const cumplimientoPorArea = {
+                    produccion: 0,
+                    almacen: 0,
+                    calidad: 0,
+                    mantenimiento: 0,
+                    logistica: 0
+                };
+                
+                const contadorPorArea = {
+                    produccion: 0,
+                    almacen: 0,
+                    calidad: 0,
+                    mantenimiento: 0,
+                    logistica: 0
+                };
+                
+                datosFiltrados.forEach(audit => {
+                    const total = audit.cumple + audit.parcial + audit.noCumple;
+                    const cumplimiento = total > 0 ? Math.round((audit.cumple / total) * 100) : 0;
+                    cumplimientoPorArea[audit.area] += cumplimiento;
+                    contadorPorArea[audit.area]++;
+                });
+                
+                // Calcular promedio por área
+                const areasData = [
+                    contadorPorArea.produccion > 0 ? Math.round(cumplimientoPorArea.produccion / contadorPorArea.produccion) : 0,
+                    contadorPorArea.almacen > 0 ? Math.round(cumplimientoPorArea.almacen / contadorPorArea.almacen) : 0,
+                    contadorPorArea.calidad > 0 ? Math.round(cumplimientoPorArea.calidad / contadorPorArea.calidad) : 0,
+                    contadorPorArea.mantenimiento > 0 ? Math.round(cumplimientoPorArea.mantenimiento / contadorPorArea.mantenimiento) : 0,
+                    contadorPorArea.logistica > 0 ? Math.round(cumplimientoPorArea.logistica / contadorPorArea.logistica) : 0
+                ];
+                
+                // Actualizar gráfico por áreas
+                chartAreas.data.datasets[0].data = areasData;
+                chartAreas.update();
+                
+                // Actualizar gráfico de tendencia (datos simulados)
+                const tendenciaData = [65, 70, 72, 75, 78, 80, 82, 85, 87, 89, 91, 93];
+                chartTendencia.data.datasets[0].data = tendenciaData;
+                chartTendencia.update();
+                
+                // Actualizar tabla de incumplimientos
+                const incumplimientos = [
+                    { requisito: "Control de plagas documentado", area: "Almacén", porcentaje: 24, ocurrencias: 18 },
+                    { requisito: "Programa de limpieza y desinfección", area: "Producción", porcentaje: 18, ocurrencias: 15 },
+                    { requisito: "Registros de capacitación", area: "Todas", porcentaje: 15, ocurrencias: 22 },
+                    { requisito: "Verificación de proveedores", area: "Calidad", porcentaje: 12, ocurrencias: 10 },
+                    { requisito: "Mantenimiento preventivo de equipos", area: "Mantenimiento", porcentaje: 10, ocurrencias: 8 }
+                ];
+                
+                const tabla = document.getElementById('incumplimientos-table');
+                tabla.innerHTML = '';
+                
+                incumplimientos.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.style.borderBottom = '1px solid #eee';
+                    row.innerHTML = `
+                        <td style="padding: 12px;">${item.requisito}</td>
+                        <td style="padding: 12px; text-align: center;">${item.area}</td>
+                        <td style="padding: 12px; text-align: center; color: var(--danger);">${item.porcentaje}%</td>
+                        <td style="padding: 12px; text-align: center;">${item.ocurrencias}</td>
+                    `;
+                    tabla.appendChild(row);
+                });
+                
+            } catch (error) {
+                alert('Error al cargar datos del dashboard: ' + error.message);
+            } finally {
+                // Ocultar loader y mostrar contenido
+                loader.style.display = 'none';
+                content.style.opacity = '1';
+            }
         }
         
         // Generar PDF
@@ -1119,9 +1363,9 @@
             doc.rect(130, 80, 40, 20, 'F');
             
             doc.setFontSize(10);
-            doc.text('85% Cumple', 50, 125, null, null, 'center');
-            doc.text('10% Parcial', 100, 125, null, null, 'center');
-            doc.text('5% No cumple', 150, 125, null, null, 'center');
+            doc.text(`${document.getElementById('reporte-cumple').textContent} Cumple`, 50, 125, null, null, 'center');
+            doc.text(`${document.getElementById('reporte-parcial').textContent} Parcial`, 100, 125, null, null, 'center');
+            doc.text(`${document.getElementById('reporte-no-cumple').textContent} No cumple`, 150, 125, null, null, 'center');
             
             // Detalle de requisitos
             doc.setFontSize(14);
