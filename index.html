@@ -700,6 +700,9 @@
     </footer>
     
     <script>
+        // URL de tu Google Apps Script (ACTUALIZADA)
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHdPxorU-5fsKq-yUMOm1WXfYwF-rlDaA-cNDuZjCW5j71D0q7fjcZjD_YcaQVuDorrw/exec";
+        
         // Datos de ejemplo para la aplicación
         const preguntasAuditoria = [
             {
@@ -880,7 +883,8 @@
                         // Guardar respuesta
                         respuestas[preguntaId] = {
                             estado: value,
-                            evidencia: null
+                            evidencia: null,
+                            evidenciaUrl: null
                         };
                         
                         // Mostrar/ocultar sección de evidencia
@@ -905,23 +909,50 @@
                     cameraInput.click();
                 });
                 
-                cameraInput.addEventListener('change', function(e) {
+                cameraInput.addEventListener('change', async function(e) {
                     if (e.target.files && e.target.files[0]) {
+                        const file = e.target.files[0];
                         const reader = new FileReader();
-                        reader.onload = function(event) {
+                        
+                        reader.onload = async function(event) {
                             cameraPreview.innerHTML = `<img src="${event.target.result}" alt="Evidencia fotográfica">`;
                             
-                            // Guardar evidencia
-                            respuestas[pregunta.id].evidencia = event.target.result;
+                            // Subir imagen al backend
+                            try {
+                                const response = await fetch(SCRIPT_URL, {
+                                    method: 'POST',
+                                    body: JSON.stringify({
+                                        action: "uploadImage",
+                                        image: event.target.result
+                                    })
+                                });
+                                
+                                const data = await response.json();
+                                
+                                if (data.status === "success") {
+                                    // Guardar evidencia
+                                    respuestas[pregunta.id].evidencia = file;
+                                    respuestas[pregunta.id].evidenciaUrl = data.url;
+                                } else {
+                                    throw new Error(data.message || "Error al subir imagen");
+                                }
+                            } catch (error) {
+                                alert('Error al subir evidencia: ' + error.message);
+                                cameraPreview.innerHTML = `
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span>Error: ${error.message}</span>
+                                `;
+                            }
                         };
-                        reader.readAsDataURL(e.target.files[0]);
+                        
+                        reader.readAsDataURL(file);
                     }
                 });
             });
         }
         
         // Finalizar auditoría
-        function finalizarAuditoria() {
+        async function finalizarAuditoria() {
             // Validar que todas las preguntas tienen respuesta
             const preguntasContestadas = Object.keys(respuestas).length;
             if (preguntasContestadas < preguntasAuditoria.length) {
@@ -929,33 +960,50 @@
                 return;
             }
             
-            // Simular guardado en Google Sheets
-            guardarEnGoogleSheets();
+            // Preparar datos para enviar al backend
+            const preguntasData = [];
             
-            // Generar detalle para el reporte
-            generarDetalleReporte();
+            for (const [id, respuesta] of Object.entries(respuestas)) {
+                const pregunta = preguntasAuditoria.find(p => p.id === parseInt(id));
+                preguntasData.push({
+                    id: `p${pregunta.id}`,
+                    texto: pregunta.texto,
+                    estado: respuesta.estado,
+                    evidenciaUrl: respuesta.evidenciaUrl || null
+                });
+            }
             
-            // Mostrar sección de reportes
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.querySelector('.nav-link[data-page="reportes"]').classList.add('active');
-            showPage('reportes');
+            const payload = {
+                action: "submitAudit",
+                auditor: auditorData.nombre,
+                area: auditorData.area,
+                fecha: auditorData.fecha,
+                preguntas: preguntasData
+            };
             
-            alert('¡Auditoría completada con éxito! Se ha generado el reporte ejecutivo.');
-        }
-        
-        // Simular guardado en Google Sheets
-        function guardarEnGoogleSheets() {
-            console.log('Datos guardados en Google Sheets:');
-            console.log('Auditor:', auditorData);
-            console.log('Respuestas:', respuestas);
-            
-            // Simular notificación a administradores
-            const incumplimientos = Object.values(respuestas).filter(r => 
-                r.estado === 'parcial' || r.estado === 'no_cumple'
-            ).length;
-            
-            if (incumplimientos > 0) {
-                console.log(`Notificación enviada a administradores: ${incumplimientos} incumplimientos detectados`);
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    auditorData.auditId = data.auditId;
+                    generarDetalleReporte();
+                    
+                    // Mostrar sección de reportes
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    document.querySelector('.nav-link[data-page="reportes"]').classList.add('active');
+                    showPage('reportes');
+                    
+                    alert('¡Auditoría completada con éxito! Se ha generado el reporte ejecutivo.');
+                } else {
+                    throw new Error(data.message || "Error en el servidor");
+                }
+            } catch (error) {
+                alert('Error al enviar la auditoría: ' + error.message);
             }
         }
         
