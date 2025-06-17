@@ -17,25 +17,31 @@
             --light: #ecf0f1;
             --dark: #34495e;
             --gray: #95a5a6;
+            --background: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --text-light: #777777;
+            --border: #e0e0e0;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
         
         body {
-            background-color: #f5f7fa;
-            color: #333;
+            background-color: var(--background);
+            color: var(--text);
             line-height: 1.6;
+            font-size: 16px;
         }
         
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+            max-width: 100%;
+            padding: 0 15px;
         }
         
         /* Header */
@@ -43,69 +49,95 @@
             background-color: var(--primary);
             color: white;
             padding: 15px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
         }
         
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
         }
         
         .logo {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
         }
         
         .logo i {
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: var(--secondary);
         }
         
         .logo h1 {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 600;
         }
         
         nav ul {
             display: flex;
             list-style: none;
-            gap: 20px;
+            gap: 10px;
         }
         
         nav a {
             color: white;
             text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 4px;
+            padding: 8px 12px;
+            border-radius: 20px;
             transition: background 0.3s;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
+            font-size: 0.9rem;
         }
         
         nav a:hover, nav a.active {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+        
+        .user-info button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
         }
         
         /* Formularios */
         .form-section {
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            margin: 30px 0;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: var(--shadow);
+            max-width: 100%;
         }
         
         .form-title {
             color: var(--primary);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 2px solid var(--light);
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             gap: 10px;
+            font-size: 1.3rem;
         }
         
         .form-group {
@@ -117,15 +149,18 @@
             margin-bottom: 8px;
             font-weight: 600;
             color: var(--dark);
+            font-size: 0.95rem;
         }
         
         input, select {
             width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
             transition: border 0.3s;
+            background: var(--card-bg);
+            color: var(--text);
         }
         
         input:focus, select:focus {
@@ -135,16 +170,18 @@
         }
         
         .btn {
-            padding: 12px 25px;
+            padding: 14px 24px;
             border: none;
-            border-radius: 6px;
-            font-size: 16px;
+            border-radius: 12px;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            width: 100%;
+            justify-content: center;
         }
         
         .btn-primary {
@@ -175,16 +212,16 @@
         
         /* Preguntas */
         .pregunta-card {
-            background: white;
-            border-radius: 8px;
+            background: var(--card-bg);
+            border-radius: 16px;
             padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
             border-left: 4px solid var(--secondary);
         }
         
         .pregunta-text {
-            font-size: 18px;
+            font-size: 1.1rem;
             font-weight: 500;
             margin-bottom: 15px;
             color: var(--dark);
@@ -192,20 +229,21 @@
         
         .opciones {
             display: flex;
-            gap: 15px;
+            flex-direction: column;
+            gap: 10px;
             margin-bottom: 15px;
-            flex-wrap: wrap;
         }
         
         .opcion {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             cursor: pointer;
-            padding: 10px 15px;
-            border-radius: 6px;
-            background: var(--light);
+            padding: 14px;
+            border-radius: 12px;
+            background: var(--background);
             transition: all 0.3s;
+            border: 1px solid var(--border);
         }
         
         .opcion input {
@@ -213,28 +251,28 @@
         }
         
         .opcion:hover {
-            background: #d6dbdf;
+            background: #e9ecef;
         }
         
         .opcion.selected {
             background: var(--secondary);
             color: white;
+            border-color: var(--secondary);
         }
         
         .evidencia-section {
             margin-top: 15px;
             padding-top: 15px;
-            border-top: 1px dashed #ddd;
+            border-top: 1px dashed var(--border);
             display: none;
         }
         
         .camera-preview {
             width: 100%;
-            max-width: 300px;
             height: 200px;
             background: #f1f2f6;
             border: 2px dashed #b2bec3;
-            border-radius: 8px;
+            border-radius: 12px;
             margin: 15px 0;
             display: flex;
             align-items: center;
@@ -258,40 +296,41 @@
         .camera-preview span {
             margin-top: 10px;
             color: #636e72;
+            text-align: center;
+            padding: 0 10px;
         }
         
         /* Dashboard */
         .filtros-dashboard {
             display: flex;
+            flex-direction: column;
             gap: 15px;
             margin-bottom: 20px;
-            flex-wrap: wrap;
         }
         
         .filtro-item {
-            flex: 1;
-            min-width: 200px;
+            width: 100%;
         }
         
         .dashboard-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
         }
         
         .stat-card {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
             text-align: center;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow);
         }
         
         .stat-value {
-            font-size: 2.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            margin: 15px 0;
+            margin: 10px 0;
         }
         
         .stat-success {
@@ -310,24 +349,25 @@
         }
         
         .chart-container {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
         }
         
         .chart-title {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             color: var(--dark);
             display: flex;
             align-items: center;
             gap: 10px;
+            font-size: 1.1rem;
         }
         
         .chart-wrapper {
             width: 100%;
-            height: 300px;
+            height: 250px;
             position: relative;
         }
         
@@ -336,23 +376,24 @@
             background: var(--dark);
             color: white;
             padding: 30px 0;
-            margin-top: 50px;
+            margin-top: 30px;
         }
         
         .footer-content {
             display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
+            flex-direction: column;
             gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
         }
         
         .footer-section {
             flex: 1;
-            min-width: 250px;
         }
         
         .footer-section h3 {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
@@ -372,6 +413,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            font-size: 0.95rem;
         }
         
         .footer-links a:hover {
@@ -384,26 +426,77 @@
             margin-top: 20px;
             border-top: 1px solid rgba(255,255,255,0.1);
             color: #bdc3c7;
+            font-size: 0.9rem;
+        }
+        
+        /* Login */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: var(--background);
+        }
+        
+        .login-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: var(--shadow);
+        }
+        
+        .login-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-logo i {
+            font-size: 3.5rem;
+            color: var(--secondary);
+        }
+        
+        .login-logo h1 {
+            margin-top: 15px;
+            color: var(--primary);
         }
         
         /* Responsive */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
+        @media (min-width: 768px) {
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
             }
             
-            nav ul {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .opciones {
-                flex-direction: column;
+            .header-content, .footer-content {
+                padding: 0 20px;
             }
             
             .filtros-dashboard {
-                flex-direction: column;
+                flex-direction: row;
+            }
+            
+            .filtro-item {
+                flex: 1;
+            }
+            
+            .btn {
+                width: auto;
+            }
+            
+            .footer-content {
+                flex-direction: row;
+            }
+            
+            nav ul {
+                gap: 15px;
+            }
+            
+            nav a {
+                font-size: 1rem;
             }
         }
         
@@ -437,111 +530,95 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alert-success {
+            background: rgba(39, 174, 96, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(39, 174, 96, 0.3);
+        }
+        
+        .alert-error {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--danger);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="container header-content">
-            <div class="logo">
-                <i class="fas fa-clipboard-check"></i>
-                <h1>Auditoría PPR TS FSSC 22002</h1>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="#" class="nav-link active" data-page="inicio"><i class="fas fa-home"></i> Inicio</a></li>
-                    <li><a href="#" class="nav-link" data-page="auditoria"><i class="fas fa-file-alt"></i> Auditoría</a></li>
-                    <li><a href="#" class="nav-link" data-page="dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
-                    <li><a href="#" class="nav-link" data-page="reportes"><i class="fas fa-file-pdf"></i> Reportes</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-    
-    <div class="container">
-        <!-- Sección Inicio -->
-        <section id="inicio" class="page-section active">
-            <div class="form-section">
-                <h2 class="form-title"><i class="fas fa-user-circle"></i> Información del Auditor</h2>
-                <div class="form-group">
-                    <label for="nombre-auditor">Nombre del Auditor</label>
-                    <input type="text" id="nombre-auditor" placeholder="Ingresa tu nombre completo">
+    <!-- Login Section -->
+    <section id="login" class="page-section active">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-logo">
+                    <i class="fas fa-clipboard-check"></i>
+                    <h1>Auditoría PPR</h1>
                 </div>
+                
+                <div id="login-message"></div>
+                
                 <div class="form-group">
-                    <label for="area-auditada">Área a Auditar</label>
-                    <select id="area-auditada">
-                        <option value="">Selecciona un área</option>
-                        <option value="produccion">Producción</option>
-                        <option value="almacen">Almacén</option>
-                        <option value="calidad">Control de Calidad</option>
-                        <option value="mantenimiento">Mantenimiento</option>
-                        <option value="logistica">Logística</option>
-                    </select>
+                    <label for="login-email">Correo Electrónico</label>
+                    <input type="email" id="login-email" placeholder="tucorreo@empresa.com">
                 </div>
+                
                 <div class="form-group">
-                    <label for="fecha-auditoria">Fecha de Auditoría</label>
-                    <input type="date" id="fecha-auditoria">
+                    <label for="login-password">Contraseña</label>
+                    <input type="password" id="login-password" placeholder="Ingresa tu contraseña">
                 </div>
-                <button class="btn btn-primary" id="iniciar-auditoria">
-                    <i class="fas fa-play-circle"></i> Iniciar Auditoría
+                
+                <button class="btn btn-primary" id="btn-login">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
                 </button>
             </div>
-            
-            <div class="form-section">
-                <h2 class="form-title"><i class="fas fa-info-circle"></i> Instrucciones</h2>
-                <p>Esta aplicación te permite realizar auditorías de cumplimiento de PPR según la norma TS FSSC 22002.</p>
-                <ul style="margin: 15px 0 15px 30px;">
-                    <li>Selecciona "Cumple", "Cumple Parcial" o "No Cumple" para cada requisito</li>
-                    <li>Para los casos de "Cumple Parcial" o "No Cumple" debes adjuntar evidencia fotográfica</li>
-                    <li>Al finalizar, se generará un reporte ejecutivo en PDF</li>
-                    <li>Puedes compartir el reporte por correo o WhatsApp</li>
-                    <li>Los administradores recibirán notificaciones de incumplimientos</li>
-                </ul>
-                <p>Toda la información se almacena de forma segura en Google Sheets para su posterior análisis.</p>
-            </div>
-        </section>
-        
-        <!-- Sección Auditoría -->
-        <section id="auditoria" class="page-section">
-            <div class="form-section">
-                <h2 class="form-title"><i class="fas fa-file-alt"></i> Cuestionario de Auditoría</h2>
-                <div id="auditor-info" style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                    <p><strong>Auditor:</strong> <span id="current-auditor">-</span></p>
-                    <p><strong>Área:</strong> <span id="current-area">-</span></p>
-                    <p><strong>Fecha:</strong> <span id="current-date">-</span></p>
+        </div>
+    </section>
+    
+    <!-- Main App -->
+    <div id="main-app" style="display: none;">
+        <!-- Header -->
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-clipboard-check"></i>
+                    <h1>Auditoría PPR</h1>
                 </div>
-                
-                <!-- Preguntas de auditoría -->
-                <div id="preguntas-container">
-                    <!-- Las preguntas se generarán dinámicamente con JavaScript -->
-                </div>
-                
-                <div style="display: flex; justify-content: space-between; margin-top: 30px;">
-                    <button class="btn btn-primary" id="guardar-progreso">
-                        <i class="fas fa-save"></i> Guardar Progreso
-                    </button>
-                    <button class="btn btn-success" id="finalizar-auditoria">
-                        <i class="fas fa-check-circle"></i> Finalizar Auditoría
-                    </button>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="nav-link" data-page="inicio"><i class="fas fa-home"></i> Inicio</a></li>
+                        <li><a href="#" class="nav-link" data-page="auditoria"><i class="fas fa-file-alt"></i> Auditoría</a></li>
+                        <li><a href="#" class="nav-link" data-page="dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+                        <li><a href="#" class="nav-link" data-page="reportes"><i class="fas fa-file-pdf"></i> Reportes</a></li>
+                    </ul>
+                </nav>
+                <div class="user-info">
+                    <span id="user-name">Usuario</span>
+                    <button id="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
                 </div>
             </div>
-        </section>
+        </header>
         
-        <!-- Sección Dashboard -->
-        <section id="dashboard" class="page-section">
-            <div class="form-section">
-                <h2 class="form-title"><i class="fas fa-chart-bar"></i> Dashboard de Cumplimiento</h2>
-                
-                <div class="filtros-dashboard">
-                    <div class="filtro-item">
-                        <label for="filtro-fecha">Filtrar por Fecha</label>
-                        <input type="date" id="filtro-fecha">
+        <div class="container">
+            <!-- Sección Inicio -->
+            <section id="inicio" class="page-section">
+                <div class="form-section">
+                    <h2 class="form-title"><i class="fas fa-user-circle"></i> Información del Auditor</h2>
+                    <div class="form-group">
+                        <label for="nombre-auditor">Nombre del Auditor</label>
+                        <input type="text" id="nombre-auditor" placeholder="Ingresa tu nombre completo">
                     </div>
-                    
-                    <div class="filtro-item">
-                        <label for="filtro-area">Filtrar por Área</label>
-                        <select id="filtro-area">
-                            <option value="">Todas las áreas</option>
+                    <div class="form-group">
+                        <label for="area-auditada">Área a Auditar</label>
+                        <select id="area-auditada">
+                            <option value="">Selecciona un área</option>
                             <option value="produccion">Producción</option>
                             <option value="almacen">Almacén</option>
                             <option value="calidad">Control de Calidad</option>
@@ -549,184 +626,253 @@
                             <option value="logistica">Logística</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="fecha-auditoria">Fecha de Auditoría</label>
+                        <input type="date" id="fecha-auditoria">
+                    </div>
+                    <button class="btn btn-primary" id="iniciar-auditoria">
+                        <i class="fas fa-play-circle"></i> Iniciar Auditoría
+                    </button>
+                </div>
+                
+                <div class="form-section">
+                    <h2 class="form-title"><i class="fas fa-info-circle"></i> Instrucciones</h2>
+                    <p>Esta aplicación te permite realizar auditorías de cumplimiento de PPR según la norma TS FSSC 22002.</p>
+                    <ul style="margin: 15px 0 15px 30px;">
+                        <li>Selecciona "Cumple", "Cumple Parcial" o "No Cumple" para cada requisito</li>
+                        <li>Para los casos de "Cumple Parcial" o "No Cumple" debes adjuntar evidencia fotográfica</li>
+                        <li>Al finalizar, se generará un reporte ejecutivo en PDF</li>
+                        <li>Puedes compartir el reporte por correo o WhatsApp</li>
+                        <li>Los administradores recibirán notificaciones de incumplimientos</li>
+                    </ul>
+                    <p>Toda la información se almacena de forma segura en Google Sheets para su posterior análisis.</p>
+                </div>
+            </section>
+            
+            <!-- Sección Auditoría -->
+            <section id="auditoria" class="page-section">
+                <div class="form-section">
+                    <h2 class="form-title"><i class="fas fa-file-alt"></i> Cuestionario de Auditoría</h2>
+                    <div id="auditor-info" style="background: #e3f2fd; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                        <p><strong>Auditor:</strong> <span id="current-auditor">-</span></p>
+                        <p><strong>Área:</strong> <span id="current-area">-</span></p>
+                        <p><strong>Fecha:</strong> <span id="current-date">-</span></p>
+                    </div>
                     
-                    <div class="filtro-item">
-                        <label>&nbsp;</label>
-                        <button class="btn btn-primary" id="aplicar-filtros">
-                            <i class="fas fa-filter"></i> Aplicar Filtros
+                    <!-- Preguntas de auditoría -->
+                    <div id="preguntas-container">
+                        <!-- Las preguntas se generarán dinámicamente con JavaScript -->
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 30px;">
+                        <button class="btn btn-primary" id="guardar-progreso">
+                            <i class="fas fa-save"></i> Guardar Progreso
+                        </button>
+                        <button class="btn btn-success" id="finalizar-auditoria">
+                            <i class="fas fa-check-circle"></i> Finalizar Auditoría
                         </button>
                     </div>
                 </div>
-                
-                <div class="loader" id="dashboard-loader"></div>
-                
-                <div id="dashboard-content">
-                    <div class="dashboard-stats">
-                        <div class="stat-card stat-success">
-                            <i class="fas fa-check-circle fa-2x"></i>
-                            <h3>Cumplimiento Total</h3>
-                            <div class="stat-value" id="stat-cumple">0%</div>
-                            <p>Porcentaje de requisitos cumplidos</p>
+            </section>
+            
+            <!-- Sección Dashboard -->
+            <section id="dashboard" class="page-section">
+                <div class="form-section">
+                    <h2 class="form-title"><i class="fas fa-chart-bar"></i> Dashboard de Cumplimiento</h2>
+                    
+                    <div class="filtros-dashboard">
+                        <div class="filtro-item">
+                            <label for="filtro-fecha">Filtrar por Fecha</label>
+                            <input type="date" id="filtro-fecha">
                         </div>
                         
-                        <div class="stat-card stat-warning">
-                            <i class="fas fa-exclamation-circle fa-2x"></i>
-                            <h3>Cumplimiento Parcial</h3>
-                            <div class="stat-value" id="stat-parcial">0%</div>
-                            <p>Requisitos con cumplimiento parcial</p>
+                        <div class="filtro-item">
+                            <label for="filtro-area">Filtrar por Área</label>
+                            <select id="filtro-area">
+                                <option value="">Todas las áreas</option>
+                                <option value="produccion">Producción</option>
+                                <option value="almacen">Almacén</option>
+                                <option value="calidad">Control de Calidad</option>
+                                <option value="mantenimiento">Mantenimiento</option>
+                                <option value="logistica">Logística</option>
+                            </select>
                         </div>
                         
-                        <div class="stat-card stat-danger">
-                            <i class="fas fa-times-circle fa-2x"></i>
-                            <h3>No Cumplimiento</h3>
-                            <div class="stat-value" id="stat-no-cumple">0%</div>
-                            <p>Requisitos no cumplidos</p>
+                        <div class="filtro-item">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-primary" id="aplicar-filtros">
+                                <i class="fas fa-filter"></i> Aplicar Filtros
+                            </button>
                         </div>
                     </div>
                     
-                    <div class="chart-container">
-                        <h3 class="chart-title"><i class="fas fa-chart-pie"></i> Distribución de Cumplimiento</h3>
-                        <div class="chart-wrapper">
-                            <canvas id="chart-distribucion"></canvas>
-                        </div>
-                    </div>
+                    <div class="loader" id="dashboard-loader"></div>
                     
-                    <div class="chart-container">
-                        <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Cumplimiento por Área</h3>
-                        <div class="chart-wrapper">
-                            <canvas id="chart-areas"></canvas>
+                    <div id="dashboard-content">
+                        <div class="dashboard-stats">
+                            <div class="stat-card stat-success">
+                                <i class="fas fa-check-circle fa-2x"></i>
+                                <h3>Cumplimiento</h3>
+                                <div class="stat-value" id="stat-cumple">0%</div>
+                                <p>Requisitos cumplidos</p>
+                            </div>
+                            
+                            <div class="stat-card stat-warning">
+                                <i class="fas fa-exclamation-circle fa-2x"></i>
+                                <h3>Parcial</h3>
+                                <div class="stat-value" id="stat-parcial">0%</div>
+                                <p>Cumplimiento parcial</p>
+                            </div>
+                            
+                            <div class="stat-card stat-danger">
+                                <i class="fas fa-times-circle fa-2x"></i>
+                                <h3>No Cumple</h3>
+                                <div class="stat-value" id="stat-no-cumple">0%</div>
+                                <p>Requisitos no cumplidos</p>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="chart-container">
-                        <h3 class="chart-title"><i class="fas fa-calendar-alt"></i> Tendencia Mensual</h3>
-                        <div class="chart-wrapper">
-                            <canvas id="chart-tendencia"></canvas>
+                        
+                        <div class="chart-container">
+                            <h3 class="chart-title"><i class="fas fa-chart-pie"></i> Distribución de Cumplimiento</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="chart-distribucion"></canvas>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="form-section">
-                        <h3 class="form-title"><i class="fas fa-list"></i> Requisitos con Mayor Incumplimiento</h3>
-                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                            <thead>
-                                <tr style="background: var(--primary); color: white;">
-                                    <th style="padding: 12px; text-align: left;">Requisito</th>
-                                    <th style="padding: 12px; text-align: center;">Área</th>
-                                    <th style="padding: 12px; text-align: center;">% Incumplimiento</th>
-                                    <th style="padding: 12px; text-align: center;">Ocurrencias</th>
-                                </tr>
-                            </thead>
-                            <tbody id="incumplimientos-table">
-                                <!-- Datos se generarán dinámicamente -->
-                            </tbody>
-                        </table>
+                        
+                        <div class="chart-container">
+                            <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Cumplimiento por Área</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="chart-areas"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h3 class="form-title"><i class="fas fa-list"></i> Requisitos con Mayor Incumplimiento</h3>
+                            <div style="overflow-x: auto;">
+                                <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+                                    <thead>
+                                        <tr style="background: var(--primary); color: white;">
+                                            <th style="padding: 12px; text-align: left;">Requisito</th>
+                                            <th style="padding: 12px; text-align: center;">Área</th>
+                                            <th style="padding: 12px; text-align: center;">% Incumplimiento</th>
+                                            <th style="padding: 12px; text-align: center;">Ocurrencias</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="incumplimientos-table">
+                                        <!-- Datos se generarán dinámicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+            
+            <!-- Sección Reportes -->
+            <section id="reportes" class="page-section">
+                <div class="form-section">
+                    <h2 class="form-title"><i class="fas fa-file-pdf"></i> Generar Reporte PDF</h2>
+                    <div id="reporte-preview" style="background: white; padding: 20px; border: 1px solid #ddd; border-radius: 12px; margin-bottom: 20px;">
+                        <h3 style="text-align: center; color: var(--primary); margin-bottom: 20px;">Reporte de Auditoría PPR</h3>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                            <div>
+                                <p><strong>Auditor:</strong> <span id="reporte-auditor">-</span></p>
+                                <p><strong>Área auditada:</strong> <span id="reporte-area">-</span></p>
+                                <p><strong>Fecha:</strong> <span id="reporte-fecha">-</span></p>
+                            </div>
+                            <div>
+                                <p><strong>Estado:</strong> <span style="color: var(--success);">Completado</span></p>
+                                <p><strong>Resultado:</strong> <span id="reporte-resultado" style="color: var(--warning);">-</span></p>
+                            </div>
+                        </div>
+                        
+                        <h4 style="color: var(--dark); border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 15px;">Resumen de Cumplimiento</h4>
+                        <div style="display: flex; justify-content: space-around; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                            <div style="text-align: center; flex: 1; min-width: 100px;">
+                                <div style="font-size: 1.8rem; color: var(--success); font-weight: bold;" id="reporte-cumple">0%</div>
+                                <div>Cumple</div>
+                            </div>
+                            <div style="text-align: center; flex: 1; min-width: 100px;">
+                                <div style="font-size: 1.8rem; color: var(--warning); font-weight: bold;" id="reporte-parcial">0%</div>
+                                <div>Cumple Parcial</div>
+                            </div>
+                            <div style="text-align: center; flex: 1; min-width: 100px;">
+                                <div style="font-size: 1.8rem; color: var(--danger); font-weight: bold;" id="reporte-no-cumple">0%</div>
+                                <div>No Cumple</div>
+                            </div>
+                        </div>
+                        
+                        <h4 style="color: var(--dark); border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 15px;">Detalle de Requisitos</h4>
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+                                <thead>
+                                    <tr style="background: #f1f2f6;">
+                                        <th style="padding: 10px; text-align: left;">Requisito</th>
+                                        <th style="padding: 10px; text-align: center; width: 120px;">Estado</th>
+                                        <th style="padding: 10px; text-align: center; width: 120px;">Evidencia</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reporte-detalle">
+                                    <!-- Detalle se generará con JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div style="margin-top: 30px; font-style: italic; text-align: center;">
+                            <p>Este reporte fue generado automáticamente por el Sistema de Auditoría PPR TS FSSC 22002</p>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <button class="btn btn-primary" id="generar-pdf">
+                            <i class="fas fa-file-download"></i> Descargar PDF
+                        </button>
+                        <button class="btn btn-success" id="compartir-whatsapp">
+                            <i class="fab fa-whatsapp"></i> Compartir por WhatsApp
+                        </button>
+                        <button class="btn btn-danger" id="compartir-email">
+                            <i class="fas fa-envelope"></i> Enviar por Correo
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
         
-        <!-- Sección Reportes -->
-        <section id="reportes" class="page-section">
-            <div class="form-section">
-                <h2 class="form-title"><i class="fas fa-file-pdf"></i> Generar Reporte PDF</h2>
-                <div id="reporte-preview" style="background: white; padding: 20px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px;">
-                    <h3 style="text-align: center; color: var(--primary); margin-bottom: 20px;">Reporte de Auditoría PPR</h3>
-                    
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                        <div>
-                            <p><strong>Auditor:</strong> <span id="reporte-auditor">-</span></p>
-                            <p><strong>Área auditada:</strong> <span id="reporte-area">-</span></p>
-                            <p><strong>Fecha:</strong> <span id="reporte-fecha">-</span></p>
-                        </div>
-                        <div style="text-align: right;">
-                            <p><strong>Estado:</strong> <span style="color: var(--success);">Completado</span></p>
-                            <p><strong>Resultado:</strong> <span id="reporte-resultado" style="color: var(--warning);">-</span></p>
-                        </div>
-                    </div>
-                    
-                    <h4 style="color: var(--dark); border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 15px;">Resumen de Cumplimiento</h4>
-                    <div style="display: flex; justify-content: space-around; margin-bottom: 20px;">
-                        <div style="text-align: center;">
-                            <div style="font-size: 1.8rem; color: var(--success); font-weight: bold;" id="reporte-cumple">0%</div>
-                            <div>Cumple</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 1.8rem; color: var(--warning); font-weight: bold;" id="reporte-parcial">0%</div>
-                            <div>Cumple Parcial</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 1.8rem; color: var(--danger); font-weight: bold;" id="reporte-no-cumple">0%</div>
-                            <div>No Cumple</div>
-                        </div>
-                    </div>
-                    
-                    <h4 style="color: var(--dark); border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 15px;">Detalle de Requisitos</h4>
-                    <table style="width: 100%; border-collapse: collapse;">
-                        <thead>
-                            <tr style="background: #f1f2f6;">
-                                <th style="padding: 10px; text-align: left;">Requisito</th>
-                                <th style="padding: 10px; text-align: center; width: 120px;">Estado</th>
-                                <th style="padding: 10px; text-align: center; width: 120px;">Evidencia</th>
-                            </tr>
-                        </thead>
-                        <tbody id="reporte-detalle">
-                            <!-- Detalle se generará con JavaScript -->
-                        </tbody>
-                    </table>
-                    
-                    <div style="margin-top: 30px; font-style: italic;">
-                        <p>Este reporte fue generado automáticamente por el Sistema de Auditoría PPR TS FSSC 22002</p>
-                    </div>
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Auditoría PPR</h3>
+                    <p>Sistema para la gestión de auditorías de cumplimiento de PPR según la norma TS FSSC 22002.</p>
+                    <p>Toda la información se almacena de forma segura en Google Sheets para su posterior análisis.</p>
                 </div>
                 
-                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                    <button class="btn btn-primary" id="generar-pdf">
-                        <i class="fas fa-file-download"></i> Descargar PDF
-                    </button>
-                    <button class="btn btn-success" id="compartir-whatsapp">
-                        <i class="fab fa-whatsapp"></i> Compartir por WhatsApp
-                    </button>
-                    <button class="btn btn-danger" id="compartir-email">
-                        <i class="fas fa-envelope"></i> Enviar por Correo
-                    </button>
+                <div class="footer-section">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="#" class="nav-link" data-page="inicio"><i class="fas fa-home"></i> Inicio</a></li>
+                        <li><a href="#" class="nav-link" data-page="auditoria"><i class="fas fa-file-alt"></i> Auditoría</a></li>
+                        <li><a href="#" class="nav-link" data-page="dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+                        <li><a href="#" class="nav-link" data-page="reportes"><i class="fas fa-file-pdf"></i> Reportes</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-envelope"></i> soporte@auditoriappr.com</a></li>
+                        <li><a href="#"><i class="fas fa-phone"></i> +1 (555) 123-4567</a></li>
+                        <li><a href="#"><i class="fab fa-whatsapp"></i> Enviar mensaje</a></li>
+                    </ul>
                 </div>
             </div>
-        </section>
+            
+            <div class="copyright">
+                <p>&copy; 2023 Sistema de Auditoría PPR TS FSSC 22002. Todos los derechos reservados.</p>
+            </div>
+        </footer>
     </div>
-    
-    <!-- Footer -->
-    <footer>
-        <div class="container footer-content">
-            <div class="footer-section">
-                <h3>Auditoría PPR</h3>
-                <p>Sistema para la gestión de auditorías de cumplimiento de PPR según la norma TS FSSC 22002.</p>
-                <p>Toda la información se almacena de forma segura en Google Sheets para su posterior análisis.</p>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Enlaces Rápidos</h3>
-                <ul class="footer-links">
-                    <li><a href="#"><i class="fas fa-home"></i> Inicio</a></li>
-                    <li><a href="#"><i class="fas fa-file-alt"></i> Realizar Auditoría</a></li>
-                    <li><a href="#"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
-                    <li><a href="#"><i class="fas fa-file-pdf"></i> Generar Reportes</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Contacto</h3>
-                <ul class="footer-links">
-                    <li><a href="#"><i class="fas fa-envelope"></i> soporte@auditoriappr.com</a></li>
-                    <li><a href="#"><i class="fas fa-phone"></i> +1 (555) 123-4567</a></li>
-                    <li><a href="#"><i class="fab fa-whatsapp"></i> Enviar mensaje por WhatsApp</a></li>
-                </ul>
-            </div>
-        </div>
-        
-        <div class="container copyright">
-            <p>&copy; 2023 Sistema de Auditoría PPR TS FSSC 22002. Todos los derechos reservados.</p>
-        </div>
-    </footer>
     
     <script>
         // URL de tu Google Apps Script
@@ -789,7 +935,8 @@
         // Variables globales
         let auditorData = {};
         let respuestas = {};
-        let chartDistribucion, chartAreas, chartTendencia;
+        let chartDistribucion, chartAreas;
+        let currentUser = null;
         
         // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
@@ -827,9 +974,76 @@
             // Event listener para aplicar filtros
             document.getElementById('aplicar-filtros').addEventListener('click', cargarDashboard);
             
+            // Event listener para login
+            document.getElementById('btn-login').addEventListener('click', login);
+            
+            // Event listener para logout
+            document.getElementById('btn-logout').addEventListener('click', logout);
+            
             // Inicializar gráficos vacíos
             inicializarGraficos();
         });
+        
+        // Login
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const messageContainer = document.getElementById('login-message');
+            
+            if (!email || !password) {
+                showMessage('Por favor completa todos los campos', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "login",
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    currentUser = data.user;
+                    document.getElementById('user-name').textContent = currentUser.email;
+                    document.getElementById('login').classList.remove('active');
+                    document.getElementById('main-app').style.display = 'block';
+                    showPage('inicio');
+                } else {
+                    showMessage(data.message || "Credenciales incorrectas", 'error');
+                }
+            } catch (error) {
+                showMessage('Error de conexión: ' + error.message, 'error');
+            }
+        }
+        
+        // Logout
+        function logout() {
+            currentUser = null;
+            document.getElementById('main-app').style.display = 'none';
+            document.getElementById('login').classList.add('active');
+            document.getElementById('login-email').value = '';
+            document.getElementById('login-password').value = '';
+        }
+        
+        // Mostrar mensaje en login
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('login-message');
+            messageContainer.innerHTML = `
+                <div class="alert alert-${type}">
+                    <i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}-circle"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                messageContainer.innerHTML = '';
+            }, 5000);
+        }
         
         // Mostrar página específica
         function showPage(pageId) {
@@ -1111,7 +1325,6 @@
         function inicializarGraficos() {
             const ctxDistribucion = document.getElementById('chart-distribucion').getContext('2d');
             const ctxAreas = document.getElementById('chart-areas').getContext('2d');
-            const ctxTendencia = document.getElementById('chart-tendencia').getContext('2d');
             
             // Gráfico de distribución
             chartDistribucion = new Chart(ctxDistribucion, {
@@ -1149,38 +1362,6 @@
                         data: [0, 0, 0, 0, 0],
                         backgroundColor: 'rgba(52, 152, 219, 0.8)',
                         borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '%';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-            
-            // Gráfico de tendencia
-            chartTendencia = new Chart(ctxTendencia, {
-                type: 'line',
-                data: {
-                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-                    datasets: [{
-                        label: 'Cumplimiento Promedio',
-                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                        borderColor: 'rgba(52, 152, 219, 1)',
-                        borderWidth: 2,
-                        tension: 0.3,
-                        fill: true
                     }]
                 },
                 options: {
@@ -1296,11 +1477,6 @@
                 // Actualizar gráfico por áreas
                 chartAreas.data.datasets[0].data = areasData;
                 chartAreas.update();
-                
-                // Actualizar gráfico de tendencia (datos simulados)
-                const tendenciaData = [65, 70, 72, 75, 78, 80, 82, 85, 87, 89, 91, 93];
-                chartTendencia.data.datasets[0].data = tendenciaData;
-                chartTendencia.update();
                 
                 // Actualizar tabla de incumplimientos
                 const incumplimientos = [
