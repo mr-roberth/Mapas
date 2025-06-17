@@ -1,8 +1,0 @@
-#app {
-    transition: opacity 0.5s;
-}
-
-.card {
-    max-width: 500px;
-    margin: 0 auto;
-}
