@@ -429,8 +429,8 @@
             font-size: 0.9rem;
         }
         
-        /* Login */
-        .login-container {
+        /* Login y Registro */
+        .auth-container {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -439,7 +439,7 @@
             background: var(--background);
         }
         
-        .login-card {
+        .auth-card {
             background: var(--card-bg);
             border-radius: 20px;
             padding: 30px;
@@ -448,19 +448,48 @@
             box-shadow: var(--shadow);
         }
         
-        .login-logo {
+        .auth-logo {
             text-align: center;
             margin-bottom: 30px;
         }
         
-        .login-logo i {
+        .auth-logo i {
             font-size: 3.5rem;
             color: var(--secondary);
         }
         
-        .login-logo h1 {
+        .auth-logo h1 {
             margin-top: 15px;
             color: var(--primary);
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .auth-tab.active {
+            border-bottom: 3px solid var(--secondary);
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
         }
         
         /* Responsive */
@@ -551,33 +580,96 @@
             color: var(--danger);
             border: 1px solid rgba(231, 76, 60, 0.3);
         }
+        
+        .reports-list {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .report-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .report-info {
+            flex: 1;
+        }
+        
+        .report-actions {
+            display: flex;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
-    <!-- Login Section -->
-    <section id="login" class="page-section active">
-        <div class="login-container">
-            <div class="login-card">
-                <div class="login-logo">
+    <!-- Auth Section -->
+    <section id="auth" class="page-section active">
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-logo">
                     <i class="fas fa-clipboard-check"></i>
                     <h1>Auditoría PPR</h1>
                 </div>
                 
-                <div id="login-message"></div>
-                
-                <div class="form-group">
-                    <label for="login-email">Correo Electrónico</label>
-                    <input type="email" id="login-email" placeholder="tucorreo@empresa.com">
+                <div class="auth-tabs">
+                    <div class="auth-tab active" data-form="login">Iniciar Sesión</div>
+                    <div class="auth-tab" data-form="register">Registrarse</div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="login-password">Contraseña</label>
-                    <input type="password" id="login-password" placeholder="Ingresa tu contraseña">
+                <div id="auth-message"></div>
+                
+                <!-- Login Form -->
+                <div id="login-form" class="auth-form active">
+                    <div class="form-group">
+                        <label for="login-email">Correo Electrónico</label>
+                        <input type="email" id="login-email" placeholder="tucorreo@empresa.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="login-password">Contraseña</label>
+                        <input type="password" id="login-password" placeholder="Ingresa tu contraseña">
+                    </div>
+                    
+                    <button class="btn btn-primary" id="btn-login">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </button>
                 </div>
                 
-                <button class="btn btn-primary" id="btn-login">
-                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
-                </button>
+                <!-- Register Form -->
+                <div id="register-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="register-name">Nombre Completo</label>
+                        <input type="text" id="register-name" placeholder="Tu nombre completo">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-email">Correo Electrónico</label>
+                        <input type="email" id="register-email" placeholder="tucorreo@empresa.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-password">Contraseña</label>
+                        <input type="password" id="register-password" placeholder="Crea una contraseña">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-role">Rol</label>
+                        <select id="register-role">
+                            <option value="auditor">Auditor</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn-primary" id="btn-register">
+                        <i class="fas fa-user-plus"></i> Crear Cuenta
+                    </button>
+                </div>
             </div>
         </div>
     </section>
@@ -682,13 +774,13 @@
                     
                     <div class="filtros-dashboard">
                         <div class="filtro-item">
-                            <label for="filtro-fecha">Filtrar por Fecha</label>
-                            <input type="date" id="filtro-fecha">
+                            <label for="filtro-fecha-dash">Filtrar por Fecha</label>
+                            <input type="date" id="filtro-fecha-dash">
                         </div>
                         
                         <div class="filtro-item">
-                            <label for="filtro-area">Filtrar por Área</label>
-                            <select id="filtro-area">
+                            <label for="filtro-area-dash">Filtrar por Área</label>
+                            <select id="filtro-area-dash">
                                 <option value="">Todas las áreas</option>
                                 <option value="produccion">Producción</option>
                                 <option value="almacen">Almacén</option>
@@ -700,7 +792,7 @@
                         
                         <div class="filtro-item">
                             <label>&nbsp;</label>
-                            <button class="btn btn-primary" id="aplicar-filtros">
+                            <button class="btn btn-primary" id="aplicar-filtros-dash">
                                 <i class="fas fa-filter"></i> Aplicar Filtros
                             </button>
                         </div>
@@ -771,8 +863,29 @@
             <!-- Sección Reportes -->
             <section id="reportes" class="page-section">
                 <div class="form-section">
-                    <h2 class="form-title"><i class="fas fa-file-pdf"></i> Generar Reporte PDF</h2>
-                    <div id="reporte-preview" style="background: white; padding: 20px; border: 1px solid #ddd; border-radius: 12px; margin-bottom: 20px;">
+                    <h2 class="form-title"><i class="fas fa-file-pdf"></i> Reportes de Auditoría</h2>
+                    
+                    <div class="filtros-dashboard">
+                        <div class="filtro-item">
+                            <label for="filtro-fecha-rep">Filtrar por Fecha</label>
+                            <input type="date" id="filtro-fecha-rep">
+                        </div>
+                        
+                        <div class="filtro-item">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-primary" id="buscar-reportes">
+                                <i class="fas fa-search"></i> Buscar Reportes
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="loader" id="reports-loader"></div>
+                    
+                    <div class="reports-list" id="reports-list">
+                        <!-- Reportes se cargarán dinámicamente -->
+                    </div>
+                    
+                    <div id="reporte-preview" style="background: white; padding: 20px; border: 1px solid #ddd; border-radius: 12px; margin-bottom: 20px; display: none;">
                         <h3 style="text-align: center; color: var(--primary); margin-bottom: 20px;">Reporte de Auditoría PPR</h3>
                         
                         <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
@@ -822,18 +935,18 @@
                         <div style="margin-top: 30px; font-style: italic; text-align: center;">
                             <p>Este reporte fue generado automáticamente por el Sistema de Auditoría PPR TS FSSC 22002</p>
                         </div>
-                    </div>
-                    
-                    <div style="display: flex; flex-direction: column; gap: 15px;">
-                        <button class="btn btn-primary" id="generar-pdf">
-                            <i class="fas fa-file-download"></i> Descargar PDF
-                        </button>
-                        <button class="btn btn-success" id="compartir-whatsapp">
-                            <i class="fab fa-whatsapp"></i> Compartir por WhatsApp
-                        </button>
-                        <button class="btn btn-danger" id="compartir-email">
-                            <i class="fas fa-envelope"></i> Enviar por Correo
-                        </button>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                            <button class="btn btn-primary" id="generar-pdf">
+                                <i class="fas fa-file-download"></i> Descargar PDF
+                            </button>
+                            <button class="btn btn-success" id="compartir-whatsapp">
+                                <i class="fab fa-whatsapp"></i> Compartir por WhatsApp
+                            </button>
+                            <button class="btn btn-danger" id="compartir-email">
+                                <i class="fas fa-envelope"></i> Enviar por Correo
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -937,12 +1050,15 @@
         let respuestas = {};
         let chartDistribucion, chartAreas;
         let currentUser = null;
+        let currentReport = null;
         
         // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
             // Configurar fecha actual
             const today = new Date();
             document.getElementById('fecha-auditoria').valueAsDate = today;
+            document.getElementById('filtro-fecha-dash').valueAsDate = today;
+            document.getElementById('filtro-fecha-rep').valueAsDate = today;
             
             // Event listeners para navegación
             document.querySelectorAll('.nav-link').forEach(link => {
@@ -962,6 +1078,21 @@
                 });
             });
             
+            // Event listeners para tabs de autenticación
+            document.querySelectorAll('.auth-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const form = this.getAttribute('data-form');
+                    
+                    // Actualizar tabs activos
+                    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Mostrar formulario correspondiente
+                    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                    document.getElementById(`${form}-form`).classList.add('active');
+                });
+            });
+            
             // Event listener para iniciar auditoría
             document.getElementById('iniciar-auditoria').addEventListener('click', iniciarAuditoria);
             
@@ -971,11 +1102,17 @@
             // Event listener para generar PDF
             document.getElementById('generar-pdf').addEventListener('click', generarPDF);
             
-            // Event listener para aplicar filtros
-            document.getElementById('aplicar-filtros').addEventListener('click', cargarDashboard);
+            // Event listener para aplicar filtros dashboard
+            document.getElementById('aplicar-filtros-dash').addEventListener('click', cargarDashboard);
+            
+            // Event listener para buscar reportes
+            document.getElementById('buscar-reportes').addEventListener('click', buscarReportes);
             
             // Event listener para login
             document.getElementById('btn-login').addEventListener('click', login);
+            
+            // Event listener para registro
+            document.getElementById('btn-register').addEventListener('click', register);
             
             // Event listener para logout
             document.getElementById('btn-logout').addEventListener('click', logout);
@@ -988,10 +1125,10 @@
         async function login() {
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
-            const messageContainer = document.getElementById('login-message');
+            const messageContainer = document.getElementById('auth-message');
             
             if (!email || !password) {
-                showMessage('Por favor completa todos los campos', 'error');
+                showAuthMessage('Por favor completa todos los campos', 'error');
                 return;
             }
             
@@ -1010,14 +1147,62 @@
                 if (data.status === "success") {
                     currentUser = data.user;
                     document.getElementById('user-name').textContent = currentUser.email;
-                    document.getElementById('login').classList.remove('active');
+                    document.getElementById('auth').classList.remove('active');
                     document.getElementById('main-app').style.display = 'block';
                     showPage('inicio');
                 } else {
-                    showMessage(data.message || "Credenciales incorrectas", 'error');
+                    showAuthMessage(data.message || "Credenciales incorrectas", 'error');
                 }
             } catch (error) {
-                showMessage('Error de conexión: ' + error.message, 'error');
+                showAuthMessage('Error de conexión: ' + error.message, 'error');
+            }
+        }
+        
+        // Registro
+        async function register() {
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const role = document.getElementById('register-role').value;
+            const messageContainer = document.getElementById('auth-message');
+            
+            if (!name || !email || !password) {
+                showAuthMessage('Por favor completa todos los campos', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "register",
+                        name: name,
+                        email: email,
+                        password: password,
+                        role: role
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    showAuthMessage('Usuario registrado con éxito. Ahora puedes iniciar sesión.', 'success');
+                    
+                    // Limpiar formulario
+                    document.getElementById('register-name').value = '';
+                    document.getElementById('register-email').value = '';
+                    document.getElementById('register-password').value = '';
+                    
+                    // Cambiar a pestaña de login
+                    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelector('.auth-tab[data-form="login"]').classList.add('active');
+                    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                    document.getElementById('login-form').classList.add('active');
+                } else {
+                    showAuthMessage(data.message || "Error al registrar usuario", 'error');
+                }
+            } catch (error) {
+                showAuthMessage('Error de conexión: ' + error.message, 'error');
             }
         }
         
@@ -1025,14 +1210,14 @@
         function logout() {
             currentUser = null;
             document.getElementById('main-app').style.display = 'none';
-            document.getElementById('login').classList.add('active');
+            document.getElementById('auth').classList.add('active');
             document.getElementById('login-email').value = '';
             document.getElementById('login-password').value = '';
         }
         
-        // Mostrar mensaje en login
-        function showMessage(message, type) {
-            const messageContainer = document.getElementById('login-message');
+        // Mostrar mensaje en auth
+        function showAuthMessage(message, type) {
+            const messageContainer = document.getElementById('auth-message');
             messageContainer.innerHTML = `
                 <div class="alert alert-${type}">
                     <i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}-circle"></i>
@@ -1117,475 +1302,4 @@
                     <div class="evidencia-section" id="evidencia-${pregunta.id}">
                         <p><strong>Evidencia fotográfica requerida:</strong></p>
                         <div class="camera-preview" id="camera-preview-${pregunta.id}">
-                            <i class="fas fa-camera"></i>
-                            <span>Haz clic para tomar foto</span>
-                        </div>
-                        <input type="file" accept="image/*" capture="environment" style="display: none;" id="camera-input-${pregunta.id}">
-                    </div>
-                `;
-                container.appendChild(preguntaElement);
-                
-                // Event listeners para las opciones
-                const opciones = preguntaElement.querySelectorAll('.opcion');
-                opciones.forEach(opcion => {
-                    opcion.addEventListener('click', function() {
-                        const value = this.getAttribute('data-value');
-                        const preguntaId = this.getAttribute('data-pregunta');
-                        
-                        // Guardar respuesta
-                        respuestas[preguntaId] = {
-                            estado: value,
-                            evidencia: null,
-                            evidenciaUrl: null
-                        };
-                        
-                        // Mostrar/ocultar sección de evidencia
-                        const evidenciaSection = document.getElementById(`evidencia-${preguntaId}`);
-                        if (value === 'parcial' || value === 'no_cumple') {
-                            evidenciaSection.style.display = 'block';
-                        } else {
-                            evidenciaSection.style.display = 'none';
-                        }
-                        
-                        // Actualizar estilo de opciones
-                        opciones.forEach(o => o.classList.remove('selected'));
-                        this.classList.add('selected');
-                    });
-                });
-                
-                // Event listener para la cámara
-                const cameraPreview = document.getElementById(`camera-preview-${pregunta.id}`);
-                const cameraInput = document.getElementById(`camera-input-${pregunta.id}`);
-                
-                cameraPreview.addEventListener('click', function() {
-                    cameraInput.click();
-                });
-                
-                cameraInput.addEventListener('change', async function(e) {
-                    if (e.target.files && e.target.files[0]) {
-                        const file = e.target.files[0];
-                        const reader = new FileReader();
-                        
-                        reader.onload = async function(event) {
-                            cameraPreview.innerHTML = `<img src="${event.target.result}" alt="Evidencia fotográfica">`;
-                            
-                            // Subir imagen al backend
-                            try {
-                                const response = await fetch(SCRIPT_URL, {
-                                    method: 'POST',
-                                    body: JSON.stringify({
-                                        action: "uploadImage",
-                                        image: event.target.result
-                                    })
-                                });
-                                
-                                const data = await response.json();
-                                
-                                if (data.status === "success") {
-                                    // Guardar evidencia
-                                    respuestas[pregunta.id].evidencia = file;
-                                    respuestas[pregunta.id].evidenciaUrl = data.url;
-                                } else {
-                                    throw new Error(data.message || "Error al subir imagen");
-                                }
-                            } catch (error) {
-                                alert('Error al subir evidencia: ' + error.message);
-                                cameraPreview.innerHTML = `
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                    <span>Error: ${error.message}</span>
-                                `;
-                            }
-                        };
-                        
-                        reader.readAsDataURL(file);
-                    }
-                });
-            });
-        }
-        
-        // Finalizar auditoría
-        async function finalizarAuditoria() {
-            // Validar que todas las preguntas tienen respuesta
-            const preguntasContestadas = Object.keys(respuestas).length;
-            if (preguntasContestadas < preguntasAuditoria.length) {
-                alert('Por favor responde todas las preguntas antes de finalizar la auditoría.');
-                return;
-            }
-            
-            // Calcular estadísticas
-            const totalPreguntas = preguntasAuditoria.length;
-            const cumple = Object.values(respuestas).filter(r => r.estado === 'cumple').length;
-            const parcial = Object.values(respuestas).filter(r => r.estado === 'parcial').length;
-            const noCumple = Object.values(respuestas).filter(r => r.estado === 'no_cumple').length;
-            
-            // Actualizar reporte con estadísticas reales
-            document.getElementById('reporte-cumple').textContent = Math.round((cumple / totalPreguntas) * 100) + '%';
-            document.getElementById('reporte-parcial').textContent = Math.round((parcial / totalPreguntas) * 100) + '%';
-            document.getElementById('reporte-no-cumple').textContent = Math.round((noCumple / totalPreguntas) * 100) + '%';
-            
-            // Determinar resultado general
-            let resultado = "Cumplimiento Total";
-            let color = "var(--success)";
-            
-            if (noCumple > 0 || parcial > totalPreguntas * 0.2) {
-                resultado = "Cumplimiento Parcial";
-                color = "var(--warning)";
-            }
-            
-            if (noCumple > totalPreguntas * 0.1) {
-                resultado = "No Cumple";
-                color = "var(--danger)";
-            }
-            
-            document.getElementById('reporte-resultado').textContent = resultado;
-            document.getElementById('reporte-resultado').style.color = color;
-            
-            // Preparar datos para enviar al backend
-            const preguntasData = [];
-            
-            for (const [id, respuesta] of Object.entries(respuestas)) {
-                const pregunta = preguntasAuditoria.find(p => p.id === parseInt(id));
-                preguntasData.push({
-                    id: `p${pregunta.id}`,
-                    texto: pregunta.texto,
-                    estado: respuesta.estado,
-                    evidenciaUrl: respuesta.evidenciaUrl || null
-                });
-            }
-            
-            const payload = {
-                action: "submitAudit",
-                auditor: auditorData.nombre,
-                area: auditorData.area,
-                fecha: auditorData.fecha,
-                preguntas: preguntasData
-            };
-            
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(payload)
-                });
-                
-                const data = await response.json();
-                
-                if (data.status === "success") {
-                    auditorData.auditId = data.auditId;
-                    generarDetalleReporte();
-                    
-                    // Mostrar sección de reportes
-                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                    document.querySelector('.nav-link[data-page="reportes"]').classList.add('active');
-                    showPage('reportes');
-                    
-                    alert('¡Auditoría completada con éxito! Se ha generado el reporte ejecutivo.');
-                } else {
-                    throw new Error(data.message || "Error en el servidor");
-                }
-            } catch (error) {
-                alert('Error al enviar la auditoría: ' + error.message);
-            }
-        }
-        
-        // Generar detalle para el reporte PDF
-        function generarDetalleReporte() {
-            const detalle = document.getElementById('reporte-detalle');
-            detalle.innerHTML = '';
-            
-            preguntasAuditoria.forEach(pregunta => {
-                const respuesta = respuestas[pregunta.id];
-                let estadoText, estadoColor;
-                
-                switch(respuesta.estado) {
-                    case 'cumple':
-                        estadoText = 'Cumple';
-                        estadoColor = 'green';
-                        break;
-                    case 'parcial':
-                        estadoText = 'Cumple Parcial';
-                        estadoColor = 'orange';
-                        break;
-                    case 'no_cumple':
-                        estadoText = 'No Cumple';
-                        estadoColor = 'red';
-                        break;
-                }
-                
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td style="padding: 10px;">${pregunta.texto}</td>
-                    <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
-                    <td style="padding: 10px; text-align: center;">${respuesta.evidencia ? 'Sí' : 'No'}</td>
-                `;
-                detalle.appendChild(row);
-            });
-        }
-        
-        // Inicializar gráficos
-        function inicializarGraficos() {
-            const ctxDistribucion = document.getElementById('chart-distribucion').getContext('2d');
-            const ctxAreas = document.getElementById('chart-areas').getContext('2d');
-            
-            // Gráfico de distribución
-            chartDistribucion = new Chart(ctxDistribucion, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Cumple', 'Cumple Parcial', 'No Cumple'],
-                    datasets: [{
-                        data: [0, 0, 0],
-                        backgroundColor: [
-                            'rgba(39, 174, 96, 0.8)',
-                            'rgba(243, 156, 18, 0.8)',
-                            'rgba(231, 76, 60, 0.8)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                }
-            });
-            
-            // Gráfico por áreas
-            chartAreas = new Chart(ctxAreas, {
-                type: 'bar',
-                data: {
-                    labels: ['Producción', 'Almacén', 'Calidad', 'Mantenimiento', 'Logística'],
-                    datasets: [{
-                        label: 'Porcentaje de Cumplimiento',
-                        data: [0, 0, 0, 0, 0],
-                        backgroundColor: 'rgba(52, 152, 219, 0.8)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '%';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
-        // Cargar datos para el dashboard
-        async function cargarDashboard() {
-            const loader = document.getElementById('dashboard-loader');
-            const content = document.getElementById('dashboard-content');
-            const fecha = document.getElementById('filtro-fecha').value;
-            const area = document.getElementById('filtro-area').value;
-            
-            // Mostrar loader y ocultar contenido
-            loader.style.display = 'block';
-            content.style.opacity = '0.3';
-            
-            try {
-                // Simular obtención de datos (en un caso real, harías una petición a tu backend)
-                // Datos simulados para demostración
-                const datosAuditorias = [
-                    { area: 'produccion', fecha: '2023-10-01', cumple: 8, parcial: 1, noCumple: 1 },
-                    { area: 'almacen', fecha: '2023-10-05', cumple: 7, parcial: 2, noCumple: 1 },
-                    { area: 'calidad', fecha: '2023-10-10', cumple: 9, parcial: 1, noCumple: 0 },
-                    { area: 'mantenimiento', fecha: '2023-10-15', cumple: 6, parcial: 3, noCumple: 1 },
-                    { area: 'logistica', fecha: '2023-10-20', cumple: 7, parcial: 2, noCumple: 1 }
-                ];
-                
-                // Filtrar datos según los filtros seleccionados
-                let datosFiltrados = datosAuditorias;
-                
-                if (fecha) {
-                    datosFiltrados = datosFiltrados.filter(a => a.fecha === fecha);
-                }
-                
-                if (area) {
-                    datosFiltrados = datosFiltrados.filter(a => a.area === area);
-                }
-                
-                // Calcular estadísticas generales
-                let totalCumple = 0;
-                let totalParcial = 0;
-                let totalNoCumple = 0;
-                let totalRequisitos = 0;
-                
-                datosFiltrados.forEach(audit => {
-                    totalCumple += audit.cumple;
-                    totalParcial += audit.parcial;
-                    totalNoCumple += audit.noCumple;
-                    totalRequisitos += (audit.cumple + audit.parcial + audit.noCumple);
-                });
-                
-                const porcCumple = totalRequisitos > 0 ? Math.round((totalCumple / totalRequisitos) * 100) : 0;
-                const porcParcial = totalRequisitos > 0 ? Math.round((totalParcial / totalRequisitos) * 100) : 0;
-                const porcNoCumple = totalRequisitos > 0 ? Math.round((totalNoCumple / totalRequisitos) * 100) : 0;
-                
-                // Actualizar estadísticas
-                document.getElementById('stat-cumple').textContent = porcCumple + '%';
-                document.getElementById('stat-parcial').textContent = porcParcial + '%';
-                document.getElementById('stat-no-cumple').textContent = porcNoCumple + '%';
-                
-                // Actualizar gráfico de distribución
-                chartDistribucion.data.datasets[0].data = [porcCumple, porcParcial, porcNoCumple];
-                chartDistribucion.update();
-                
-                // Calcular cumplimiento por área
-                const cumplimientoPorArea = {
-                    produccion: 0,
-                    almacen: 0,
-                    calidad: 0,
-                    mantenimiento: 0,
-                    logistica: 0
-                };
-                
-                const contadorPorArea = {
-                    produccion: 0,
-                    almacen: 0,
-                    calidad: 0,
-                    mantenimiento: 0,
-                    logistica: 0
-                };
-                
-                datosFiltrados.forEach(audit => {
-                    const total = audit.cumple + audit.parcial + audit.noCumple;
-                    const cumplimiento = total > 0 ? Math.round((audit.cumple / total) * 100) : 0;
-                    cumplimientoPorArea[audit.area] += cumplimiento;
-                    contadorPorArea[audit.area]++;
-                });
-                
-                // Calcular promedio por área
-                const areasData = [
-                    contadorPorArea.produccion > 0 ? Math.round(cumplimientoPorArea.produccion / contadorPorArea.produccion) : 0,
-                    contadorPorArea.almacen > 0 ? Math.round(cumplimientoPorArea.almacen / contadorPorArea.almacen) : 0,
-                    contadorPorArea.calidad > 0 ? Math.round(cumplimientoPorArea.calidad / contadorPorArea.calidad) : 0,
-                    contadorPorArea.mantenimiento > 0 ? Math.round(cumplimientoPorArea.mantenimiento / contadorPorArea.mantenimiento) : 0,
-                    contadorPorArea.logistica > 0 ? Math.round(cumplimientoPorArea.logistica / contadorPorArea.logistica) : 0
-                ];
-                
-                // Actualizar gráfico por áreas
-                chartAreas.data.datasets[0].data = areasData;
-                chartAreas.update();
-                
-                // Actualizar tabla de incumplimientos
-                const incumplimientos = [
-                    { requisito: "Control de plagas documentado", area: "Almacén", porcentaje: 24, ocurrencias: 18 },
-                    { requisito: "Programa de limpieza y desinfección", area: "Producción", porcentaje: 18, ocurrencias: 15 },
-                    { requisito: "Registros de capacitación", area: "Todas", porcentaje: 15, ocurrencias: 22 },
-                    { requisito: "Verificación de proveedores", area: "Calidad", porcentaje: 12, ocurrencias: 10 },
-                    { requisito: "Mantenimiento preventivo de equipos", area: "Mantenimiento", porcentaje: 10, ocurrencias: 8 }
-                ];
-                
-                const tabla = document.getElementById('incumplimientos-table');
-                tabla.innerHTML = '';
-                
-                incumplimientos.forEach(item => {
-                    const row = document.createElement('tr');
-                    row.style.borderBottom = '1px solid #eee';
-                    row.innerHTML = `
-                        <td style="padding: 12px;">${item.requisito}</td>
-                        <td style="padding: 12px; text-align: center;">${item.area}</td>
-                        <td style="padding: 12px; text-align: center; color: var(--danger);">${item.porcentaje}%</td>
-                        <td style="padding: 12px; text-align: center;">${item.ocurrencias}</td>
-                    `;
-                    tabla.appendChild(row);
-                });
-                
-            } catch (error) {
-                alert('Error al cargar datos del dashboard: ' + error.message);
-            } finally {
-                // Ocultar loader y mostrar contenido
-                loader.style.display = 'none';
-                content.style.opacity = '1';
-            }
-        }
-        
-        // Generar PDF
-        function generarPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            // Título
-            doc.setFontSize(20);
-            doc.text('Reporte de Auditoría PPR TS FSSC 22002', 105, 20, null, null, 'center');
-            
-            // Información de auditoría
-            doc.setFontSize(12);
-            doc.text(`Auditor: ${auditorData.nombre}`, 20, 35);
-            doc.text(`Área auditada: ${document.querySelector(`#area-auditada option[value="${auditorData.area}"]`).textContent}`, 20, 45);
-            doc.text(`Fecha: ${auditorData.fecha}`, 20, 55);
-            
-            // Resumen de cumplimiento
-            doc.setFontSize(14);
-            doc.text('Resumen de Cumplimiento', 20, 70);
-            
-            // Gráfico de resumen (simplificado)
-            doc.setFillColor(39, 174, 96); // Cumple
-            doc.rect(30, 80, 40, 40, 'F');
-            doc.setFillColor(243, 156, 18); // Parcial
-            doc.rect(80, 80, 40, 30, 'F');
-            doc.setFillColor(231, 76, 60); // No cumple
-            doc.rect(130, 80, 40, 20, 'F');
-            
-            doc.setFontSize(10);
-            doc.text(`${document.getElementById('reporte-cumple').textContent} Cumple`, 50, 125, null, null, 'center');
-            doc.text(`${document.getElementById('reporte-parcial').textContent} Parcial`, 100, 125, null, null, 'center');
-            doc.text(`${document.getElementById('reporte-no-cumple').textContent} No cumple`, 150, 125, null, null, 'center');
-            
-            // Detalle de requisitos
-            doc.setFontSize(14);
-            doc.text('Detalle de Requisitos', 20, 140);
-            
-            let yPosition = 150;
-            doc.setFontSize(10);
-            
-            preguntasAuditoria.forEach((pregunta, index) => {
-                if (yPosition > 280) {
-                    doc.addPage();
-                    yPosition = 20;
-                }
-                
-                const respuesta = respuestas[pregunta.id];
-                let estadoText, estadoColor;
-                
-                switch(respuesta.estado) {
-                    case 'cumple':
-                        estadoText = 'Cumple';
-                        estadoColor = [39, 174, 96];
-                        break;
-                    case 'parcial':
-                        estadoText = 'Cumple Parcial';
-                        estadoColor = [243, 156, 18];
-                        break;
-                    case 'no_cumple':
-                        estadoText = 'No Cumple';
-                        estadoColor = [231, 76, 60];
-                        break;
-                }
-                
-                doc.setTextColor(0, 0, 0);
-                doc.text(`${pregunta.id}. ${pregunta.texto}`, 25, yPosition);
-                
-                doc.setTextColor(...estadoColor);
-                doc.text(estadoText, 180, yPosition, null, null, 'right');
-                
-                yPosition += 8;
-            });
-            
-            // Guardar PDF
-            doc.save(`Reporte_Auditoria_PPR_${auditorData.fecha}.pdf`);
-        }
-    </script>
-</body>
-</html>
+                            <i
