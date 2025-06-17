@@ -1,98 +1,1123 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Auditoría PPR</title>
-  <style>
-    .evidencia { display: none; margin-top: 10px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditoría PPR TS FSSC 22002</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #34495e;
+            --gray: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            font-size: 2rem;
+            color: var(--secondary);
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        nav a:hover, nav a.active {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        /* Formularios */
+        .form-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .form-title {
+            color: var(--primary);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        /* Preguntas */
+        .pregunta-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .pregunta-text {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .opciones {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .opcion {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 6px;
+            background: var(--light);
+            transition: all 0.3s;
+        }
+        
+        .opcion input {
+            width: auto;
+        }
+        
+        .opcion:hover {
+            background: #d6dbdf;
+        }
+        
+        .opcion.selected {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .evidencia-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #ddd;
+            display: none;
+        }
+        
+        .camera-preview {
+            width: 100%;
+            max-width: 300px;
+            height: 200px;
+            background: #f1f2f6;
+            border: 2px dashed #b2bec3;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        
+        .camera-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .camera-preview i {
+            font-size: 3rem;
+            color: #636e72;
+        }
+        
+        .camera-preview span {
+            margin-top: 10px;
+            color: #636e72;
+        }
+        
+        /* Dashboard */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 15px 0;
+        }
+        
+        .stat-success {
+            color: var(--success);
+            border-top: 4px solid var(--success);
+        }
+        
+        .stat-warning {
+            color: var(--warning);
+            border-top: 4px solid var(--warning);
+        }
+        
+        .stat-danger {
+            color: var(--danger);
+            border-top: 4px solid var(--danger);
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .chart-title {
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chart {
+            height: 300px;
+            display: flex;
+            align-items: flex-end;
+            gap: 20px;
+            padding: 20px 0;
+        }
+        
+        .bar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .bar-value {
+            background: var(--secondary);
+            width: 80%;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.5s;
+        }
+        
+        .bar-label {
+            margin-top: 10px;
+            font-size: 14px;
+            text-align: center;
+            color: var(--gray);
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #bdc3c7;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .opciones {
+                flex-direction: column;
+            }
+        }
+        
+        /* Ocultar secciones */
+        .page-section {
+            display: none;
+        }
+        
+        .page-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
-  <form id="auditoriaForm">
-    <h1>Auditoría TS FSSC 22002</h1>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-clipboard-check"></i>
+                <h1>Auditoría PPR TS FSSC 22002</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link active" data-page="inicio"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="#" class="nav-link" data-page="auditoria"><i class="fas fa-file-alt"></i> Auditoría</a></li>
+                    <li><a href="#" class="nav-link" data-page="dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+                    <li><a href="#" class="nav-link" data-page="reportes"><i class="fas fa-file-pdf"></i> Reportes</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
     
-    <div class="pregunta">
-      <p>1. ¿Se cumple con X requisito?</p>
-      <label><input type="radio" name="p1" value="cumple"> Cumple</label>
-      <label><input type="radio" name="p1" value="parcial"> Cumple Parcial</label>
-      <label><input type="radio" name="p1" value="no_cumple"> No Cumple</label>
-      
-      <div class="evidencia" id="evidencia1">
-        <input type="file" accept="image/*" capture="camera">
-      </div>
+    <div class="container">
+        <!-- Sección Inicio -->
+        <section id="inicio" class="page-section active">
+            <div class="form-section">
+                <h2 class="form-title"><i class="fas fa-user-circle"></i> Información del Auditor</h2>
+                <div class="form-group">
+                    <label for="nombre-auditor">Nombre del Auditor</label>
+                    <input type="text" id="nombre-auditor" placeholder="Ingresa tu nombre completo">
+                </div>
+                <div class="form-group">
+                    <label for="area-auditada">Área a Auditar</label>
+                    <select id="area-auditada">
+                        <option value="">Selecciona un área</option>
+                        <option value="produccion">Producción</option>
+                        <option value="almacen">Almacén</option>
+                        <option value="calidad">Control de Calidad</option>
+                        <option value="mantenimiento">Mantenimiento</option>
+                        <option value="logistica">Logística</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fecha-auditoria">Fecha de Auditoría</label>
+                    <input type="date" id="fecha-auditoria">
+                </div>
+                <button class="btn btn-primary" id="iniciar-auditoria">
+                    <i class="fas fa-play-circle"></i> Iniciar Auditoría
+                </button>
+            </div>
+            
+            <div class="form-section">
+                <h2 class="form-title"><i class="fas fa-info-circle"></i> Instrucciones</h2>
+                <p>Esta aplicación te permite realizar auditorías de cumplimiento de PPR según la norma TS FSSC 22002.</p>
+                <ul style="margin: 15px 0 15px 30px;">
+                    <li>Selecciona "Cumple", "Cumple Parcial" o "No Cumple" para cada requisito</li>
+                    <li>Para los casos de "Cumple Parcial" o "No Cumple" debes adjuntar evidencia fotográfica</li>
+                    <li>Al finalizar, se generará un reporte ejecutivo en PDF</li>
+                    <li>Puedes compartir el reporte por correo o WhatsApp</li>
+                    <li>Los administradores recibirán notificaciones de incumplimientos</li>
+                </ul>
+                <p>Toda la información se almacena de forma segura en Google Sheets para su posterior análisis.</p>
+            </div>
+        </section>
+        
+        <!-- Sección Auditoría -->
+        <section id="auditoria" class="page-section">
+            <div class="form-section">
+                <h2 class="form-title"><i class="fas fa-file-alt"></i> Cuestionario de Auditoría</h2>
+                <div id="auditor-info" style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <p><strong>Auditor:</strong> <span id="current-auditor">-</span></p>
+                    <p><strong>Área:</strong> <span id="current-area">-</span></p>
+                    <p><strong>Fecha:</strong> <span id="current-date">-</span></p>
+                </div>
+                
+                <!-- Preguntas de auditoría -->
+                <div id="preguntas-container">
+                    <!-- Las preguntas se generarán dinámicamente con JavaScript -->
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                    <button class="btn btn-primary" id="guardar-progreso">
+                        <i class="fas fa-save"></i> Guardar Progreso
+                    </button>
+                    <button class="btn btn-success" id="finalizar-auditoria">
+                        <i class="fas fa-check-circle"></i> Finalizar Auditoría
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Sección Dashboard -->
+        <section id="dashboard" class="page-section">
+            <div class="form-section">
+                <h2 class="form-title"><i class="fas fa-chart-bar"></i> Dashboard de Cumplimiento</h2>
+                
+                <div class="dashboard-stats">
+                    <div class="stat-card stat-success">
+                        <i class="fas fa-check-circle fa-2x"></i>
+                        <h3>Cumplimiento Total</h3>
+                        <div class="stat-value">78%</div>
+                        <p>Porcentaje de requisitos cumplidos</p>
+                    </div>
+                    
+                    <div class="stat-card stat-warning">
+                        <i class="fas fa-exclamation-circle fa-2x"></i>
+                        <h3>Cumplimiento Parcial</h3>
+                        <div class="stat-value">15%</div>
+                        <p>Requisitos con cumplimiento parcial</p>
+                    </div>
+                    
+                    <div class="stat-card stat-danger">
+                        <i class="fas fa-times-circle fa-2x"></i>
+                        <h3>No Cumplimiento</h3>
+                        <div class="stat-value">7%</div>
+                        <p>Requisitos no cumplidos</p>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title"><i class="fas fa-chart-line"></i> Cumplimiento por Área</h3>
+                    <div class="chart" id="chart-area">
+                        <!-- Gráfico se generará con JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title"><i class="fas fa-calendar-alt"></i> Tendencia Mensual de Cumplimiento</h3>
+                    <div class="chart" id="chart-tendencia">
+                        <!-- Gráfico se generará con JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3 class="form-title"><i class="fas fa-list"></i> Requisitos con Mayor Incumplimiento</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                        <thead>
+                            <tr style="background: var(--primary); color: white;">
+                                <th style="padding: 12px; text-align: left;">Requisito</th>
+                                <th style="padding: 12px; text-align: center;">Área</th>
+                                <th style="padding: 12px; text-align: center;">% Incumplimiento</th>
+                                <th style="padding: 12px; text-align: center;">Auditorías</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 12px;">Control de plagas documentado</td>
+                                <td style="padding: 12px; text-align: center;">Almacén</td>
+                                <td style="padding: 12px; text-align: center; color: var(--danger);">24%</td>
+                                <td style="padding: 12px; text-align: center;">18</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 12px;">Programa de limpieza y desinfección</td>
+                                <td style="padding: 12px; text-align: center;">Producción</td>
+                                <td style="padding: 12px; text-align: center; color: var(--danger);">18%</td>
+                                <td style="padding: 12px; text-align: center;">15</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 12px;">Registros de capacitación</td>
+                                <td style="padding: 12px; text-align: center;">Todas</td>
+                                <td style="padding: 12px; text-align: center; color: var(--danger);">15%</td>
+                                <td style="padding: 12px; text-align: center;">22</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 12px;">Verificación de proveedores</td>
+                                <td style="padding: 12px; text-align: center;">Calidad</td>
+                                <td style="padding: 12px; text-align: center; color: var(--danger);">12%</td>
+                                <td style="padding: 12px; text-align: center;">10</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Sección Reportes -->
+        <section id="reportes" class="page-section">
+            <div class="form-section">
+                <h2 class="form-title"><i class="fas fa-file-pdf"></i> Generar Reporte PDF</h2>
+                <div id="reporte-preview" style="background: white; padding: 20px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px;">
+                    <h3 style="text-align: center; color: var(--primary); margin-bottom: 20px;">Reporte de Auditoría PPR</h3>
+                    
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                        <div>
+                            <p><strong>Auditor:</strong> <span id="reporte-auditor">-</span></p>
+                            <p><strong>Área auditada:</strong> <span id="reporte-area">-</span></p>
+                            <p><strong>Fecha:</strong> <span id="reporte-fecha">-</span></p>
+                        </div>
+                        <div style="text-align: right;">
+                            <p><strong>Estado:</strong> <span style="color: var(--success);">Completado</span></p>
+                            <p><strong>Resultado:</strong> <span style="color: var(--warning);">Cumplimiento Parcial</span></p>
+                        </div>
+                    </div>
+                    
+                    <h4 style="color: var(--dark); border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 15px;">Resumen de Cumplimiento</h4>
+                    <div style="display: flex; justify-content: space-around; margin-bottom: 20px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.8rem; color: var(--success); font-weight: bold;">85%</div>
+                            <div>Cumple</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.8rem; color: var(--warning); font-weight: bold;">10%</div>
+                            <div>Cumple Parcial</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.8rem; color: var(--danger); font-weight: bold;">5%</div>
+                            <div>No Cumple</div>
+                        </div>
+                    </div>
+                    
+                    <h4 style="color: var(--dark); border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 15px;">Detalle de Requisitos</h4>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #f1f2f6;">
+                                <th style="padding: 10px; text-align: left;">Requisito</th>
+                                <th style="padding: 10px; text-align: center; width: 120px;">Estado</th>
+                                <th style="padding: 10px; text-align: center; width: 120px;">Evidencia</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reporte-detalle">
+                            <!-- Detalle se generará con JavaScript -->
+                        </tbody>
+                    </table>
+                    
+                    <div style="margin-top: 30px; font-style: italic;">
+                        <p>Este reporte fue generado automáticamente por el Sistema de Auditoría PPR TS FSSC 22002</p>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <button class="btn btn-primary" id="generar-pdf">
+                        <i class="fas fa-file-download"></i> Descargar PDF
+                    </button>
+                    <button class="btn btn-success" id="compartir-whatsapp">
+                        <i class="fab fa-whatsapp"></i> Compartir por WhatsApp
+                    </button>
+                    <button class="btn btn-danger" id="compartir-email">
+                        <i class="fas fa-envelope"></i> Enviar por Correo
+                    </button>
+                </div>
+            </div>
+        </section>
     </div>
     
-    <!-- Más preguntas... -->
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-section">
+                <h3>Auditoría PPR</h3>
+                <p>Sistema para la gestión de auditorías de cumplimiento de PPR según la norma TS FSSC 22002.</p>
+                <p>Toda la información se almacena de forma segura en Google Sheets para su posterior análisis.</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="#"><i class="fas fa-file-alt"></i> Realizar Auditoría</a></li>
+                    <li><a href="#"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+                    <li><a href="#"><i class="fas fa-file-pdf"></i> Generar Reportes</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-envelope"></i> soporte@auditoriappr.com</a></li>
+                    <li><a href="#"><i class="fas fa-phone"></i> +1 (555) 123-4567</a></li>
+                    <li><a href="#"><i class="fab fa-whatsapp"></i> Enviar mensaje por WhatsApp</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="container copyright">
+            <p>&copy; 2023 Sistema de Auditoría PPR TS FSSC 22002. Todos los derechos reservados.</p>
+        </div>
+    </footer>
     
-    <button type="submit">Generar Reporte</button>
-  </form>
-
-  <script>
-    const AUDITORIA_ID = Date.now().toString();
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHdPxorU-5fsKq-yUMOm1WXfYwF-rlDaA-cNDuZjCW5j71D0q7fjcZjD_YcaQVuDorrw/exec";
-    document.querySelectorAll('input[type="radio"]').forEach(radio => {
-      radio.addEventListener('change', (e) => {
-        const evidenciaDiv = e.target.closest('.pregunta').querySelector('.evidencia');
-        if (e.target.value === 'parcial' || e.target.value === 'no_cumple') {
-          evidenciaDiv.style.display = 'block';
-        } else {
-          evidenciaDiv.style.display = 'none';
-        }
-      });
-    });
-
-    document.getElementById('auditoriaForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      // Recopilar respuestas
-      const respuestas = [];
-      document.querySelectorAll('.pregunta').forEach((pregunta, index) => {
-        const respuesta = pregunta.querySelector('input:checked').value;
-        const evidenciaInput = pregunta.querySelector('input[type="file"]');
+    <script>
+        // Datos de ejemplo para la aplicación
+        const preguntasAuditoria = [
+            {
+                id: 1,
+                texto: "¿Existe un programa documentado de limpieza y desinfección?",
+                categoria: "Limpieza y Desinfección"
+            },
+            {
+                id: 2,
+                texto: "¿Se realizan inspecciones periódicas a los equipos de protección personal?",
+                categoria: "Equipos de Protección"
+            },
+            {
+                id: 3,
+                texto: "¿Se cuenta con registros de capacitación en prácticas de higiene para el personal?",
+                categoria: "Capacitación"
+            },
+            {
+                id: 4,
+                texto: "¿Se verifica la eficacia de los procedimientos de limpieza y desinfección?",
+                categoria: "Verificación"
+            },
+            {
+                id: 5,
+                texto: "¿Se mantiene un control de plagas con registros de monitoreo y acciones tomadas?",
+                categoria: "Control de Plagas"
+            },
+            {
+                id: 6,
+                texto: "¿Existe un sistema de trazabilidad completo y actualizado?",
+                categoria: "Trazabilidad"
+            },
+            {
+                id: 7,
+                texto: "¿Se cuenta con procedimientos para el retiro de productos no conformes?",
+                categoria: "Productos No Conformes"
+            },
+            {
+                id: 8,
+                texto: "¿Se realizan auditorías internas según el cronograma establecido?",
+                categoria: "Auditorías Internas"
+            },
+            {
+                id: 9,
+                texto: "¿Se revisa la efectividad de las acciones correctivas implementadas?",
+                categoria: "Acciones Correctivas"
+            },
+            {
+                id: 10,
+                texto: "¿Existe un plan de mantenimiento preventivo para los equipos críticos?",
+                categoria: "Mantenimiento"
+            }
+        ];
         
-        respuestas.push({
-          pregunta: `Pregunta ${index+1}`,
-          respuesta: respuesta,
-          evidencia: evidenciaInput?.files[0] || null
+        // Variables globales
+        let auditorData = {};
+        let respuestas = {};
+        
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar fecha actual
+            const today = new Date();
+            document.getElementById('fecha-auditoria').valueAsDate = today;
+            
+            // Event listeners para navegación
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.getAttribute('data-page');
+                    showPage(page);
+                    
+                    // Actualizar navegación activa
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Event listener para iniciar auditoría
+            document.getElementById('iniciar-auditoria').addEventListener('click', iniciarAuditoria);
+            
+            // Event listener para finalizar auditoría
+            document.getElementById('finalizar-auditoria').addEventListener('click', finalizarAuditoria);
+            
+            // Event listener para generar PDF
+            document.getElementById('generar-pdf').addEventListener('click', generarPDF);
+            
+            // Generar gráficos del dashboard
+            generarGraficos();
         });
-      });
-      
-      // Enviar datos
-      for (const res of respuestas) {
-        let evidenciaUrl = '';
         
-        if (res.evidencia) {
-          const reader = new FileReader();
-          const base64 = await new Promise(resolve => {
-            reader.onload = () => resolve(reader.result);
-            reader.readAsDataURL(res.evidencia);
-          });
-          evidenciaUrl = await uploadImage(base64);
+        // Mostrar página específica
+        function showPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
         }
         
-        await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({
-            auditor: "Nombre Auditor",
-            pregunta: res.pregunta,
-            respuesta: res.respuesta,
-            evidencia: evidenciaUrl,
-            auditoriaId: AUDITORIA_ID
-          })
-        });
-      }
-      
-      alert("Auditoría completada. Reporte en proceso.");
-    });
-    
-    async function uploadImage(imageData) {
-      const response = await fetch(`${SCRIPT_URL}?function=uploadImage`, {
-        method: 'POST',
-        body: JSON.stringify({image: imageData})
-      });
-      const data = await response.json();
-      return data.url;
-    }
-  </script>
+        // Iniciar proceso de auditoría
+        function iniciarAuditoria() {
+            const nombre = document.getElementById('nombre-auditor').value;
+            const area = document.getElementById('area-auditada').value;
+            const fecha = document.getElementById('fecha-auditoria').value;
+            
+            if (!nombre || !area || !fecha) {
+                alert('Por favor completa todos los campos antes de iniciar la auditoría.');
+                return;
+            }
+            
+            // Guardar datos del auditor
+            auditorData = {
+                nombre: nombre,
+                area: area,
+                fecha: fecha
+            };
+            
+            // Actualizar información en la sección de auditoría
+            document.getElementById('current-auditor').textContent = nombre;
+            document.getElementById('current-area').textContent = document.querySelector(`#area-auditada option[value="${area}"]`).textContent;
+            document.getElementById('current-date').textContent = fecha;
+            
+            // Actualizar información en la sección de reportes
+            document.getElementById('reporte-auditor').textContent = nombre;
+            document.getElementById('reporte-area').textContent = document.querySelector(`#area-auditada option[value="${area}"]`).textContent;
+            document.getElementById('reporte-fecha').textContent = fecha;
+            
+            // Generar preguntas
+            generarPreguntas();
+            
+            // Mostrar sección de auditoría
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.querySelector('.nav-link[data-page="auditoria"]').classList.add('active');
+            showPage('auditoria');
+        }
+        
+        // Generar preguntas de auditoría
+        function generarPreguntas() {
+            const container = document.getElementById('preguntas-container');
+            container.innerHTML = '';
+            
+            preguntasAuditoria.forEach((pregunta, index) => {
+                const preguntaElement = document.createElement('div');
+                preguntaElement.className = 'pregunta-card';
+                preguntaElement.innerHTML = `
+                    <div class="pregunta-text">${pregunta.id}. ${pregunta.texto}</div>
+                    <div class="opciones">
+                        <div class="opcion" data-value="cumple" data-pregunta="${pregunta.id}">
+                            <input type="radio" name="pregunta-${pregunta.id}" value="cumple" id="p${pregunta.id}-cumple">
+                            <label for="p${pregunta.id}-cumple">Cumple</label>
+                        </div>
+                        <div class="opcion" data-value="parcial" data-pregunta="${pregunta.id}">
+                            <input type="radio" name="pregunta-${pregunta.id}" value="parcial" id="p${pregunta.id}-parcial">
+                            <label for="p${pregunta.id}-parcial">Cumple Parcial</label>
+                        </div>
+                        <div class="opcion" data-value="no_cumple" data-pregunta="${pregunta.id}">
+                            <input type="radio" name="pregunta-${pregunta.id}" value="no_cumple" id="p${pregunta.id}-no_cumple">
+                            <label for="p${pregunta.id}-no_cumple">No Cumple</label>
+                        </div>
+                    </div>
+                    <div class="evidencia-section" id="evidencia-${pregunta.id}">
+                        <p><strong>Evidencia fotográfica requerida:</strong></p>
+                        <div class="camera-preview" id="camera-preview-${pregunta.id}">
+                            <i class="fas fa-camera"></i>
+                            <span>Haz clic para tomar foto</span>
+                        </div>
+                        <input type="file" accept="image/*" capture="environment" style="display: none;" id="camera-input-${pregunta.id}">
+                    </div>
+                `;
+                container.appendChild(preguntaElement);
+                
+                // Event listeners para las opciones
+                const opciones = preguntaElement.querySelectorAll('.opcion');
+                opciones.forEach(opcion => {
+                    opcion.addEventListener('click', function() {
+                        const value = this.getAttribute('data-value');
+                        const preguntaId = this.getAttribute('data-pregunta');
+                        
+                        // Guardar respuesta
+                        respuestas[preguntaId] = {
+                            estado: value,
+                            evidencia: null
+                        };
+                        
+                        // Mostrar/ocultar sección de evidencia
+                        const evidenciaSection = document.getElementById(`evidencia-${preguntaId}`);
+                        if (value === 'parcial' || value === 'no_cumple') {
+                            evidenciaSection.style.display = 'block';
+                        } else {
+                            evidenciaSection.style.display = 'none';
+                        }
+                        
+                        // Actualizar estilo de opciones
+                        opciones.forEach(o => o.classList.remove('selected'));
+                        this.classList.add('selected');
+                    });
+                });
+                
+                // Event listener para la cámara
+                const cameraPreview = document.getElementById(`camera-preview-${pregunta.id}`);
+                const cameraInput = document.getElementById(`camera-input-${pregunta.id}`);
+                
+                cameraPreview.addEventListener('click', function() {
+                    cameraInput.click();
+                });
+                
+                cameraInput.addEventListener('change', function(e) {
+                    if (e.target.files && e.target.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            cameraPreview.innerHTML = `<img src="${event.target.result}" alt="Evidencia fotográfica">`;
+                            
+                            // Guardar evidencia
+                            respuestas[pregunta.id].evidencia = event.target.result;
+                        };
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
+            });
+        }
+        
+        // Finalizar auditoría
+        function finalizarAuditoria() {
+            // Validar que todas las preguntas tienen respuesta
+            const preguntasContestadas = Object.keys(respuestas).length;
+            if (preguntasContestadas < preguntasAuditoria.length) {
+                alert('Por favor responde todas las preguntas antes de finalizar la auditoría.');
+                return;
+            }
+            
+            // Simular guardado en Google Sheets
+            guardarEnGoogleSheets();
+            
+            // Generar detalle para el reporte
+            generarDetalleReporte();
+            
+            // Mostrar sección de reportes
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.querySelector('.nav-link[data-page="reportes"]').classList.add('active');
+            showPage('reportes');
+            
+            alert('¡Auditoría completada con éxito! Se ha generado el reporte ejecutivo.');
+        }
+        
+        // Simular guardado en Google Sheets
+        function guardarEnGoogleSheets() {
+            console.log('Datos guardados en Google Sheets:');
+            console.log('Auditor:', auditorData);
+            console.log('Respuestas:', respuestas);
+            
+            // Simular notificación a administradores
+            const incumplimientos = Object.values(respuestas).filter(r => 
+                r.estado === 'parcial' || r.estado === 'no_cumple'
+            ).length;
+            
+            if (incumplimientos > 0) {
+                console.log(`Notificación enviada a administradores: ${incumplimientos} incumplimientos detectados`);
+            }
+        }
+        
+        // Generar detalle para el reporte PDF
+        function generarDetalleReporte() {
+            const detalle = document.getElementById('reporte-detalle');
+            detalle.innerHTML = '';
+            
+            preguntasAuditoria.forEach(pregunta => {
+                const respuesta = respuestas[pregunta.id];
+                let estadoText, estadoColor;
+                
+                switch(respuesta.estado) {
+                    case 'cumple':
+                        estadoText = 'Cumple';
+                        estadoColor = 'green';
+                        break;
+                    case 'parcial':
+                        estadoText = 'Cumple Parcial';
+                        estadoColor = 'orange';
+                        break;
+                    case 'no_cumple':
+                        estadoText = 'No Cumple';
+                        estadoColor = 'red';
+                        break;
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="padding: 10px;">${pregunta.texto}</td>
+                    <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
+                    <td style="padding: 10px; text-align: center;">${respuesta.evidencia ? 'Sí' : 'No'}</td>
+                `;
+                detalle.appendChild(row);
+            });
+        }
+        
+        // Generar gráficos para el dashboard
+        function generarGraficos() {
+            // Gráfico por área
+            const areas = ['Producción', 'Almacén', 'Calidad', 'Mantenimiento', 'Logística'];
+            const cumplimiento = [85, 70, 92, 78, 65];
+            const chartArea = document.getElementById('chart-area');
+            
+            areas.forEach((area, index) => {
+                const bar = document.createElement('div');
+                bar.className = 'bar';
+                
+                const barValue = document.createElement('div');
+                barValue.className = 'bar-value';
+                barValue.style.height = `${cumplimiento[index]}%`;
+                barValue.style.backgroundColor = cumplimiento[index] > 80 ? '#27ae60' : 
+                                              cumplimiento[index] > 60 ? '#f39c12' : '#e74c3c';
+                
+                const barLabel = document.createElement('div');
+                barLabel.className = 'bar-label';
+                barLabel.textContent = area;
+                
+                bar.appendChild(barValue);
+                bar.appendChild(barLabel);
+                chartArea.appendChild(bar);
+            });
+            
+            // Gráfico de tendencia
+            const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'];
+            const tendencia = [65, 70, 72, 75, 78, 80];
+            const chartTendencia = document.getElementById('chart-tendencia');
+            
+            meses.forEach((mes, index) => {
+                const bar = document.createElement('div');
+                bar.className = 'bar';
+                
+                const barValue = document.createElement('div');
+                barValue.className = 'bar-value';
+                barValue.style.height = `${tendencia[index]}%`;
+                barValue.style.backgroundColor = '#3498db';
+                
+                const barLabel = document.createElement('div');
+                barLabel.className = 'bar-label';
+                barLabel.textContent = mes;
+                
+                bar.appendChild(barValue);
+                bar.appendChild(barLabel);
+                chartTendencia.appendChild(bar);
+            });
+        }
+        
+        // Generar PDF
+        function generarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Título
+            doc.setFontSize(20);
+            doc.text('Reporte de Auditoría PPR TS FSSC 22002', 105, 20, null, null, 'center');
+            
+            // Información de auditoría
+            doc.setFontSize(12);
+            doc.text(`Auditor: ${auditorData.nombre}`, 20, 35);
+            doc.text(`Área auditada: ${document.querySelector(`#area-auditada option[value="${auditorData.area}"]`).textContent}`, 20, 45);
+            doc.text(`Fecha: ${auditorData.fecha}`, 20, 55);
+            
+            // Resumen de cumplimiento
+            doc.setFontSize(14);
+            doc.text('Resumen de Cumplimiento', 20, 70);
+            
+            // Gráfico de resumen (simplificado)
+            doc.setFillColor(39, 174, 96); // Cumple
+            doc.rect(30, 80, 40, 40, 'F');
+            doc.setFillColor(243, 156, 18); // Parcial
+            doc.rect(80, 80, 40, 30, 'F');
+            doc.setFillColor(231, 76, 60); // No cumple
+            doc.rect(130, 80, 40, 20, 'F');
+            
+            doc.setFontSize(10);
+            doc.text('85% Cumple', 50, 125, null, null, 'center');
+            doc.text('10% Parcial', 100, 125, null, null, 'center');
+            doc.text('5% No cumple', 150, 125, null, null, 'center');
+            
+            // Detalle de requisitos
+            doc.setFontSize(14);
+            doc.text('Detalle de Requisitos', 20, 140);
+            
+            let yPosition = 150;
+            doc.setFontSize(10);
+            
+            preguntasAuditoria.forEach((pregunta, index) => {
+                if (yPosition > 280) {
+                    doc.addPage();
+                    yPosition = 20;
+                }
+                
+                const respuesta = respuestas[pregunta.id];
+                let estadoText, estadoColor;
+                
+                switch(respuesta.estado) {
+                    case 'cumple':
+                        estadoText = 'Cumple';
+                        estadoColor = [39, 174, 96];
+                        break;
+                    case 'parcial':
+                        estadoText = 'Cumple Parcial';
+                        estadoColor = [243, 156, 18];
+                        break;
+                    case 'no_cumple':
+                        estadoText = 'No Cumple';
+                        estadoColor = [231, 76, 60];
+                        break;
+                }
+                
+                doc.setTextColor(0, 0, 0);
+                doc.text(`${pregunta.id}. ${pregunta.texto}`, 25, yPosition);
+                
+                doc.setTextColor(...estadoColor);
+                doc.text(estadoText, 180, yPosition, null, null, 'right');
+                
+                yPosition += 8;
+            });
+            
+            // Guardar PDF
+            doc.save(`Reporte_Auditoria_PPR_${auditorData.fecha}.pdf`);
+        }
+    </script>
 </body>
 </html>
