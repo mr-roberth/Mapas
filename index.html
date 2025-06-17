@@ -1,347 +1,98 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auditoría de Cumplimiento FSSC 22002</title>
-    <!-- Tailwind CSS para un diseño moderno y responsivo -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Librerías para generar PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <style>
-        /* Estilos adicionales para mejorar la apariencia */
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Ocultar el input de archivo por defecto */
-        .evidence-input {
-            display: none;
-        }
-        /* Estilos para el estado del requisito */
-        .status-cumple { color: #16a34a; }
-        .status-parcial { color: #f97316; }
-        .status-no-cumple { color: #dc2626; }
-
-        /* Animación para el spinner de carga */
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        .spinner {
-            animation: spin 1s linear infinite;
-        }
-    </style>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Auditoría PPR</title>
+  <style>
+    .evidencia { display: none; margin-top: 10px; }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
-
-    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
-        <header class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Formulario de Auditoría PPR</h1>
-            <p class="text-md text-gray-600 mt-2">Norma de Referencia: ISO/TS 22002</p>
-        </header>
-
-        <main id="main-content" class="bg-white p-6 rounded-2xl shadow-lg">
-            <!-- Paso 1: Información del Auditor -->
-            <div id="auditor-step">
-                <h2 class="text-2xl font-semibold mb-4 border-b pb-2">Información del Auditor</h2>
-                <div class="mb-4">
-                    <label for="auditorName" class="block text-sm font-medium text-gray-700 mb-1">Nombre del Auditor:</label>
-                    <input type="text" id="auditorName" name="auditorName" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Ej: Juan Pérez">
-                </div>
-                 <button id="start-audit-btn" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-md">
-                    Iniciar Auditoría
-                </button>
-            </div>
-            
-            <!-- Paso 2: Formulario de Auditoría (inicialmente oculto) -->
-            <form id="audit-form" class="hidden">
-                 <h2 class="text-2xl font-semibold mb-6 border-b pb-2">Cuestionario de Cumplimiento</h2>
-                <div id="questions-container" class="space-y-8">
-                    <!-- Las preguntas se insertarán aquí dinámicamente con JavaScript -->
-                </div>
-
-                <div class="mt-10 pt-6 border-t">
-                    <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700 transition-colors duration-300 shadow-md flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        Finalizar y Generar Informe
-                    </button>
-                </div>
-            </form>
-        </main>
-    </div>
-
-    <!-- Modales para retroalimentación -->
-    <div id="loading-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white p-8 rounded-lg shadow-xl text-center">
-            <div class="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full spinner mx-auto mb-4"></div>
-            <p class="text-lg font-semibold">Enviando datos y generando informe...</p>
-            <p class="text-sm text-gray-600">Por favor, espera un momento.</p>
-        </div>
-    </div>
-
-    <div id="report-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
-            <div class="p-4 border-b flex justify-between items-center">
-                <h2 class="text-2xl font-bold">Informe Ejecutivo de Auditoría</h2>
-                <button onclick="closeReportModal()" class="text-gray-500 hover:text-red-600">&times;</button>
-            </div>
-            <div id="report-content" class="p-8 overflow-y-auto">
-                <!-- El contenido del informe se generará aquí -->
-            </div>
-            <div class="p-4 border-t bg-gray-50 flex flex-col sm:flex-row gap-3 justify-center">
-                <button id="download-pdf-btn" class="bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition w-full sm:w-auto">Descargar PDF</button>
-                <button id="share-whatsapp-btn" class="bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600 transition w-full sm:w-auto">Compartir por WhatsApp</button>
-                <button id="share-email-btn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition w-full sm:w-auto">Compartir por Email</button>
-            </div>
-        </div>
+<body>
+  <form id="auditoriaForm">
+    <h1>Auditoría TS FSSC 22002</h1>
+    
+    <div class="pregunta">
+      <p>1. ¿Se cumple con X requisito?</p>
+      <label><input type="radio" name="p1" value="cumple"> Cumple</label>
+      <label><input type="radio" name="p1" value="parcial"> Cumple Parcial</label>
+      <label><input type="radio" name="p1" value="no_cumple"> No Cumple</label>
+      
+      <div class="evidencia" id="evidencia1">
+        <input type="file" accept="image/*" capture="camera">
+      </div>
     </div>
     
-    <script>
-        // =================================================================================
-        // CONFIGURACIÓN INICIAL - ¡IMPORTANTE!
-        // =================================================================================
-        // Pega aquí la URL de tu Web App de Google Apps Script que obtuviste en el paso 3.
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHdPxorU-5fsKq-yUMOm1WXfYwF-rlDaA-cNDuZjCW5j71D0q7fjcZjD_YcaQVuDorrw/exec";
+    <!-- Más preguntas... -->
+    
+    <button type="submit">Generar Reporte</button>
+  </form>
 
-        // Aquí defines las preguntas de tu auditoría.
-        // Puedes agregar, quitar o modificar las preguntas fácilmente.
-        const auditQuestions = [
-            { id: "4.1", text: "4.1 Construcción y diseño de los edificios." },
-            { id: "5.1", text: "5.1 Distribución de los locales y de las zonas de trabajo." },
-            { id: "6.1", text: "6.1 Suministro de agua." },
-            { id: "7.1", text: "7.1 Limpieza y desinfección." },
-            { id: "8.1", text: "8.1 Higiene del personal e instalaciones para los empleados." },
-            { id: "9.1", text: "9.1 Reprocesos." },
-            { id: "10.1", text: "10.1 Procedimientos de retirada de producto." },
-            // Agrega más preguntas aquí siguiendo el mismo formato
-        ];
-        // =================================================================================
+  <script>
+    const AUDITORIA_ID = Date.now().toString();
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHdPxorU-5fsKq-yUMOm1WXfYwF-rlDaA-cNDuZjCW5j71D0q7fjcZjD_YcaQVuDorrw/exec";
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        const evidenciaDiv = e.target.closest('.pregunta').querySelector('.evidencia');
+        if (e.target.value === 'parcial' || e.target.value === 'no_cumple') {
+          evidenciaDiv.style.display = 'block';
+        } else {
+          evidenciaDiv.style.display = 'none';
+        }
+      });
+    });
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const questionsContainer = document.getElementById('questions-container');
-            const auditForm = document.getElementById('audit-form');
-            const loadingModal = document.getElementById('loading-modal');
-            const reportModal = document.getElementById('report-modal');
-            const downloadPdfBtn = document.getElementById('download-pdf-btn');
-            const shareWhatsappBtn = document.getElementById('share-whatsapp-btn');
-            const shareEmailBtn = document.getElementById('share-email-btn');
-            const startAuditBtn = document.getElementById('start-audit-btn');
-            const auditorStep = document.getElementById('auditor-step');
-            const auditorNameInput = document.getElementById('auditorName');
-
-            // 1. Renderizar las preguntas en la página
-            function renderQuestions() {
-                questionsContainer.innerHTML = ''; // Limpiar contenedor
-                auditQuestions.forEach((q, index) => {
-                    const questionBlock = document.createElement('div');
-                    questionBlock.className = 'p-6 bg-gray-50 rounded-xl border border-gray-200';
-                    questionBlock.innerHTML = `
-                        <p class="text-lg font-semibold text-gray-800 mb-4">${q.text}</p>
-                        <div class="flex flex-col sm:flex-row gap-4 mb-4" data-question-id="${q.id}">
-                            <label class="flex items-center space-x-2 p-3 border rounded-lg flex-1 cursor-pointer hover:bg-gray-100"><input type="radio" name="status-${index}" value="Cumple" class="form-radio h-5 w-5 text-green-600"> <span class="text-green-700 font-medium">Cumple</span></label>
-                            <label class="flex items-center space-x-2 p-3 border rounded-lg flex-1 cursor-pointer hover:bg-gray-100"><input type="radio" name="status-${index}" value="Cumple Parcial" class="form-radio h-5 w-5 text-orange-600"> <span class="text-orange-700 font-medium">Cumple Parcial</span></label>
-                            <label class="flex items-center space-x-2 p-3 border rounded-lg flex-1 cursor-pointer hover:bg-gray-100"><input type="radio" name="status-${index}" value="No Cumple" class="form-radio h-5 w-5 text-red-600"> <span class="text-red-700 font-medium">No Cumple</span></label>
-                        </div>
-                        <div class="mb-4">
-                            <label for="comments-${index}" class="block text-sm font-medium text-gray-700 mb-1">Observaciones:</label>
-                            <textarea id="comments-${index}" name="comments-${index}" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500"></textarea>
-                        </div>
-                        <div class="evidence-input mt-2">
-                            <label for="evidence-${index}" class="block text-sm font-medium text-gray-700 mb-1">Adjuntar Evidencia Fotográfica (Obligatorio):</label>
-                            <input type="file" id="evidence-${index}" name="evidence-${index}" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                        </div>
-                    `;
-                    questionsContainer.appendChild(questionBlock);
-                });
-            }
-            
-            // 2. Controlar la visibilidad del input para la foto
-            questionsContainer.addEventListener('change', function(e) {
-                if (e.target.type === 'radio') {
-                    const evidenceDiv = e.target.closest('.p-6').querySelector('.evidence-input');
-                    if (e.target.value === 'No Cumple' || e.target.value === 'Cumple Parcial') {
-                        evidenceDiv.style.display = 'block';
-                        evidenceDiv.querySelector('input').setAttribute('required', 'true');
-                    } else {
-                        evidenceDiv.style.display = 'none';
-                        evidenceDiv.querySelector('input').removeAttribute('required');
-                    }
-                }
-            });
-
-            // 3. Iniciar la auditoría
-            startAuditBtn.addEventListener('click', () => {
-                if (auditorNameInput.value.trim() === '') {
-                    alert('Por favor, ingresa tu nombre para iniciar la auditoría.');
-                    return;
-                }
-                auditorStep.classList.add('hidden');
-                auditForm.classList.remove('hidden');
-            });
-
-            // 4. Procesar el envío del formulario
-            auditForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                if (GOOGLE_SCRIPT_URL === "URL_DE_TU_GOOGLE_APPS_SCRIPT_AQUI") {
-                    alert("Error de configuración: Por favor, edita el archivo HTML y agrega la URL de tu Google Apps Script.");
-                    return;
-                }
-
-                loadingModal.classList.remove('hidden');
-
-                const auditorName = auditorNameInput.value.trim();
-                const results = [];
-                let allValid = true;
-
-                for (let i = 0; i < auditQuestions.length; i++) {
-                    const status = auditForm.querySelector(`input[name="status-${i}"]:checked`);
-                    const comments = auditForm.querySelector(`textarea[name="comments-${i}"]`).value.trim();
-                    const evidenceFile = auditForm.querySelector(`input[name="evidence-${i}"]`).files[0];
-
-                    if (!status) {
-                        alert(`Por favor, responde la pregunta: "${auditQuestions[i].text}"`);
-                        allValid = false;
-                        break;
-                    }
-
-                    let evidenceData = null;
-                    if ((status.value === 'No Cumple' || status.value === 'Cumple Parcial')) {
-                        if (!evidenceFile) {
-                            alert(`Es obligatorio adjuntar una foto para el estado "${status.value}" en la pregunta "${auditQuestions[i].text}".`);
-                            allValid = false;
-                            break;
-                        }
-                        evidenceData = await toBase64(evidenceFile);
-                    }
-                    
-                    results.push({
-                        id: auditQuestions[i].id,
-                        requirement: auditQuestions[i].text,
-                        status: status.value,
-                        comments: comments,
-                        evidence: evidenceData,
-                        mimeType: evidenceFile ? evidenceFile.type : null,
-                        fileName: evidenceFile ? evidenceFile.name : null,
-                    });
-                }
-                
-                if (!allValid) {
-                    loadingModal.classList.add('hidden');
-                    return;
-                }
-
-                // Enviar datos a Google Apps Script
-                try {
-                    const response = await fetch(GOOGLE_SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'cors',
-                        cache: 'no-cache',
-                        credentials: 'omit',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ auditor: auditorName, results: results }),
-                        redirect: 'follow'
-                    });
-                    
-                    const result = await response.json();
-
-                    if (result.status === "success") {
-                        generateReport(auditorName, results);
-                    } else {
-                        throw new Error(result.message || 'Error desconocido del servidor.');
-                    }
-                } catch (error) {
-                    alert(`Hubo un error al enviar los datos: ${error.message}\n\nAsegúrate de haber publicado correctamente tu script de Google y que la URL sea correcta.`);
-                } finally {
-                    loadingModal.classList.add('hidden');
-                }
-            });
-            
-            // Función para convertir archivo a Base64
-            const toBase64 = file => new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-
-            // 5. Generar y mostrar el informe final
-            function generateReport(auditor, results) {
-                const reportContent = document.getElementById('report-content');
-                let summary = { cumple: 0, parcial: 0, noCumple: 0 };
-                results.forEach(r => {
-                    if (r.status === 'Cumple') summary.cumple++;
-                    else if (r.status === 'Cumple Parcial') summary.parcial++;
-                    else summary.noCumple++;
-                });
-
-                let findingsHtml = results
-                    .filter(r => r.status !== 'Cumple')
-                    .map(r => `
-                        <div class="mt-4 p-4 border rounded-lg bg-gray-50">
-                            <p><strong>Requisito:</strong> ${r.requirement}</p>
-                            <p><strong>Estado:</strong> <span class="font-bold status-${r.status.toLowerCase().replace(' ', '-')}">${r.status}</span></p>
-                            <p><strong>Observaciones:</strong> ${r.comments || 'N/A'}</p>
-                            ${r.evidence ? `<p class="mt-2"><strong>Evidencia:</strong></p><img src="${r.evidence}" class="mt-1 rounded-lg border max-w-xs mx-auto">` : ''}
-                        </div>
-                    `).join('');
-
-                reportContent.innerHTML = `
-                    <div id="pdf-export-area">
-                        <div class="text-center mb-6">
-                            <h3 class="text-2xl font-bold">Informe de Auditoría</h3>
-                            <p class="text-sm text-gray-500">${new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                        </div>
-                        <p class="mb-4"><strong>Auditor:</strong> ${auditor}</p>
-                        <h4 class="text-xl font-semibold mb-2">Resumen de Cumplimiento</h4>
-                        <div class="grid grid-cols-3 gap-4 text-center mb-6">
-                            <div class="bg-green-100 p-4 rounded-lg"><p class="text-2xl font-bold">${summary.cumple}</p><p class="text-sm text-green-800">Cumple</p></div>
-                            <div class="bg-orange-100 p-4 rounded-lg"><p class="text-2xl font-bold">${summary.parcial}</p><p class="text-sm text-orange-800">Cumple Parcial</p></div>
-                            <div class="bg-red-100 p-4 rounded-lg"><p class="text-2xl font-bold">${summary.noCumple}</p><p class="text-sm text-red-800">No Cumple</p></div>
-                        </div>
-                        <h4 class="text-xl font-semibold mt-6 mb-2">Hallazgos y Observaciones</h4>
-                        ${findingsHtml || '<p>No se encontraron hallazgos que requieran acción.</p>'}
-                    </div>
-                `;
-                reportModal.classList.remove('hidden');
-            }
-            
-            // 6. Funcionalidad de los botones del modal del informe
-            window.closeReportModal = function() {
-                reportModal.classList.add('hidden');
-            }
-
-            downloadPdfBtn.addEventListener('click', () => {
-                const { jsPDF } = window.jspdf;
-                const reportElement = document.getElementById('pdf-export-area');
-                
-                html2canvas(reportElement, { scale: 2 }).then(canvas => {
-                    const imgData = canvas.toDataURL('image/png');
-                    const pdf = new jsPDF('p', 'mm', 'a4');
-                    const pdfWidth = pdf.internal.pageSize.getWidth();
-                    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-                    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-                    pdf.save(`Informe_Auditoria_${auditorNameInput.value.trim().replace(' ','_')}_${new Date().toISOString().slice(0,10)}.pdf`);
-                });
-            });
-
-            shareWhatsappBtn.addEventListener('click', () => {
-                const message = encodeURIComponent(`Hola, te comparto el resumen de la auditoría FSSC 22002 que realicé. El informe completo en PDF ha sido enviado por correo y guardado en el sistema. Saludos, ${auditorNameInput.value.trim()}.`);
-                window.open(`https://api.whatsapp.com/send?text=${message}`, '_blank');
-            });
-            
-            shareEmailBtn.addEventListener('click', () => {
-                const subject = encodeURIComponent(`Informe de Auditoría FSSC 22002`);
-                const body = encodeURIComponent(`Hola,\n\nSe ha completado una auditoría de cumplimiento. El informe completo en PDF está adjunto (recuerda adjuntarlo después de descargarlo).\n\nSaludos,\n${auditorNameInput.value.trim()}`);
-                window.location.href = `mailto:?subject=${subject}&body=${body}`;
-            });
-
-            // Renderizar las preguntas al cargar la página
-            renderQuestions();
+    document.getElementById('auditoriaForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Recopilar respuestas
+      const respuestas = [];
+      document.querySelectorAll('.pregunta').forEach((pregunta, index) => {
+        const respuesta = pregunta.querySelector('input:checked').value;
+        const evidenciaInput = pregunta.querySelector('input[type="file"]');
+        
+        respuestas.push({
+          pregunta: `Pregunta ${index+1}`,
+          respuesta: respuesta,
+          evidencia: evidenciaInput?.files[0] || null
         });
-    </script>
+      });
+      
+      // Enviar datos
+      for (const res of respuestas) {
+        let evidenciaUrl = '';
+        
+        if (res.evidencia) {
+          const reader = new FileReader();
+          const base64 = await new Promise(resolve => {
+            reader.onload = () => resolve(reader.result);
+            reader.readAsDataURL(res.evidencia);
+          });
+          evidenciaUrl = await uploadImage(base64);
+        }
+        
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            auditor: "Nombre Auditor",
+            pregunta: res.pregunta,
+            respuesta: res.respuesta,
+            evidencia: evidenciaUrl,
+            auditoriaId: AUDITORIA_ID
+          })
+        });
+      }
+      
+      alert("Auditoría completada. Reporte en proceso.");
+    });
+    
+    async function uploadImage(imageData) {
+      const response = await fetch(`${SCRIPT_URL}?function=uploadImage`, {
+        method: 'POST',
+        body: JSON.stringify({image: imageData})
+      });
+      const data = await response.json();
+      return data.url;
+    }
+  </script>
 </body>
 </html>
