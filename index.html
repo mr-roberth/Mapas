@@ -470,6 +470,22 @@
             padding: 15px 25px;
             font-size: 18px;
         }
+        
+        /* Nuevos estilos para indicadores de carga */
+        .btn-loading .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+        
+        .btn-loading span {
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
@@ -886,10 +902,10 @@
     </div>
     
     <script>
-        // URL de tu Google Apps Script (ACTUALIZAR CON LA TUYA)
+        // URL ACTUALIZADA CON TU WEB APP
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHdPxorU-5fsKq-yUMOm1WXfYwF-rlDaA-cNDuZjCW5j71D0q7fjcZjD_YcaQVuDorrw/exec";
         
-        // Datos de las preguntas (asegúrate de que los IDs sean numéricos)
+        // Datos de las preguntas
         const preguntasAuditoria = [
             {id: 1, texto: "¿Existe un programa documentado de limpieza y desinfección?", categoria: "Limpieza y Desinfección"},
             {id: 2, texto: "¿Se realizan inspecciones periódicas a los equipos de protección personal?", categoria: "Equipos de Protección"},
@@ -1019,11 +1035,12 @@
             inicializarGraficos();
         });
         
-        // Login
+        // Login con mejor manejo de errores
         async function login() {
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
             const messageContainer = document.getElementById('login-message');
+            const btnLogin = document.getElementById('btn-login');
             
             if (!email || !password) {
                 showMessage('Por favor completa todos los campos', 'error');
@@ -1031,6 +1048,11 @@
             }
             
             try {
+                // Mostrar estado de carga
+                btnLogin.disabled = true;
+                btnLogin.innerHTML = '<div class="spinner"></div> Iniciando sesión...';
+                btnLogin.classList.add('btn-loading');
+                
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
@@ -1041,8 +1063,15 @@
                     })
                 });
 
+                // Restaurar botón
+                btnLogin.disabled = false;
+                btnLogin.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+                btnLogin.classList.remove('btn-loading');
+                
+                // Verificar si la respuesta es exitosa
                 if (!response.ok) {
-                    throw new Error('Error en la respuesta del servidor: ' + response.status);
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `Error HTTP: ${response.status}`);
                 }
 
                 const data = await response.json();
@@ -1059,16 +1088,26 @@
                     showMessage(data.message || "Credenciales incorrectas", 'error');
                 }
             } catch (error) {
-                showMessage('Error de conexión: ' + error.message, 'error');
+                console.error("Error en login:", error);
+                
+                // Manejar diferentes tipos de errores
+                if (error.name === "TypeError" && error.message.includes("Failed to fetch")) {
+                    showMessage('Error de conexión: No se pudo conectar al servidor. Verifica tu conexión a internet.', 'error');
+                } else if (error.message.includes("Error HTTP")) {
+                    showMessage(`Error del servidor: ${error.message}`, 'error');
+                } else {
+                    showMessage(`Error: ${error.message}`, 'error');
+                }
             }
         }
         
-        // Registro
+        // Registro con mejor manejo de errores
         async function register() {
             const name = document.getElementById('register-name').value;
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
             const confirm = document.getElementById('register-confirm').value;
+            const btnRegister = document.getElementById('btn-register');
             
             if (!name || !email || !password || !confirm) {
                 showMessage('Por favor completa todos los campos', 'error');
@@ -1081,6 +1120,11 @@
             }
             
             try {
+                // Mostrar estado de carga
+                btnRegister.disabled = true;
+                btnRegister.innerHTML = '<div class="spinner"></div> Creando cuenta...';
+                btnRegister.classList.add('btn-loading');
+                
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
@@ -1092,8 +1136,14 @@
                     })
                 });
 
+                // Restaurar botón
+                btnRegister.disabled = false;
+                btnRegister.innerHTML = '<i class="fas fa-user-plus"></i> Crear Cuenta';
+                btnRegister.classList.remove('btn-loading');
+                
                 if (!response.ok) {
-                    throw new Error('Error en la respuesta del servidor: ' + response.status);
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `Error HTTP: ${response.status}`);
                 }
 
                 const data = await response.json();
@@ -1116,7 +1166,13 @@
                     showMessage(data.message || "Error al crear la cuenta", 'error');
                 }
             } catch (error) {
-                showMessage('Error de conexión: ' + error.message, 'error');
+                console.error("Error en registro:", error);
+                
+                if (error.name === "TypeError" && error.message.includes("Failed to fetch")) {
+                    showMessage('Error de conexión: No se pudo conectar al servidor. Verifica tu conexión a internet.', 'error');
+                } else {
+                    showMessage(`Error: ${error.message}`, 'error');
+                }
             }
         }
         
@@ -1336,73 +1392,86 @@
             });
         }
         
-        // Finalizar auditoría
+        // Finalizar auditoría con manejo de errores mejorado
         async function finalizarAuditoria() {
-            // Validar que todas las preguntas tienen respuesta
-            const preguntasContestadas = Object.keys(respuestas).length;
-            if (preguntasContestadas < preguntasAuditoria.length) {
-                alert('Por favor responde todas las preguntas antes de finalizar la auditoría.');
-                return;
-            }
-            
-            // Calcular estadísticas
-            const totalPreguntas = preguntasAuditoria.length;
-            const cumple = Object.values(respuestas).filter(r => r.estado === 'cumple').length;
-            const parcial = Object.values(respuestas).filter(r => r.estado === 'parcial').length;
-            const noCumple = Object.values(respuestas).filter(r => r.estado === 'no_cumple').length;
-            
-            // Actualizar reporte con estadísticas reales
-            document.getElementById('reporte-cumple').textContent = Math.round((cumple / totalPreguntas) * 100) + '%';
-            document.getElementById('reporte-parcial').textContent = Math.round((parcial / totalPreguntas) * 100) + '%';
-            document.getElementById('reporte-no-cumple').textContent = Math.round((noCumple / totalPreguntas) * 100) + '%';
-            
-            // Determinar resultado general
-            let resultado = "Cumplimiento Total";
-            let color = "var(--ios-green)";
-            
-            if (noCumple > 0 || parcial > totalPreguntas * 0.2) {
-                resultado = "Cumplimiento Parcial";
-                color = "var(--ios-orange)";
-            }
-            
-            if (noCumple > totalPreguntas * 0.1) {
-                resultado = "No Cumple";
-                color = "var(--ios-red)";
-            }
-            
-            document.getElementById('reporte-resultado').textContent = resultado;
-            document.getElementById('reporte-resultado').style.color = color;
-            
-            // Preparar datos para enviar al backend
-            const preguntasData = [];
-            
-            for (const [id, respuesta] of Object.entries(respuestas)) {
-                const pregunta = preguntasAuditoria.find(p => p.id === parseInt(id));
-                preguntasData.push({
-                    id: parseInt(id), // Asegurar que es número
-                    texto: pregunta.texto,
-                    estado: respuesta.estado,
-                    evidenciaUrl: respuesta.evidenciaUrl || null
-                });
-            }
-            
-            const payload = {
-                action: "submitAudit",
-                auditor: auditorData.nombre,
-                area: auditorData.area,
-                fecha: auditorData.fecha,
-                preguntas: preguntasData
-            };
+            const btnFinalizar = document.getElementById('finalizar-auditoria');
             
             try {
+                // Validar que todas las preguntas tienen respuesta
+                const preguntasContestadas = Object.keys(respuestas).length;
+                if (preguntasContestadas < preguntasAuditoria.length) {
+                    alert('Por favor responde todas las preguntas antes de finalizar la auditoría.');
+                    return;
+                }
+                
+                // Mostrar estado de carga
+                btnFinalizar.disabled = true;
+                btnFinalizar.innerHTML = '<div class="spinner"></div> Finalizando auditoría...';
+                btnFinalizar.classList.add('btn-loading');
+                
+                // Calcular estadísticas
+                const totalPreguntas = preguntasAuditoria.length;
+                const cumple = Object.values(respuestas).filter(r => r.estado === 'cumple').length;
+                const parcial = Object.values(respuestas).filter(r => r.estado === 'parcial').length;
+                const noCumple = Object.values(respuestas).filter(r => r.estado === 'no_cumple').length;
+                
+                // Actualizar reporte con estadísticas reales
+                document.getElementById('reporte-cumple').textContent = Math.round((cumple / totalPreguntas) * 100) + '%';
+                document.getElementById('reporte-parcial').textContent = Math.round((parcial / totalPreguntas) * 100) + '%';
+                document.getElementById('reporte-no-cumple').textContent = Math.round((noCumple / totalPreguntas) * 100) + '%';
+                
+                // Determinar resultado general
+                let resultado = "Cumplimiento Total";
+                let color = "var(--ios-green)";
+                
+                if (noCumple > 0 || parcial > totalPreguntas * 0.2) {
+                    resultado = "Cumplimiento Parcial";
+                    color = "var(--ios-orange)";
+                }
+                
+                if (noCumple > totalPreguntas * 0.1) {
+                    resultado = "No Cumple";
+                    color = "var(--ios-red)";
+                }
+                
+                document.getElementById('reporte-resultado').textContent = resultado;
+                document.getElementById('reporte-resultado').style.color = color;
+                
+                // Preparar datos para enviar al backend
+                const preguntasData = [];
+                
+                for (const [id, respuesta] of Object.entries(respuestas)) {
+                    const pregunta = preguntasAuditoria.find(p => p.id === parseInt(id));
+                    preguntasData.push({
+                        id: parseInt(id), // Asegurar que es número
+                        texto: pregunta.texto,
+                        estado: respuesta.estado,
+                        evidenciaUrl: respuesta.evidenciaUrl || null
+                    });
+                }
+                
+                const payload = {
+                    action: "submitAudit",
+                    auditor: auditorData.nombre,
+                    area: auditorData.area,
+                    fecha: auditorData.fecha,
+                    preguntas: preguntasData
+                };
+                
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(payload)
                 });
 
+                // Restaurar botón
+                btnFinalizar.disabled = false;
+                btnFinalizar.innerHTML = '<i class="fas fa-check-circle"></i> Finalizar Auditoría';
+                btnFinalizar.classList.remove('btn-loading');
+                
                 if (!response.ok) {
-                    throw new Error('Error en la respuesta del servidor: ' + response.status);
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `Error HTTP: ${response.status}`);
                 }
 
                 const data = await response.json();
@@ -1426,7 +1495,13 @@
                     throw new Error(data.message || "Error en el servidor");
                 }
             } catch (error) {
+                console.error("Error al finalizar auditoría:", error);
                 showGlobalError('Error al enviar auditoría: ' + error.message);
+                
+                // Restaurar botón en caso de error
+                btnFinalizar.disabled = false;
+                btnFinalizar.innerHTML = '<i class="fas fa-check-circle"></i> Finalizar Auditoría';
+                btnFinalizar.classList.remove('btn-loading');
             }
         }
         
@@ -1531,10 +1606,13 @@
             const content = document.getElementById('dashboard-content');
             const fecha = document.getElementById('filtro-fecha').value;
             const area = document.getElementById('filtro-area').value;
+            const btnFiltros = document.getElementById('aplicar-filtros');
             
             // Mostrar loader y ocultar contenido
             loader.style.display = 'block';
             content.style.opacity = '0.3';
+            btnFiltros.disabled = true;
+            btnFiltros.innerHTML = '<div class="spinner"></div> Cargando...';
             
             try {
                 // Obtener datos reales del backend
@@ -1571,11 +1649,14 @@
                     throw new Error(data.message || "Error al cargar datos");
                 }
             } catch (error) {
+                console.error("Error al cargar dashboard:", error);
                 showGlobalError('Error al cargar datos del dashboard: ' + error.message);
             } finally {
                 // Ocultar loader y mostrar contenido
                 loader.style.display = 'none';
                 content.style.opacity = '1';
+                btnFiltros.disabled = false;
+                btnFiltros.innerHTML = '<i class="fas fa-filter"></i> Aplicar';
             }
         }
         
@@ -1586,10 +1667,13 @@
             const fecha = document.getElementById('filtro-fecha-reporte').value;
             const area = document.getElementById('filtro-area-reporte').value;
             const auditor = document.getElementById('filtro-auditor-reporte').value;
+            const btnBuscar = document.getElementById('aplicar-filtros-reportes');
             
             // Mostrar loader y ocultar contenido
             loader.style.display = 'block';
             content.style.opacity = '0.3';
+            btnBuscar.disabled = true;
+            btnBuscar.innerHTML = '<div class="spinner"></div> Buscando...';
             
             try {
                 // Obtener datos reales del backend
@@ -1620,11 +1704,14 @@
                     throw new Error(data.message || "Error al cargar reportes");
                 }
             } catch (error) {
+                console.error("Error al cargar reportes:", error);
                 showGlobalError('Error al cargar reportes: ' + error.message);
             } finally {
                 // Ocultar loader y mostrar contenido
                 loader.style.display = 'none';
                 content.style.opacity = '1';
+                btnBuscar.disabled = false;
+                btnBuscar.innerHTML = '<i class="fas fa-search"></i> Buscar Reportes';
             }
         }
         
@@ -1819,10 +1906,14 @@
             window.open(whatsappUrl, '_blank');
         }
         
-        // Exportar a Excel
+        // Exportar a Excel con manejo de errores mejorado
         async function exportarAExcel() {
             const message = document.getElementById('export-message');
+            const btnExportar = document.getElementById('btn-exportar-excel');
+            
             message.innerHTML = '<div class="alert"><i class="fas fa-spinner fa-spin"></i> Generando archivo Excel...</div>';
+            btnExportar.disabled = true;
+            btnExportar.innerHTML = '<div class="spinner"></div> Procesando...';
             
             try {
                 const response = await fetch(SCRIPT_URL, {
@@ -1846,7 +1937,11 @@
                     throw new Error(data.message || "Error al exportar");
                 }
             } catch (error) {
+                console.error("Error al exportar a Excel:", error);
                 message.innerHTML = `<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> ${error.message}</div>`;
+            } finally {
+                btnExportar.disabled = false;
+                btnExportar.innerHTML = '<i class="fas fa-file-excel"></i> Descargar Excel';
             }
         }
     </script>
