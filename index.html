@@ -449,6 +449,14 @@
             margin: 20px auto;
             display: none;
         }
+        
+        /* Mensaje sin datos */
+        .no-data {
+            text-align: center;
+            padding: 30px;
+            color: var(--ios-gray);
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -907,6 +915,7 @@
         let chartDistribucion, chartAreas;
         let currentUser = null;
         let reportesData = [];
+        let currentReportPdfUrl = '';
         
         // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
@@ -1002,6 +1011,9 @@
             
             // Event listener para filtros de reportes
             document.getElementById('aplicar-filtros-reportes').addEventListener('click', cargarReportes);
+            
+            // Event listener para compartir por email
+            document.getElementById('compartir-email').addEventListener('click', compartirPorEmail);
             
             // Inicializar gráficos vacíos
             inicializarGraficos();
@@ -1349,6 +1361,7 @@
                 
                 if (data.status === "success") {
                     auditorData.auditId = data.auditId;
+                    auditorData.pdfUrl = data.pdfUrl; // Guardar URL del PDF
                     generarDetalleReporte();
                     
                     // Mostrar sección de reportes
@@ -1463,7 +1476,7 @@
             });
         }
         
-        // Cargar datos para el dashboard
+        // Cargar datos reales para el dashboard
         async function cargarDashboard() {
             const loader = document.getElementById('dashboard-loader');
             const content = document.getElementById('dashboard-content');
@@ -1475,22 +1488,34 @@
             content.style.opacity = '0.3';
             
             try {
-                // Simulación de datos - en producción se reemplazaría con la llamada real al backend
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                // Obtener datos reales del backend
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "getDashboardData",
+                        fecha: fecha,
+                        area: area
+                    })
+                });
                 
-                // Actualizar estadísticas (datos de prueba)
-                document.getElementById('stat-cumple').textContent = '78%';
-                document.getElementById('stat-parcial').textContent = '15%';
-                document.getElementById('stat-no-cumple').textContent = '7%';
+                const data = await response.json();
                 
-                // Actualizar gráfico de distribución
-                chartDistribucion.data.datasets[0].data = [78, 15, 7];
-                chartDistribucion.update();
-                
-                // Actualizar gráfico por áreas
-                chartAreas.data.datasets[0].data = [82, 75, 90, 68, 79];
-                chartAreas.update();
-                
+                if (data.status === "success") {
+                    // Actualizar estadísticas
+                    document.getElementById('stat-cumple').textContent = data.porcCumple + '%';
+                    document.getElementById('stat-parcial').textContent = data.porcParcial + '%';
+                    document.getElementById('stat-no-cumple').textContent = data.porcNoCumple + '%';
+                    
+                    // Actualizar gráfico de distribución
+                    chartDistribucion.data.datasets[0].data = [data.porcCumple, data.porcParcial, data.porcNoCumple];
+                    chartDistribucion.update();
+                    
+                    // Actualizar gráfico por áreas
+                    chartAreas.data.datasets[0].data = data.areasData;
+                    chartAreas.update();
+                } else {
+                    throw new Error(data.message || "Error al cargar datos");
+                }
             } catch (error) {
                 alert('Error al cargar datos del dashboard: ' + error.message);
             } finally {
@@ -1500,7 +1525,7 @@
             }
         }
         
-        // Cargar reportes
+        // Cargar reportes reales
         async function cargarReportes() {
             const loader = document.getElementById('reportes-loader');
             const content = document.getElementById('lista-reportes-content');
@@ -1513,62 +1538,28 @@
             content.style.opacity = '0.3';
             
             try {
-                // Simulación de datos - en producción se reemplazaría con la llamada real al backend
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                // Obtener datos reales del backend
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "getAuditsForReport",
+                        fecha: fecha,
+                        area: area,
+                        auditor: auditor
+                    })
+                });
                 
-                reportesData = [
-                    {
-                        id: 'audit-001',
-                        auditor: 'Juan Pérez',
-                        area: 'Producción',
-                        fecha: '2023-10-15',
-                        porcCumple: 78,
-                        porcParcial: 15,
-                        porcNoCumple: 7,
-                        totalPreguntas: 10,
-                        preguntas: preguntasAuditoria.map(p => ({
-                            id: p.id,
-                            texto: p.texto,
-                            estado: ['cumple', 'parcial', 'no_cumple'][Math.floor(Math.random() * 3)],
-                            evidenciaUrl: Math.random() > 0.7 ? 'https://example.com/evidence.jpg' : null
-                        }))
-                    },
-                    {
-                        id: 'audit-002',
-                        auditor: 'María García',
-                        area: 'Almacén',
-                        fecha: '2023-10-16',
-                        porcCumple: 85,
-                        porcParcial: 10,
-                        porcNoCumple: 5,
-                        totalPreguntas: 10,
-                        preguntas: preguntasAuditoria.map(p => ({
-                            id: p.id,
-                            texto: p.texto,
-                            estado: ['cumple', 'parcial', 'no_cumple'][Math.floor(Math.random() * 3)],
-                            evidenciaUrl: Math.random() > 0.7 ? 'https://example.com/evidence.jpg' : null
-                        }))
-                    },
-                    {
-                        id: 'audit-003',
-                        auditor: 'Carlos Rodríguez',
-                        area: 'Calidad',
-                        fecha: '2023-10-17',
-                        porcCumple: 92,
-                        porcParcial: 6,
-                        porcNoCumple: 2,
-                        totalPreguntas: 10,
-                        preguntas: preguntasAuditoria.map(p => ({
-                            id: p.id,
-                            texto: p.texto,
-                            estado: ['cumple', 'parcial', 'no_cumple'][Math.floor(Math.random() * 3)],
-                            evidenciaUrl: Math.random() > 0.7 ? 'https://example.com/evidence.jpg' : null
-                        }))
-                    }
-                ];
+                const data = await response.json();
                 
-                renderReportesList();
-                
+                if (data.status === "success") {
+                    reportesData = data.reportes;
+                    renderReportesList();
+                    
+                    // Actualizar lista de auditores en filtros
+                    actualizarFiltroAuditores();
+                } else {
+                    throw new Error(data.message || "Error al cargar reportes");
+                }
             } catch (error) {
                 alert('Error al cargar reportes: ' + error.message);
             } finally {
@@ -1578,13 +1569,29 @@
             }
         }
         
-        // Renderizar lista de reportes
+        // Actualizar filtro de auditores
+        function actualizarFiltroAuditores() {
+            const select = document.getElementById('filtro-auditor-reporte');
+            select.innerHTML = '<option value="">Todos los auditores</option>';
+            
+            // Obtener auditores únicos
+            const auditores = [...new Set(reportesData.map(r => r.auditor))];
+            
+            auditores.forEach(auditor => {
+                const option = document.createElement('option');
+                option.value = auditor;
+                option.textContent = auditor;
+                select.appendChild(option);
+            });
+        }
+        
+        // Renderizar lista de reportes reales
         function renderReportesList() {
             const container = document.getElementById('reportes-container');
             container.innerHTML = '';
             
             if (reportesData.length === 0) {
-                container.innerHTML = '<p>No se encontraron reportes con los filtros seleccionados</p>';
+                container.innerHTML = '<div class="no-data"><i class="fas fa-file-excel"></i><p>No se encontraron reportes con los filtros seleccionados</p></div>';
                 return;
             }
             
@@ -1623,6 +1630,9 @@
         function cargarDetalleReporte(reporteId) {
             const reporte = reportesData.find(r => r.id === reporteId);
             if (!reporte) return;
+            
+            // Guardar el URL del PDF
+            currentReportPdfUrl = reporte.pdfUrl;
             
             // Actualizar información del reporte
             document.getElementById('reporte-auditor').textContent = reporte.auditor;
@@ -1689,72 +1699,49 @@
         
         // Generar PDF
         function generarPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+            if (currentReportPdfUrl) {
+                window.open(currentReportPdfUrl, '_blank');
+            } else if (auditorData.pdfUrl) {
+                window.open(auditorData.pdfUrl, '_blank');
+            } else {
+                alert('No se ha generado el PDF para este reporte.');
+            }
+        }
+        
+        // Compartir por email
+        async function compartirPorEmail() {
+            const email = prompt("Por favor ingresa el correo electrónico del destinatario:");
+            if (!email) return;
             
-            // Título
-            doc.setFontSize(20);
-            doc.text('Reporte de Auditoría PPR TS FSSC 22002', 105, 20, null, null, 'center');
-            
-            // Información de auditoría
-            doc.setFontSize(12);
-            doc.text(`Auditor: ${document.getElementById('reporte-auditor').textContent}`, 20, 35);
-            doc.text(`Área auditada: ${document.getElementById('reporte-area').textContent}`, 20, 45);
-            doc.text(`Fecha: ${document.getElementById('reporte-fecha').textContent}`, 20, 55);
-            
-            // Resumen de cumplimiento
-            doc.setFontSize(14);
-            doc.text('Resumen de Cumplimiento', 20, 70);
-            
-            // Gráfico de resumen (simplificado)
-            doc.setFillColor(52, 199, 89); // Cumple
-            doc.rect(30, 80, 40, 40, 'F');
-            doc.setFillColor(255, 149, 0); // Parcial
-            doc.rect(80, 80, 40, 30, 'F');
-            doc.setFillColor(255, 59, 48); // No cumple
-            doc.rect(130, 80, 40, 20, 'F');
-            
-            doc.setFontSize(10);
-            doc.text(`${document.getElementById('reporte-cumple').textContent} Cumple`, 50, 125, null, null, 'center');
-            doc.text(`${document.getElementById('reporte-parcial').textContent} Parcial`, 100, 125, null, null, 'center');
-            doc.text(`${document.getElementById('reporte-no-cumple').textContent} No cumple`, 150, 125, null, null, 'center');
-            
-            // Detalle de requisitos
-            doc.setFontSize(14);
-            doc.text('Detalle de Requisitos', 20, 140);
-            
-            let yPosition = 150;
-            doc.setFontSize(10);
-            
-            const detalle = document.querySelectorAll('#reporte-detalle tr');
-            detalle.forEach((fila, index) => {
-                if (yPosition > 280) {
-                    doc.addPage();
-                    yPosition = 20;
+            try {
+                const pdfUrl = currentReportPdfUrl || auditorData.pdfUrl;
+                if (!pdfUrl) {
+                    alert('No se ha generado el PDF para este reporte.');
+                    return;
                 }
                 
-                const celdas = fila.querySelectorAll('td');
-                const pregunta = celdas[0].textContent;
-                const estado = celdas[1].textContent;
-                const estadoColor = celdas[1].style.color;
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "sendEmail",
+                        email: email,
+                        pdfUrl: pdfUrl,
+                        auditor: document.getElementById('reporte-auditor').textContent,
+                        area: document.getElementById('reporte-area').textContent,
+                        fecha: document.getElementById('reporte-fecha').textContent
+                    })
+                });
                 
-                // Convertir color CSS a RGB
-                let rgbColor = [0, 0, 0];
-                if (estadoColor === 'var(--ios-green)') rgbColor = [52, 199, 89];
-                if (estadoColor === 'var(--ios-orange)') rgbColor = [255, 149, 0];
-                if (estadoColor === 'var(--ios-red)') rgbColor = [255, 59, 48];
+                const data = await response.json();
                 
-                doc.setTextColor(0, 0, 0);
-                doc.text(pregunta, 25, yPosition);
-                
-                doc.setTextColor(...rgbColor);
-                doc.text(estado, 180, yPosition, null, null, 'right');
-                
-                yPosition += 8;
-            });
-            
-            // Guardar PDF
-            doc.save(`Reporte_Auditoria_${document.getElementById('reporte-fecha').textContent}.pdf`);
+                if (data.status === "success") {
+                    alert('Reporte enviado por correo exitosamente.');
+                } else {
+                    throw new Error(data.message || "Error al enviar el correo");
+                }
+            } catch (error) {
+                alert('Error al enviar el correo: ' + error.message);
+            }
         }
     </script>
 </body>
