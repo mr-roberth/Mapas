@@ -9,22 +9,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <style>
         :root {
-            --facebook-blue: #1877f2;
-            --facebook-blue-dark: #166fe5;
-            --facebook-green: #42b72a;
-            --facebook-green-dark: #36a420;
-            --light-gray: #f0f2f5;
-            --medium-gray: #e4e6eb;
-            --dark-gray: #65676b;
-            --text-dark: #050505;
-            --text-light: #65676b;
-            --card-bg: #ffffff;
-            --shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-            --shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.15);
-            --border-radius: 8px;
-            --border: 1px solid #dddfe2;
-            --header-height: 56px;
-            --sidebar-width: 240px;
+            --ios-blue: #007AFF;
+            --ios-gray-light: #F2F2F7;
+            --ios-gray: #8E8E93;
+            --ios-gray-dark: #3C3C43;
+            --ios-white: #FFFFFF;
+            --ios-card-bg: #FFFFFF;
+            --ios-border: #C6C6C8;
+            --ios-green: #34C759;
+            --ios-orange: #FF9500;
+            --ios-red: #FF3B30;
+            --ios-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --ios-radius: 12px;
+            --ios-transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
         
         * {
@@ -35,378 +32,240 @@
         }
         
         body {
-            background-color: var(--light-gray);
-            color: var(--text-dark);
-            line-height: 1.6;
+            background-color: var(--ios-gray-light);
+            color: var(--ios-gray-dark);
+            line-height: 1.5;
             font-size: 16px;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-        
-        /* Login Section - Facebook Style */
-        #login {
-            min-height: 100vh;
-            background-color: var(--light-gray);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .login-container {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: center;
-            gap: 60px;
-            max-width: 980px;
-            width: 100%;
-        }
-        
-        .login-intro {
-            max-width: 500px;
-            margin-bottom: 20px;
-        }
-        
-        .login-logo {
-            color: var(--facebook-blue);
-            font-size: 3.5rem;
-            margin-bottom: 15px;
-        }
-        
-        .login-intro h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--text-dark);
-        }
-        
-        .login-intro p {
-            font-size: 1.25rem;
-            color: var(--text-dark);
-            line-height: 1.4;
-        }
-        
-        .login-card {
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-hover);
-            padding: 20px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-        
-        .login-form {
-            padding: 15px 0;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        input {
-            width: 100%;
-            padding: 14px 16px;
-            border: var(--border);
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            background: var(--card-bg);
-            color: var(--text-dark);
-            font-size: 16px;
-        }
-        
-        input:focus {
-            outline: none;
-            border-color: var(--facebook-blue);
-            box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
-        }
-        
-        .btn {
-            padding: 14px 16px;
-            border: none;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-        }
-        
-        .btn-primary {
-            background: var(--facebook-blue);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: var(--facebook-blue-dark);
-        }
-        
-        .btn-success {
-            background: var(--facebook-green);
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background: var(--facebook-green-dark);
-        }
-        
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--facebook-blue);
-            color: var(--facebook-blue);
-        }
-        
-        .divider {
-            border-bottom: var(--border);
-            margin: 20px 0;
-            position: relative;
-        }
-        
-        .divider-text {
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--card-bg);
-            padding: 0 10px;
-            color: var(--dark-gray);
-            font-size: 0.9rem;
-        }
-        
-        .login-footer {
-            padding-top: 20px;
-            border-top: var(--border);
-            text-align: center;
-        }
-        
-        .login-footer a {
-            color: var(--facebook-blue);
-            text-decoration: none;
-            font-weight: 600;
-        }
-        
-        .login-footer a:hover {
-            text-decoration: underline;
-        }
-        
-        /* Header - Facebook Style */
+        /* Header estilo iOS */
         header {
-            background-color: var(--card-bg);
-            height: var(--header-height);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            position: sticky;
+            background-color: var(--ios-white);
+            height: 60px;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.1);
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
             z-index: 100;
             display: flex;
             align-items: center;
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 100%;
-            width: 100%;
-            padding: 0 16px;
+            padding: 0 20px;
         }
         
         .logo {
             display: flex;
             align-items: center;
-            gap: 8px;
-            color: var(--facebook-blue);
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-decoration: none;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 20px;
+            color: var(--ios-gray-dark);
         }
         
-        .search-bar {
-            flex: 1;
-            max-width: 680px;
-            margin: 0 20px;
-            position: relative;
+        .logo i {
+            color: var(--ios-blue);
         }
         
-        .search-bar input {
-            padding: 10px 16px 10px 40px;
-            background: var(--light-gray);
-            border-radius: 50px;
+        .menu-toggle {
+            margin-left: auto;
+            background: none;
             border: none;
-            font-size: 0.9rem;
-            width: 100%;
-        }
-        
-        .search-bar i {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--dark-gray);
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--facebook-blue);
-            color: white;
+            font-size: 24px;
+            color: var(--ios-gray-dark);
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
-            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: var(--ios-transition);
         }
         
-        .user-name {
-            font-weight: 600;
-            color: var(--text-dark);
+        .menu-toggle:hover {
+            background-color: var(--ios-gray-light);
         }
         
-        /* Main Layout */
-        #main-app {
-            display: none;
-        }
-        
-        .app-container {
-            display: flex;
-            min-height: calc(100vh - var(--header-height));
-        }
-        
+        /* Menú lateral flotante */
         .sidebar {
-            width: var(--sidebar-width);
-            background: var(--card-bg);
-            padding: 16px 0;
-            border-right: var(--border);
-            position: sticky;
-            top: var(--header-height);
-            height: calc(100vh - var(--header-height));
+            position: fixed;
+            top: 60px;
+            left: -280px;
+            bottom: 0;
+            width: 280px;
+            background-color: var(--ios-white);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 90;
+            transition: var(--ios-transition);
+            padding-top: 20px;
             overflow-y: auto;
+        }
+        
+        .sidebar.active {
+            left: 0;
         }
         
         .sidebar-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 10px 16px;
-            margin: 4px 8px;
-            border-radius: var(--border-radius);
-            color: var(--text-dark);
+            gap: 15px;
+            padding: 15px 25px;
+            color: var(--ios-gray-dark);
             text-decoration: none;
             font-weight: 500;
-            transition: background 0.2s;
+            transition: var(--ios-transition);
         }
         
         .sidebar-item i {
             width: 24px;
             text-align: center;
-            font-size: 1.25rem;
-            color: var(--dark-gray);
+            font-size: 20px;
+            color: var(--ios-gray);
         }
         
-        .sidebar-item:hover {
-            background: var(--light-gray);
+        .sidebar-item:hover, .sidebar-item.active {
+            background-color: var(--ios-gray-light);
+            color: var(--ios-blue);
         }
         
-        .sidebar-item.active {
-            background: var(--light-gray);
-            color: var(--facebook-blue);
-        }
-        
-        .sidebar-item.active i {
-            color: var(--facebook-blue);
+        .sidebar-item:hover i, .sidebar-item.active i {
+            color: var(--ios-blue);
         }
         
         .sidebar-divider {
-            border-top: var(--border);
-            margin: 12px 16px;
+            height: 1px;
+            background-color: var(--ios-border);
+            margin: 15px 0;
         }
         
+        /* Contenido principal */
         .main-content {
-            flex: 1;
+            margin-top: 70px;
             padding: 20px;
-            overflow-y: auto;
+            transition: var(--ios-transition);
         }
         
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--text-dark);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .page-section {
+            display: none;
         }
         
-        .section-title i {
-            color: var(--facebook-blue);
+        .page-section.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
         }
         
-        /* Cards */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Tarjetas estilo iOS */
         .card {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
+            background: var(--ios-card-bg);
+            border-radius: var(--ios-radius);
+            box-shadow: var(--ios-shadow);
             padding: 20px;
             margin-bottom: 20px;
-            border: var(--border);
+            border: 1px solid var(--ios-border);
+            transition: var(--ios-transition);
+        }
+        
+        .card:hover {
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
         }
         
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             padding-bottom: 15px;
-            border-bottom: var(--border);
+            border-bottom: 1px solid var(--ios-border);
         }
         
         .card-title {
-            font-size: 1.25rem;
+            font-size: 20px;
             font-weight: 600;
-            color: var(--text-dark);
+            color: var(--ios-gray-dark);
         }
         
-        /* Form Elements */
+        /* Formularios estilo iOS */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
         label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--text-dark);
-            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--ios-gray-dark);
+            font-size: 16px;
         }
         
-        select {
+        input, select {
             width: 100%;
             padding: 14px 16px;
-            border: var(--border);
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            background: var(--card-bg);
-            color: var(--text-dark);
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 1em;
+            border: 1px solid var(--ios-border);
+            border-radius: 10px;
+            font-size: 16px;
+            background: var(--ios-card-bg);
+            color: var(--ios-gray-dark);
+            transition: var(--ios-transition);
         }
         
-        /* Stats Cards */
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--ios-blue);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+        }
+        
+        /* Botones estilo iOS */
+        .btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--ios-transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background: var(--ios-blue);
+            color: var(--ios-white);
+        }
+        
+        .btn-primary:hover {
+            background: #0062CC;
+        }
+        
+        .btn-success {
+            background: var(--ios-green);
+            color: var(--ios-white);
+        }
+        
+        .btn-success:hover {
+            background: #2DAF4D;
+        }
+        
+        .btn-danger {
+            background: var(--ios-red);
+            color: var(--ios-white);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--ios-blue);
+            color: var(--ios-blue);
+        }
+        
+        /* Estadísticas */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -415,52 +274,53 @@
         }
         
         .stat-card {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
+            background: var(--ios-card-bg);
+            border-radius: var(--ios-radius);
             padding: 20px;
             text-align: center;
-            box-shadow: var(--shadow);
+            box-shadow: var(--ios-shadow);
             border-top: 4px solid transparent;
         }
         
         .stat-card.cumple {
-            border-top-color: #27ae60;
+            border-top-color: var(--ios-green);
         }
         
         .stat-card.parcial {
-            border-top-color: #f39c12;
+            border-top-color: var(--ios-orange);
         }
         
         .stat-card.no-cumple {
-            border-top-color: #e74c3c;
+            border-top-color: var(--ios-red);
         }
         
         .stat-icon {
-            font-size: 2rem;
+            font-size: 30px;
             margin-bottom: 10px;
         }
         
         .stat-value {
-            font-size: 1.8rem;
+            font-size: 28px;
             font-weight: 700;
             margin: 10px 0;
         }
         
+        /* Gráficos */
         .chart-container {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
+            background: var(--ios-card-bg);
+            border-radius: var(--ios-radius);
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: var(--shadow);
+            box-shadow: var(--ios-shadow);
         }
         
         .chart-title {
             margin-bottom: 15px;
-            color: var(--text-dark);
+            color: var(--ios-gray-dark);
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 1.1rem;
+            font-size: 18px;
         }
         
         .chart-wrapper {
@@ -469,121 +329,46 @@
             position: relative;
         }
         
-        /* Responsive Design */
-        @media (max-width: 992px) {
-            .sidebar {
-                width: 72px;
-                overflow: hidden;
-            }
-            
-            .sidebar-item span {
-                display: none;
-            }
-            
-            .sidebar-item i {
-                font-size: 1.5rem;
-            }
-            
-            .search-bar {
-                max-width: 200px;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .login-container {
-                flex-direction: column;
-                text-align: center;
-                gap: 30px;
-            }
-            
-            .login-intro {
-                margin-top: 40px;
-            }
-            
-            .search-bar {
-                display: none;
-            }
-            
-            .app-container {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                top: 0;
-                display: flex;
-                overflow-x: auto;
-                padding: 8px 0;
-            }
-            
-            .sidebar-item {
-                flex-direction: column;
-                padding: 8px 12px;
-                min-width: 70px;
-                text-align: center;
-            }
-            
-            .sidebar-item span {
-                font-size: 0.8rem;
-                display: block;
-            }
-            
-            .sidebar-divider {
-                display: none;
-            }
-            
-            .main-content {
-                padding: 15px;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .login-intro h1 {
-                font-size: 2rem;
-            }
-            
-            .login-intro p {
-                font-size: 1rem;
-            }
-            
-            .user-name {
-                display: none;
-            }
-        }
-        
-        /* Alert Messages */
-        .alert {
-            padding: 15px;
-            border-radius: var(--border-radius);
-            margin-bottom: 20px;
+        /* Sección de login */
+        #login {
+            min-height: 100vh;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
         }
         
-        .alert-success {
-            background: rgba(39, 174, 96, 0.15);
-            color: #27ae60;
-            border: 1px solid rgba(39, 174, 96, 0.3);
+        .login-card {
+            background: var(--ios-white);
+            border-radius: var(--ios-radius);
+            box-shadow: var(--ios-shadow);
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
         }
         
-        .alert-error {
-            background: rgba(231, 76, 60, 0.15);
-            color: #e74c3c;
-            border: 1px solid rgba(231, 76, 60, 0.3);
+        .login-logo {
+            margin-bottom: 25px;
         }
         
-        /* Tabs */
+        .login-logo i {
+            font-size: 50px;
+            color: var(--ios-blue);
+            margin-bottom: 15px;
+        }
+        
+        .login-logo h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--ios-gray-dark);
+        }
+        
         .tabs {
             display: flex;
             margin-bottom: 20px;
-            border-bottom: var(--border);
+            border-bottom: 1px solid var(--ios-border);
         }
         
         .tab {
@@ -591,14 +376,78 @@
             text-align: center;
             padding: 12px;
             cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 600;
-            color: var(--dark-gray);
+            transition: var(--ios-transition);
+            font-weight: 500;
+            color: var(--ios-gray);
         }
         
         .tab.active {
-            border-bottom: 3px solid var(--facebook-blue);
-            color: var(--facebook-blue);
+            border-bottom: 3px solid var(--ios-blue);
+            color: var(--ios-blue);
+        }
+        
+        /* Alertas */
+        .alert {
+            padding: 15px;
+            border-radius: var(--ios-radius);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alert-success {
+            background: rgba(52, 199, 89, 0.15);
+            color: var(--ios-green);
+            border: 1px solid rgba(52, 199, 89, 0.3);
+        }
+        
+        .alert-error {
+            background: rgba(255, 59, 48, 0.15);
+            color: var(--ios-red);
+            border: 1px solid rgba(255, 59, 48, 0.3);
+        }
+        
+        /* Responsive */
+        @media (min-width: 992px) {
+            .sidebar {
+                left: 0;
+            }
+            
+            .main-content {
+                margin-left: 280px;
+            }
+            
+            .menu-toggle {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-wrapper {
+                height: 200px;
+            }
+        }
+        
+        /* Animación del loader */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--ios-blue);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
         }
     </style>
 </head>
@@ -606,15 +455,12 @@
     <!-- Login Section -->
     <section id="login" class="page-section active">
         <div class="login-container">
-            <div class="login-intro">
+            <div class="login-card">
                 <div class="login-logo">
                     <i class="fas fa-clipboard-check"></i>
+                    <h1>Auditoría PPR</h1>
                 </div>
-                <h1>Auditoría PPR TS FSSC 22002</h1>
-                <p>Plataforma para gestionar auditorías de cumplimiento de programas de prerrequisitos según la norma internacional.</p>
-            </div>
-            
-            <div class="login-card">
+                
                 <div id="login-message"></div>
                 
                 <div class="tabs">
@@ -633,15 +479,7 @@
                     </div>
                     
                     <button class="btn btn-primary" id="btn-login">
-                        Iniciar Sesión
-                    </button>
-                    
-                    <div class="divider">
-                        <span class="divider-text">o</span>
-                    </div>
-                    
-                    <button class="btn btn-success" id="btn-register-tab">
-                        Crear nueva cuenta
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
                     </button>
                 </div>
                 
@@ -656,7 +494,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <input type="password" id="register-password" placeholder="Contraseña nueva">
+                        <input type="password" id="register-password" placeholder="Contraseña">
                     </div>
                     
                     <div class="form-group">
@@ -664,12 +502,8 @@
                     </div>
                     
                     <button class="btn btn-success" id="btn-register">
-                        Registrarse
+                        <i class="fas fa-user-plus"></i> Crear Cuenta
                     </button>
-                </div>
-                
-                <div class="login-footer">
-                    <p><a href="#">¿Olvidaste tu contraseña?</a></p>
                 </div>
             </div>
         </div>
@@ -679,82 +513,146 @@
     <div id="main-app" style="display: none;">
         <!-- Header -->
         <header>
-            <div class="header-content">
-                <a href="#" class="logo">
-                    <i class="fas fa-clipboard-check"></i>
-                    <span>Auditoría PPR</span>
-                </a>
-                
-                <div class="search-bar">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Buscar en la plataforma...">
-                </div>
-                
-                <div class="user-info">
-                    <div class="avatar" id="user-avatar">U</div>
-                    <span class="user-name" id="user-name">Usuario</span>
-                    <button id="btn-logout" class="btn btn-outline" style="width: auto; padding: 8px 16px;">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </button>
-                </div>
-            </div>
-        </header>
-        
-        <div class="app-container">
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <a href="#" class="sidebar-item active" data-page="inicio">
-                    <i class="fas fa-home"></i>
-                    <span>Inicio</span>
-                </a>
-                <a href="#" class="sidebar-item" data-page="auditoria">
-                    <i class="fas fa-file-alt"></i>
-                    <span>Auditoría</span>
-                </a>
-                <a href="#" class="sidebar-item" data-page="dashboard">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="#" class="sidebar-item" data-page="reportes">
-                    <i class="fas fa-file-pdf"></i>
-                    <span>Reportes</span>
-                </a>
-                
-                <div class="sidebar-divider"></div>
-                
-                <a href="#" class="sidebar-item">
-                    <i class="fas fa-bell"></i>
-                    <span>Notificaciones</span>
-                </a>
-                <a href="#" class="sidebar-item">
-                    <i class="fas fa-cog"></i>
-                    <span>Configuración</span>
-                </a>
-                <a href="#" class="sidebar-item">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Ayuda</span>
-                </a>
+            <div class="logo">
+                <i class="fas fa-clipboard-check"></i>
+                <span>Auditoría PPR</span>
             </div>
             
-            <!-- Main Content -->
-            <div class="main-content">
-                <!-- Sección Inicio -->
-                <section id="inicio" class="page-section active">
-                    <h2 class="section-title"><i class="fas fa-home"></i> Inicio</h2>
+            <button class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </header>
+        
+        <!-- Menú lateral flotante -->
+        <div class="sidebar" id="sidebar">
+            <a href="#" class="sidebar-item active" data-page="inicio">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+            </a>
+            <a href="#" class="sidebar-item" data-page="auditoria">
+                <i class="fas fa-file-alt"></i>
+                <span>Auditoría</span>
+            </a>
+            <a href="#" class="sidebar-item" data-page="dashboard">
+                <i class="fas fa-chart-bar"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="sidebar-item" data-page="reportes">
+                <i class="fas fa-file-pdf"></i>
+                <span>Reportes</span>
+            </a>
+            
+            <div class="sidebar-divider"></div>
+            
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-cog"></i>
+                <span>Configuración</span>
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-question-circle"></i>
+                <span>Ayuda</span>
+            </a>
+            <a href="#" class="sidebar-item" id="btn-logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+        
+        <!-- Contenido Principal -->
+        <div class="main-content" id="main-content">
+            <!-- Sección Inicio -->
+            <section id="inicio" class="page-section active">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Información del Auditor</h2>
+                    </div>
                     
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Información del Auditor</h3>
+                    <div class="form-group">
+                        <label for="nombre-auditor">Nombre del Auditor</label>
+                        <input type="text" id="nombre-auditor" placeholder="Ingresa tu nombre completo">
+                    </div>
+                    <div class="form-group">
+                        <label for="area-auditada">Área a Auditar</label>
+                        <select id="area-auditada">
+                            <option value="">Selecciona un área</option>
+                            <option value="produccion">Producción</option>
+                            <option value="almacen">Almacén</option>
+                            <option value="calidad">Control de Calidad</option>
+                            <option value="mantenimiento">Mantenimiento</option>
+                            <option value="logistica">Logística</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha-auditoria">Fecha de Auditoría</label>
+                        <input type="date" id="fecha-auditoria">
+                    </div>
+                    <button class="btn btn-primary" id="iniciar-auditoria">
+                        <i class="fas fa-play-circle"></i> Iniciar Auditoría
+                    </button>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Instrucciones</h2>
+                    </div>
+                    <p>Esta aplicación te permite realizar auditorías de cumplimiento de PPR según la norma TS FSSC 22002.</p>
+                    <ul style="margin: 15px 0 15px 30px;">
+                        <li>Selecciona "Cumple", "Cumple Parcial" o "No Cumple" para cada requisito</li>
+                        <li>Para los casos de "Cumple Parcial" o "No Cumple" debes adjuntar evidencia fotográfica</li>
+                        <li>Al finalizar, se generará un reporte ejecutivo en PDF</li>
+                        <li>Puedes compartir el reporte por correo o WhatsApp</li>
+                        <li>Los administradores recibirán notificaciones de incumplimientos</li>
+                    </ul>
+                    <p>Toda la información se almacena de forma segura para su posterior análisis.</p>
+                </div>
+            </section>
+            
+            <!-- Sección Auditoría -->
+            <section id="auditoria" class="page-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Cuestionario de Auditoría</h2>
+                    </div>
+                    
+                    <div id="auditor-info" style="background: #e3f2fd; padding: 15px; border-radius: var(--ios-radius); margin-bottom: 20px;">
+                        <p><strong>Auditor:</strong> <span id="current-auditor">-</span></p>
+                        <p><strong>Área:</strong> <span id="current-area">-</span></p>
+                        <p><strong>Fecha:</strong> <span id="current-date">-</span></p>
+                    </div>
+                    
+                    <!-- Preguntas de auditoría -->
+                    <div id="preguntas-container">
+                        <!-- Las preguntas se generarán dinámicamente con JavaScript -->
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 30px;">
+                        <button class="btn btn-primary" id="guardar-progreso">
+                            <i class="fas fa-save"></i> Guardar Progreso
+                        </button>
+                        <button class="btn btn-success" id="finalizar-auditoria">
+                            <i class="fas fa-check-circle"></i> Finalizar Auditoría
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Sección Dashboard -->
+            <section id="dashboard" class="page-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Dashboard de Cumplimiento</h2>
+                    </div>
+                    
+                    <div class="filtros-dashboard" style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
+                        <div class="form-group" style="flex: 1; min-width: 200px;">
+                            <label for="filtro-fecha">Filtrar por Fecha</label>
+                            <input type="date" id="filtro-fecha">
                         </div>
                         
-                        <div class="form-group">
-                            <label for="nombre-auditor">Nombre del Auditor</label>
-                            <input type="text" id="nombre-auditor" placeholder="Ingresa tu nombre completo">
-                        </div>
-                        <div class="form-group">
-                            <label for="area-auditada">Área a Auditar</label>
-                            <select id="area-auditada">
-                                <option value="">Selecciona un área</option>
+                        <div class="form-group" style="flex: 1; min-width: 200px;">
+                            <label for="filtro-area">Filtrar por Área</label>
+                            <select id="filtro-area">
+                                <option value="">Todas las áreas</option>
                                 <option value="produccion">Producción</option>
                                 <option value="almacen">Almacén</option>
                                 <option value="calidad">Control de Calidad</option>
@@ -762,72 +660,82 @@
                                 <option value="logistica">Logística</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="fecha-auditoria">Fecha de Auditoría</label>
-                            <input type="date" id="fecha-auditoria">
-                        </div>
-                        <button class="btn btn-primary" id="iniciar-auditoria">
-                            <i class="fas fa-play-circle"></i> Iniciar Auditoría
-                        </button>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Instrucciones</h3>
-                        </div>
-                        <p>Esta aplicación te permite realizar auditorías de cumplimiento de PPR según la norma TS FSSC 22002.</p>
-                        <ul style="margin: 15px 0 15px 30px;">
-                            <li>Selecciona "Cumple", "Cumple Parcial" o "No Cumple" para cada requisito</li>
-                            <li>Para los casos de "Cumple Parcial" o "No Cumple" debes adjuntar evidencia fotográfica</li>
-                            <li>Al finalizar, se generará un reporte ejecutivo en PDF</li>
-                            <li>Puedes compartir el reporte por correo o WhatsApp</li>
-                            <li>Los administradores recibirán notificaciones de incumplimientos</li>
-                        </ul>
-                        <p>Toda la información se almacena de forma segura para su posterior análisis.</p>
-                    </div>
-                </section>
-                
-                <!-- Sección Auditoría -->
-                <section id="auditoria" class="page-section">
-                    <h2 class="section-title"><i class="fas fa-file-alt"></i> Cuestionario de Auditoría</h2>
-                    
-                    <div class="card">
-                        <div id="auditor-info" style="background: #e3f2fd; padding: 15px; border-radius: var(--border-radius); margin-bottom: 20px;">
-                            <p><strong>Auditor:</strong> <span id="current-auditor">-</span></p>
-                            <p><strong>Área:</strong> <span id="current-area">-</span></p>
-                            <p><strong>Fecha:</strong> <span id="current-date">-</span></p>
-                        </div>
                         
-                        <!-- Preguntas de auditoría -->
-                        <div id="preguntas-container">
-                            <!-- Las preguntas se generarán dinámicamente con JavaScript -->
-                        </div>
-                        
-                        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 30px;">
-                            <button class="btn btn-primary" id="guardar-progreso">
-                                <i class="fas fa-save"></i> Guardar Progreso
-                            </button>
-                            <button class="btn btn-success" id="finalizar-auditoria">
-                                <i class="fas fa-check-circle"></i> Finalizar Auditoría
+                        <div class="form-group" style="align-self: flex-end;">
+                            <button class="btn btn-primary" id="aplicar-filtros">
+                                <i class="fas fa-filter"></i> Aplicar
                             </button>
                         </div>
                     </div>
-                </section>
-                
-                <!-- Sección Dashboard -->
-                <section id="dashboard" class="page-section">
-                    <h2 class="section-title"><i class="fas fa-chart-bar"></i> Dashboard de Cumplimiento</h2>
                     
-                    <div class="card">
-                        <div class="filtros-dashboard" style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
-                            <div class="form-group" style="flex: 1; min-width: 200px;">
-                                <label for="filtro-fecha">Filtrar por Fecha</label>
-                                <input type="date" id="filtro-fecha">
+                    <div class="loader" id="dashboard-loader"></div>
+                    
+                    <div id="dashboard-content">
+                        <div class="stats-grid">
+                            <div class="stat-card cumple">
+                                <div class="stat-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <h3>Cumplimiento</h3>
+                                <div class="stat-value" id="stat-cumple">0%</div>
+                                <p>Requisitos cumplidos</p>
                             </div>
                             
-                            <div class="form-group" style="flex: 1; min-width: 200px;">
-                                <label for="filtro-area">Filtrar por Área</label>
-                                <select id="filtro-area">
+                            <div class="stat-card parcial">
+                                <div class="stat-icon">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                </div>
+                                <h3>Parcial</h3>
+                                <div class="stat-value" id="stat-parcial">0%</div>
+                                <p>Cumplimiento parcial</p>
+                            </div>
+                            
+                            <div class="stat-card no-cumple">
+                                <div class="stat-icon">
+                                    <i class="fas fa-times-circle"></i>
+                                </div>
+                                <h3>No Cumple</h3>
+                                <div class="stat-value" id="stat-no-cumple">0%</div>
+                                <p>Requisitos no cumplidos</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-container">
+                            <h3 class="chart-title"><i class="fas fa-chart-pie"></i> Distribución de Cumplimiento</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="chart-distribucion"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-container">
+                            <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Cumplimiento por Área</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="chart-areas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Sección Reportes -->
+            <section id="reportes" class="page-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Reportes de Auditoría</h2>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                        <div class="card">
+                            <h3 style="margin-bottom: 15px;"><i class="fas fa-filter"></i> Filtros</h3>
+                            
+                            <div class="form-group">
+                                <label for="filtro-fecha-reporte">Fecha de Auditoría</label>
+                                <input type="date" id="filtro-fecha-reporte">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="filtro-area-reporte">Área Auditada</label>
+                                <select id="filtro-area-reporte">
                                     <option value="">Todas las áreas</option>
                                     <option value="produccion">Producción</option>
                                     <option value="almacen">Almacén</option>
@@ -837,184 +745,101 @@
                                 </select>
                             </div>
                             
-                            <div class="form-group" style="align-self: flex-end; min-width: 120px;">
-                                <button class="btn btn-primary" id="aplicar-filtros">
-                                    <i class="fas fa-filter"></i> Aplicar
-                                </button>
+                            <div class="form-group">
+                                <label for="filtro-auditor-reporte">Auditor</label>
+                                <select id="filtro-auditor-reporte">
+                                    <option value="">Todos los auditores</option>
+                                </select>
                             </div>
+                            
+                            <button class="btn btn-primary" id="aplicar-filtros-reportes">
+                                <i class="fas fa-search"></i> Buscar Reportes
+                            </button>
                         </div>
                         
-                        <div class="loader" id="dashboard-loader" style="display: none; border: 5px solid #f3f3f3; border-top: 5px solid var(--facebook-blue); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto;"></div>
-                        
-                        <div id="dashboard-content">
-                            <div class="stats-grid">
-                                <div class="stat-card cumple">
-                                    <div class="stat-icon">
-                                        <i class="fas fa-check-circle"></i>
-                                    </div>
-                                    <h3>Cumplimiento</h3>
-                                    <div class="stat-value" id="stat-cumple">0%</div>
-                                    <p>Requisitos cumplidos</p>
-                                </div>
-                                
-                                <div class="stat-card parcial">
-                                    <div class="stat-icon">
-                                        <i class="fas fa-exclamation-circle"></i>
-                                    </div>
-                                    <h3>Parcial</h3>
-                                    <div class="stat-value" id="stat-parcial">0%</div>
-                                    <p>Cumplimiento parcial</p>
-                                </div>
-                                
-                                <div class="stat-card no-cumple">
-                                    <div class="stat-icon">
-                                        <i class="fas fa-times-circle"></i>
-                                    </div>
-                                    <h3>No Cumple</h3>
-                                    <div class="stat-value" id="stat-no-cumple">0%</div>
-                                    <p>Requisitos no cumplidos</p>
-                                </div>
-                            </div>
-                            
-                            <div class="chart-container">
-                                <h3 class="chart-title"><i class="fas fa-chart-pie"></i> Distribución de Cumplimiento</h3>
-                                <div class="chart-wrapper">
-                                    <canvas id="chart-distribucion"></canvas>
-                                </div>
-                            </div>
-                            
-                            <div class="chart-container">
-                                <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Cumplimiento por Área</h3>
-                                <div class="chart-wrapper">
-                                    <canvas id="chart-areas"></canvas>
+                        <div class="card">
+                            <div class="loader" id="reportes-loader"></div>
+                            <div id="lista-reportes-content">
+                                <h3 style="margin-bottom: 10px;">Reportes Disponibles</h3>
+                                <p style="color: var(--ios-gray);">Selecciona un reporte para ver los detalles</p>
+                                <div id="reportes-container" style="margin-top: 20px;">
+                                    <!-- Reportes se cargarán aquí -->
                                 </div>
                             </div>
                         </div>
                     </div>
-                </section>
-                
-                <!-- Sección Reportes -->
-                <section id="reportes" class="page-section">
-                    <h2 class="section-title"><i class="fas fa-file-pdf"></i> Reportes de Auditoría</h2>
                     
-                    <div class="card">
-                        <div class="reportes-container" style="display: grid; grid-template-columns: 1fr; gap: 20px;">
-                            <div class="filtros-reportes" style="background: var(--card-bg); border-radius: var(--border-radius); padding: 20px; box-shadow: var(--shadow);">
-                                <h3 style="margin-bottom: 20px;"><i class="fas fa-filter"></i> Filtros</h3>
+                    <div id="detalle-reporte" style="display: none; margin-top: 30px;">
+                        <div class="card">
+                            <div id="reporte-preview">
+                                <h3 style="text-align: center; color: var(--ios-blue); margin-bottom: 20px;">Reporte de Auditoría PPR</h3>
                                 
-                                <div class="form-group">
-                                    <label for="filtro-fecha-reporte">Fecha de Auditoría</label>
-                                    <input type="date" id="filtro-fecha-reporte">
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="filtro-area-reporte">Área Auditada</label>
-                                    <select id="filtro-area-reporte">
-                                        <option value="">Todas las áreas</option>
-                                        <option value="produccion">Producción</option>
-                                        <option value="almacen">Almacén</option>
-                                        <option value="calidad">Control de Calidad</option>
-                                        <option value="mantenimiento">Mantenimiento</option>
-                                        <option value="logistica">Logística</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="filtro-auditor-reporte">Auditor</label>
-                                    <select id="filtro-auditor-reporte">
-                                        <option value="">Todos los auditores</option>
-                                    </select>
-                                </div>
-                                
-                                <button class="btn btn-primary" id="aplicar-filtros-reportes">
-                                    <i class="fas fa-search"></i> Buscar Reportes
-                                </button>
-                            </div>
-                            
-                            <div class="lista-reportes" style="background: var(--card-bg); border-radius: var(--border-radius); padding: 20px; box-shadow: var(--shadow);">
-                                <div class="loader" id="reportes-loader" style="display: none; border: 5px solid #f3f3f3; border-top: 5px solid var(--facebook-blue); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto;"></div>
-                                <div id="lista-reportes-content">
-                                    <h3>Reportes Disponibles</h3>
-                                    <p>Selecciona un reporte para ver los detalles</p>
-                                    <div id="reportes-container" style="margin-top: 20px;">
-                                        <!-- Reportes se cargarán aquí -->
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                                    <div>
+                                        <p><strong>Auditor:</strong> <span id="reporte-auditor">-</span></p>
+                                        <p><strong>Área auditada:</strong> <span id="reporte-area">-</span></p>
+                                        <p><strong>Fecha:</strong> <span id="reporte-fecha">-</span></p>
                                     </div>
+                                    <div>
+                                        <p><strong>Estado:</strong> <span style="color: var(--ios-green);">Completado</span></p>
+                                        <p><strong>Resultado:</strong> <span id="reporte-resultado" style="color: var(--ios-orange);">-</span></p>
+                                    </div>
+                                </div>
+                                
+                                <h4 style="color: var(--ios-gray-dark); border-bottom: 1px solid var(--ios-border); padding-bottom: 10px; margin-bottom: 15px;">Resumen de Cumplimiento</h4>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 1.8rem; color: var(--ios-green); font-weight: bold;" id="reporte-cumple">0%</div>
+                                        <div>Cumple</div>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 1.8rem; color: var(--ios-orange); font-weight: bold;" id="reporte-parcial">0%</div>
+                                        <div>Cumple Parcial</div>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 1.8rem; color: var(--ios-red); font-weight: bold;" id="reporte-no-cumple">0%</div>
+                                        <div>No Cumple</div>
+                                    </div>
+                                </div>
+                                
+                                <h4 style="color: var(--ios-gray-dark); border-bottom: 1px solid var(--ios-border); padding-bottom: 10px; margin-bottom: 15px;">Detalle de Requisitos</h4>
+                                <div style="overflow-x: auto;">
+                                    <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+                                        <thead>
+                                            <tr style="background: var(--ios-gray-light);">
+                                                <th style="padding: 12px; text-align: left;">Requisito</th>
+                                                <th style="padding: 12px; text-align: center; width: 120px;">Estado</th>
+                                                <th style="padding: 12px; text-align: center; width: 120px;">Evidencia</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="reporte-detalle">
+                                            <!-- Detalle se generará con JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <div style="margin-top: 30px; font-style: italic; text-align: center; color: var(--ios-gray);">
+                                    <p>Este reporte fue generado automáticamente por el Sistema de Auditoría PPR TS FSSC 22002</p>
                                 </div>
                             </div>
                         </div>
                         
-                        <div id="detalle-reporte" style="display: none; margin-top: 30px;">
-                            <div class="card">
-                                <div id="reporte-preview">
-                                    <h3 style="text-align: center; color: var(--facebook-blue); margin-bottom: 20px;">Reporte de Auditoría PPR</h3>
-                                    
-                                    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
-                                        <div>
-                                            <p><strong>Auditor:</strong> <span id="reporte-auditor">-</span></p>
-                                            <p><strong>Área auditada:</strong> <span id="reporte-area">-</span></p>
-                                            <p><strong>Fecha:</strong> <span id="reporte-fecha">-</span></p>
-                                        </div>
-                                        <div>
-                                            <p><strong>Estado:</strong> <span style="color: #27ae60;">Completado</span></p>
-                                            <p><strong>Resultado:</strong> <span id="reporte-resultado" style="color: #f39c12;">-</span></p>
-                                        </div>
-                                    </div>
-                                    
-                                    <h4 style="color: var(--text-dark); border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 15px;">Resumen de Cumplimiento</h4>
-                                    <div style="display: flex; justify-content: space-around; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
-                                        <div style="text-align: center; flex: 1; min-width: 100px;">
-                                            <div style="font-size: 1.8rem; color: #27ae60; font-weight: bold;" id="reporte-cumple">0%</div>
-                                            <div>Cumple</div>
-                                        </div>
-                                        <div style="text-align: center; flex: 1; min-width: 100px;">
-                                            <div style="font-size: 1.8rem; color: #f39c12; font-weight: bold;" id="reporte-parcial">0%</div>
-                                            <div>Cumple Parcial</div>
-                                        </div>
-                                        <div style="text-align: center; flex: 1; min-width: 100px;">
-                                            <div style="font-size: 1.8rem; color: #e74c3c; font-weight: bold;" id="reporte-no-cumple">0%</div>
-                                            <div>No Cumple</div>
-                                        </div>
-                                    </div>
-                                    
-                                    <h4 style="color: var(--text-dark); border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 15px;">Detalle de Requisitos</h4>
-                                    <div style="overflow-x: auto;">
-                                        <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
-                                            <thead>
-                                                <tr style="background: #f1f2f6;">
-                                                    <th style="padding: 10px; text-align: left;">Requisito</th>
-                                                    <th style="padding: 10px; text-align: center; width: 120px;">Estado</th>
-                                                    <th style="padding: 10px; text-align: center; width: 120px;">Evidencia</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="reporte-detalle">
-                                                <!-- Detalle se generará con JavaScript -->
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    
-                                    <div style="margin-top: 30px; font-style: italic; text-align: center;">
-                                        <p>Este reporte fue generado automáticamente por el Sistema de Auditoría PPR TS FSSC 22002</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
-                                <button class="btn btn-primary" id="generar-pdf">
-                                    <i class="fas fa-file-download"></i> Descargar PDF
+                        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                            <button class="btn btn-primary" id="generar-pdf">
+                                <i class="fas fa-file-download"></i> Descargar PDF
+                            </button>
+                            <div style="display: flex; gap: 15px;">
+                                <button class="btn btn-success" id="compartir-whatsapp" style="flex: 1;">
+                                    <i class="fab fa-whatsapp"></i> Compartir por WhatsApp
                                 </button>
-                                <div style="display: flex; gap: 15px;">
-                                    <button class="btn btn-success" id="compartir-whatsapp" style="flex: 1;">
-                                        <i class="fab fa-whatsapp"></i> Compartir por WhatsApp
-                                    </button>
-                                    <button class="btn btn-danger" id="compartir-email" style="flex: 1; background: #e74c3c;">
-                                        <i class="fas fa-envelope"></i> Enviar por Correo
-                                    </button>
-                                </div>
+                                <button class="btn" id="compartir-email" style="flex: 1; background: var(--ios-red); color: white;">
+                                    <i class="fas fa-envelope"></i> Enviar por Correo
+                                </button>
                             </div>
                         </div>
                     </div>
-                </section>
-            </div>
+                </div>
+            </section>
         </div>
     </div>
     
@@ -1102,6 +927,11 @@
                     document.querySelectorAll('.sidebar-item').forEach(l => l.classList.remove('active'));
                     this.classList.add('active');
                     
+                    // Cerrar menú en móviles
+                    if (window.innerWidth < 992) {
+                        document.getElementById('sidebar').classList.remove('active');
+                    }
+                    
                     // Cargar datos del dashboard si es necesario
                     if (page === 'dashboard') {
                         cargarDashboard();
@@ -1109,6 +939,24 @@
                         cargarReportes();
                     }
                 });
+            });
+            
+            // Toggle del menú lateral
+            document.getElementById('menu-toggle').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+            
+            // Cerrar menú al hacer clic fuera de él
+            document.addEventListener('click', function(e) {
+                const sidebar = document.getElementById('sidebar');
+                const menuToggle = document.getElementById('menu-toggle');
+                
+                if (window.innerWidth < 992 && 
+                    !sidebar.contains(e.target) && 
+                    !menuToggle.contains(e.target) && 
+                    sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
             });
             
             // Event listener para iniciar auditoría
@@ -1152,14 +1000,6 @@
                 });
             });
             
-            // Event listener para cambiar a registro
-            document.getElementById('btn-register-tab').addEventListener('click', function() {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                document.querySelector('.tab[data-tab="register"]').classList.add('active');
-                document.getElementById('login-form').style.display = 'none';
-                document.getElementById('register-form').style.display = 'block';
-            });
-            
             // Event listener para filtros de reportes
             document.getElementById('aplicar-filtros-reportes').addEventListener('click', cargarReportes);
             
@@ -1192,8 +1032,6 @@
                 
                 if (data.status === "success") {
                     currentUser = data.user;
-                    document.getElementById('user-name').textContent = currentUser.name || currentUser.email;
-                    document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
                     document.getElementById('login').classList.remove('active');
                     document.getElementById('main-app').style.display = 'block';
                     showPage('inicio');
@@ -1339,24 +1177,24 @@
                 preguntaElement.className = 'card';
                 preguntaElement.style.marginTop = '15px';
                 preguntaElement.innerHTML = `
-                    <div class="pregunta-text" style="font-size: 1.1rem; font-weight: 500; margin-bottom: 15px; color: var(--text-dark);">${pregunta.id}. ${pregunta.texto}</div>
-                    <div class="opciones" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
-                        <div class="opcion" data-value="cumple" data-pregunta="${pregunta.id}" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 14px; border-radius: var(--border-radius); background: var(--light-gray); transition: all 0.3s; border: var(--border);">
+                    <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 15px; color: var(--ios-gray-dark);">${pregunta.id}. ${pregunta.texto}</div>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+                        <div class="opcion" data-value="cumple" data-pregunta="${pregunta.id}" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 14px; border-radius: 10px; background: var(--ios-gray-light); transition: all 0.3s; border: 1px solid var(--ios-border);">
                             <input type="radio" name="pregunta-${pregunta.id}" value="cumple" id="p${pregunta.id}-cumple">
                             <label for="p${pregunta.id}-cumple">Cumple</label>
                         </div>
-                        <div class="opcion" data-value="parcial" data-pregunta="${pregunta.id}" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 14px; border-radius: var(--border-radius); background: var(--light-gray); transition: all 0.3s; border: var(--border);">
+                        <div class="opcion" data-value="parcial" data-pregunta="${pregunta.id}" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 14px; border-radius: 10px; background: var(--ios-gray-light); transition: all 0.3s; border: 1px solid var(--ios-border);">
                             <input type="radio" name="pregunta-${pregunta.id}" value="parcial" id="p${pregunta.id}-parcial">
                             <label for="p${pregunta.id}-parcial">Cumple Parcial</label>
                         </div>
-                        <div class="opcion" data-value="no_cumple" data-pregunta="${pregunta.id}" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 14px; border-radius: var(--border-radius); background: var(--light-gray); transition: all 0.3s; border: var(--border);">
+                        <div class="opcion" data-value="no_cumple" data-pregunta="${pregunta.id}" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 14px; border-radius: 10px; background: var(--ios-gray-light); transition: all 0.3s; border: 1px solid var(--ios-border);">
                             <input type="radio" name="pregunta-${pregunta.id}" value="no_cumple" id="p${pregunta.id}-no_cumple">
                             <label for="p${pregunta.id}-no_cumple">No Cumple</label>
                         </div>
                     </div>
-                    <div class="evidencia-section" id="evidencia-${pregunta.id}" style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ddd; display: none;">
+                    <div class="evidencia-section" id="evidencia-${pregunta.id}" style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--ios-border); display: none;">
                         <p><strong>Evidencia fotográfica requerida:</strong></p>
-                        <div class="camera-preview" id="camera-preview-${pregunta.id}" style="width: 100%; height: 200px; background: #f1f2f6; border: 2px dashed #b2bec3; border-radius: var(--border-radius); margin: 15px 0; display: flex; align-items: center; justify-content: center; flex-direction: column; cursor: pointer; overflow: hidden;">
+                        <div class="camera-preview" id="camera-preview-${pregunta.id}" style="width: 100%; height: 200px; background: #f1f2f6; border: 2px dashed #b2bec3; border-radius: 10px; margin: 15px 0; display: flex; align-items: center; justify-content: center; flex-direction: column; cursor: pointer; overflow: hidden;">
                             <i class="fas fa-camera" style="font-size: 3rem; color: #636e72;"></i>
                             <span style="margin-top: 10px; color: #636e72; text-align: center; padding: 0 10px;">Haz clic para tomar foto</span>
                         </div>
@@ -1465,16 +1303,16 @@
             
             // Determinar resultado general
             let resultado = "Cumplimiento Total";
-            let color = "#27ae60";
+            let color = "var(--ios-green)";
             
             if (noCumple > 0 || parcial > totalPreguntas * 0.2) {
                 resultado = "Cumplimiento Parcial";
-                color = "#f39c12";
+                color = "var(--ios-orange)";
             }
             
             if (noCumple > totalPreguntas * 0.1) {
                 resultado = "No Cumple";
-                color = "#e74c3c";
+                color = "var(--ios-red)";
             }
             
             document.getElementById('reporte-resultado').textContent = resultado;
@@ -1542,23 +1380,23 @@
                 switch(respuesta.estado) {
                     case 'cumple':
                         estadoText = 'Cumple';
-                        estadoColor = 'green';
+                        estadoColor = 'var(--ios-green)';
                         break;
                     case 'parcial':
                         estadoText = 'Cumple Parcial';
-                        estadoColor = 'orange';
+                        estadoColor = 'var(--ios-orange)';
                         break;
                     case 'no_cumple':
                         estadoText = 'No Cumple';
-                        estadoColor = 'red';
+                        estadoColor = 'var(--ios-red)';
                         break;
                 }
                 
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td style="padding: 10px;">${pregunta.texto}</td>
-                    <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
-                    <td style="padding: 10px; text-align: center;">${respuesta.evidencia ? 'Sí' : 'No'}</td>
+                    <td style="padding: 12px;">${pregunta.texto}</td>
+                    <td style="padding: 12px; text-align: center; color: ${estadoColor};">${estadoText}</td>
+                    <td style="padding: 12px; text-align: center;">${respuesta.evidencia ? 'Sí' : 'No'}</td>
                 `;
                 detalle.appendChild(row);
             });
@@ -1577,9 +1415,9 @@
                     datasets: [{
                         data: [0, 0, 0],
                         backgroundColor: [
-                            'rgba(39, 174, 96, 0.8)',
-                            'rgba(243, 156, 18, 0.8)',
-                            'rgba(231, 76, 60, 0.8)'
+                            'var(--ios-green)',
+                            'var(--ios-orange)',
+                            'var(--ios-red)'
                         ],
                         borderWidth: 1
                     }]
@@ -1603,7 +1441,7 @@
                     datasets: [{
                         label: 'Porcentaje de Cumplimiento',
                         data: [0, 0, 0, 0, 0],
-                        backgroundColor: 'rgba(24, 119, 242, 0.8)',
+                        backgroundColor: 'var(--ios-blue)',
                         borderWidth: 1
                     }]
                 },
@@ -1753,22 +1591,22 @@
             reportesData.forEach((reporte, index) => {
                 const item = document.createElement('div');
                 item.className = 'card';
-                item.style.marginBottom = '10px';
+                item.style.marginBottom = '15px';
                 item.style.cursor = 'pointer';
                 item.dataset.id = reporte.id;
                 item.innerHTML = `
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
-                            <h4 style="margin-bottom: 5px;">${reporte.auditor} - ${reporte.area}</h4>
-                            <p style="color: var(--text-light); font-size: 0.9rem;"><i class="fas fa-calendar"></i> ${reporte.fecha}</p>
+                            <h4 style="margin-bottom: 5px; font-weight: 600;">${reporte.auditor} - ${reporte.area}</h4>
+                            <p style="color: var(--ios-gray); font-size: 14px;"><i class="fas fa-calendar"></i> ${reporte.fecha}</p>
                         </div>
-                        <div style="display: flex; gap: 15px; align-items: center;">
-                            <div style="display: flex; gap: 5px;">
-                                <span style="color: #27ae60; font-weight: 600;">${reporte.porcCumple}%</span>
-                                <span style="color: #f39c12;">${reporte.porcParcial}%</span>
-                                <span style="color: #e74c3c;">${reporte.porcNoCumple}%</span>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <div style="display: flex; gap: 5px; font-size: 14px;">
+                                <span style="color: var(--ios-green);">${reporte.porcCumple}%</span>
+                                <span style="color: var(--ios-orange);">${reporte.porcParcial}%</span>
+                                <span style="color: var(--ios-red);">${reporte.porcNoCumple}%</span>
                             </div>
-                            <i class="fas fa-chevron-right"></i>
+                            <i class="fas fa-chevron-right" style="color: var(--ios-gray);"></i>
                         </div>
                     </div>
                 `;
@@ -1796,16 +1634,16 @@
             
             // Determinar resultado general
             let resultado = "Cumplimiento Total";
-            let color = "#27ae60";
+            let color = "var(--ios-green)";
             
             if (reporte.porcNoCumple > 0 || reporte.porcParcial > 20) {
                 resultado = "Cumplimiento Parcial";
-                color = "#f39c12";
+                color = "var(--ios-orange)";
             }
             
             if (reporte.porcNoCumple > 10) {
                 resultado = "No Cumple";
-                color = "#e74c3c";
+                color = "var(--ios-red)";
             }
             
             document.getElementById('reporte-resultado').textContent = resultado;
@@ -1821,23 +1659,23 @@
                 switch(pregunta.estado) {
                     case 'cumple':
                         estadoText = 'Cumple';
-                        estadoColor = 'green';
+                        estadoColor = 'var(--ios-green)';
                         break;
                     case 'parcial':
                         estadoText = 'Cumple Parcial';
-                        estadoColor = 'orange';
+                        estadoColor = 'var(--ios-orange)';
                         break;
                     case 'no_cumple':
                         estadoText = 'No Cumple';
-                        estadoColor = 'red';
+                        estadoColor = 'var(--ios-red)';
                         break;
                 }
                 
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td style="padding: 10px;">${pregunta.texto}</td>
-                    <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
-                    <td style="padding: 10px; text-align: center;">${pregunta.evidenciaUrl ? 'Sí' : 'No'}</td>
+                    <td style="padding: 12px;">${pregunta.texto}</td>
+                    <td style="padding: 12px; text-align: center; color: ${estadoColor};">${estadoText}</td>
+                    <td style="padding: 12px; text-align: center;">${pregunta.evidenciaUrl ? 'Sí' : 'No'}</td>
                 `;
                 detalle.appendChild(row);
             });
@@ -1869,11 +1707,11 @@
             doc.text('Resumen de Cumplimiento', 20, 70);
             
             // Gráfico de resumen (simplificado)
-            doc.setFillColor(39, 174, 96); // Cumple
+            doc.setFillColor(52, 199, 89); // Cumple
             doc.rect(30, 80, 40, 40, 'F');
-            doc.setFillColor(243, 156, 18); // Parcial
+            doc.setFillColor(255, 149, 0); // Parcial
             doc.rect(80, 80, 40, 30, 'F');
-            doc.setFillColor(231, 76, 60); // No cumple
+            doc.setFillColor(255, 59, 48); // No cumple
             doc.rect(130, 80, 40, 20, 'F');
             
             doc.setFontSize(10);
@@ -1902,9 +1740,9 @@
                 
                 // Convertir color CSS a RGB
                 let rgbColor = [0, 0, 0];
-                if (estadoColor === 'green') rgbColor = [39, 174, 96];
-                if (estadoColor === 'orange') rgbColor = [243, 156, 18];
-                if (estadoColor === 'red') rgbColor = [231, 76, 60];
+                if (estadoColor === 'var(--ios-green)') rgbColor = [52, 199, 89];
+                if (estadoColor === 'var(--ios-orange)') rgbColor = [255, 149, 0];
+                if (estadoColor === 'var(--ios-red)') rgbColor = [255, 59, 48];
                 
                 doc.setTextColor(0, 0, 0);
                 doc.text(pregunta, 25, yPosition);
@@ -1918,14 +1756,6 @@
             // Guardar PDF
             doc.save(`Reporte_Auditoria_${document.getElementById('reporte-fecha').textContent}.pdf`);
         }
-        
-        // Animación del loader
-        document.head.appendChild(document.createElement('style')).textContent = `
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-        `;
     </script>
 </body>
 </html>
