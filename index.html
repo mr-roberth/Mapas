@@ -457,6 +457,18 @@
             color: var(--ios-gray);
             font-style: italic;
         }
+        
+        /* Nuevos estilos para exportación */
+        .export-section {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .export-btn {
+            background: var(--ios-green);
+            padding: 15px 25px;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
@@ -548,6 +560,10 @@
             <a href="#" class="sidebar-item" data-page="reportes">
                 <i class="fas fa-file-pdf"></i>
                 <span>Reportes</span>
+            </a>
+            <a href="#" class="sidebar-item" data-page="exportar">
+                <i class="fas fa-file-excel"></i>
+                <span>Exportar</span>
             </a>
             
             <div class="sidebar-divider"></div>
@@ -848,6 +864,23 @@
                     </div>
                 </div>
             </section>
+            
+            <!-- Nueva Sección Exportar -->
+            <section id="exportar" class="page-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Exportar Datos</h2>
+                    </div>
+                    
+                    <div class="export-section">
+                        <p>Exporta todos los datos de auditorías a formato Excel</p>
+                        <button class="btn btn-primary export-btn" id="btn-exportar-excel">
+                            <i class="fas fa-file-excel"></i> Descargar Excel
+                        </button>
+                        <div id="export-message" style="margin-top: 20px;"></div>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
     
@@ -1014,6 +1047,9 @@
             
             // Event listener para compartir por email
             document.getElementById('compartir-email').addEventListener('click', compartirPorEmail);
+            
+            // Event listener para exportar a Excel
+            document.getElementById('btn-exportar-excel').addEventListener('click', exportarAExcel);
             
             // Inicializar gráficos vacíos
             inicializarGraficos();
@@ -1336,7 +1372,7 @@
             for (const [id, respuesta] of Object.entries(respuestas)) {
                 const pregunta = preguntasAuditoria.find(p => p.id === parseInt(id));
                 preguntasData.push({
-                    id: `p${pregunta.id}`,
+                    id: parseInt(id), // Asegurar que es número
                     texto: pregunta.texto,
                     estado: respuesta.estado,
                     evidenciaUrl: respuesta.evidenciaUrl || null
@@ -1679,6 +1715,9 @@
                         estadoText = 'No Cumple';
                         estadoColor = 'var(--ios-red)';
                         break;
+                    default:
+                        estadoText = 'Sin evaluar';
+                        estadoColor = 'var(--ios-gray)';
                 }
                 
                 const row = document.createElement('tr');
@@ -1741,6 +1780,32 @@
                 }
             } catch (error) {
                 alert('Error al enviar el correo: ' + error.message);
+            }
+        }
+        
+        // Exportar a Excel
+        async function exportarAExcel() {
+            const message = document.getElementById('export-message');
+            message.innerHTML = '<div class="alert"><i class="fas fa-spinner fa-spin"></i> Generando archivo Excel...</div>';
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "exportToExcel"
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    message.innerHTML = '<div class="alert alert-success"><i class="fas fa-check-circle"></i> Archivo generado correctamente</div>';
+                    window.open(data.url, '_blank');
+                } else {
+                    throw new Error(data.message || "Error al exportar");
+                }
+            } catch (error) {
+                message.innerHTML = `<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> ${error.message}</div>`;
             }
         }
     </script>
