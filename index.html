@@ -1035,7 +1035,7 @@
             inicializarGraficos();
         });
         
-        // Login con mejor manejo de errores
+        // Login con mejor manejo de errores y diagnóstico
         async function login() {
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
@@ -1055,15 +1055,29 @@
                 
                 // Verificar conexión a internet
                 if (!navigator.onLine) {
-                    throw new Error('No tienes conexión a internet');
+                    throw new Error('No tienes conexión a internet. Por favor, verifica tu conexión.');
+                }
+
+                // Verificar que la URL del script no esté vacía
+                if (!SCRIPT_URL || SCRIPT_URL.includes("TU_URL_DE_DESPLEGUE_AQUI")) {
+                    throw new Error('La URL del servidor no está configurada correctamente.');
                 }
                 
+                // Prueba de conexión básica
+                const testConnection = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({action: "testConnection"})
+                });
+                
+                if (!testConnection.ok) {
+                    throw new Error('El servidor no responde. Verifica la URL o inténtalo más tarde.');
+                }
+
+                // Intento de login real
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest' // Ayuda con CORS
-                    },
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         action: "login",
                         email: email,
@@ -1071,18 +1085,23 @@
                     })
                 });
 
+                // Manejar respuesta
+                const responseText = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (e) {
+                    throw new Error(`Respuesta no válida del servidor: ${responseText}`);
+                }
+
                 // Restaurar botón
                 btnLogin.disabled = false;
                 btnLogin.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
                 btnLogin.classList.remove('btn-loading');
                 
-                // Verificar si la respuesta es exitosa
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || `Error HTTP: ${response.status}`);
+                    throw new Error(data.message || `Error HTTP: ${response.status}`);
                 }
-
-                const data = await response.json();
                 
                 if (data.status === "success") {
                     currentUser = data.user;
@@ -1093,17 +1112,17 @@
                     // Limpiar campos de contraseña después del login
                     document.getElementById('login-password').value = '';
                 } else {
-                    showMessage(data.message || "Credenciales incorrectas", 'error');
+                    throw new Error(data.message || "Credenciales incorrectas");
                 }
             } catch (error) {
                 console.error("Error en login:", error);
                 
-                // Manejar diferentes tipos de errores
-                if (error.name === "TypeError" && error.message.includes("Failed to fetch")) {
-                    showMessage('Error de conexión: Verifica tu conexión a internet y la URL del script', 'error');
-                } else {
-                    showMessage(`Error: ${error.message}`, 'error');
-                }
+                // Restaurar botón en caso de error
+                btnLogin.disabled = false;
+                btnLogin.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+                btnLogin.classList.remove('btn-loading');
+                
+                showMessage(`Error: ${error.message}`, 'error');
             }
         }
         
