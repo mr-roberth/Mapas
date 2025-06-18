@@ -8,6 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <style>
+        /* ESTILOS COMPLETOS (MANTENIDOS IGUAL) */
         :root {
             --ios-blue: #007AFF;
             --ios-gray-light: #F2F2F7;
@@ -1039,7 +1040,11 @@
                         password: password
                     })
                 });
-                
+
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor: ' + response.status);
+                }
+
                 const data = await response.json();
                 
                 if (data.status === "success") {
@@ -1086,7 +1091,11 @@
                         password: password
                     })
                 });
-                
+
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor: ' + response.status);
+                }
+
                 const data = await response.json();
                 
                 if (data.status === "success") {
@@ -1298,7 +1307,11 @@
                                         image: event.target.result
                                     })
                                 });
-                                
+
+                                if (!response.ok) {
+                                    throw new Error('Error al subir imagen: ' + response.status);
+                                }
+
                                 const data = await response.json();
                                 
                                 if (data.status === "success") {
@@ -1387,7 +1400,11 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(payload)
                 });
-                
+
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor: ' + response.status);
+                }
+
                 const data = await response.json();
                 
                 if (data.status === "success") {
@@ -1530,7 +1547,11 @@
                         area: area
                     })
                 });
-                
+
+                if (!response.ok) {
+                    throw new Error('Error al cargar datos: ' + response.status);
+                }
+
                 const data = await response.json();
                 
                 if (data.status === "success") {
@@ -1582,7 +1603,11 @@
                         auditor: auditor
                     })
                 });
-                
+
+                if (!response.ok) {
+                    throw new Error('Error al cargar reportes: ' + response.status);
+                }
+
                 const data = await response.json();
                 
                 if (data.status === "success") {
@@ -1769,7 +1794,11 @@
                         fecha: document.getElementById('reporte-fecha').textContent
                     })
                 });
-                
+
+                if (!response.ok) {
+                    throw new Error('Error al enviar correo: ' + response.status);
+                }
+
                 const data = await response.json();
                 
                 if (data.status === "success") {
@@ -1803,7 +1832,11 @@
                         action: "exportToExcel"
                     })
                 });
-                
+
+                if (!response.ok) {
+                    throw new Error('Error al exportar: ' + response.status);
+                }
+
                 const data = await response.json();
                 
                 if (data.status === "success") {
