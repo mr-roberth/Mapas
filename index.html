@@ -902,8 +902,8 @@
     </div>
     
     <script>
-        // URL ACTUALIZADA CON TU WEB APP
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHdPxorU-5fsKq-yUMOm1WXfYwF-rlDaA-cNDuZjCW5j71D0q7fjcZjD_YcaQVuDorrw/exec";
+        // IMPORTANTE: Reemplaza con tu URL de despliegue real
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyX9f0Z0d3Q5Xj4l4Xj4Xj4Xj4Xj4Xj4Xj4Xj4Xj4Xj4Xj4Xj4Xj4/exec";
         
         // Datos de las preguntas
         const preguntasAuditoria = [
@@ -1053,9 +1053,17 @@
                 btnLogin.innerHTML = '<div class="spinner"></div> Iniciando sesión...';
                 btnLogin.classList.add('btn-loading');
                 
+                // Verificar conexión a internet
+                if (!navigator.onLine) {
+                    throw new Error('No tienes conexión a internet');
+                }
+                
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest' // Ayuda con CORS
+                    },
                     body: JSON.stringify({
                         action: "login",
                         email: email,
@@ -1092,9 +1100,7 @@
                 
                 // Manejar diferentes tipos de errores
                 if (error.name === "TypeError" && error.message.includes("Failed to fetch")) {
-                    showMessage('Error de conexión: No se pudo conectar al servidor. Verifica tu conexión a internet.', 'error');
-                } else if (error.message.includes("Error HTTP")) {
-                    showMessage(`Error del servidor: ${error.message}`, 'error');
+                    showMessage('Error de conexión: Verifica tu conexión a internet y la URL del script', 'error');
                 } else {
                     showMessage(`Error: ${error.message}`, 'error');
                 }
@@ -1127,7 +1133,10 @@
                 
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
                     body: JSON.stringify({
                         action: "register",
                         name: name,
@@ -1169,7 +1178,7 @@
                 console.error("Error en registro:", error);
                 
                 if (error.name === "TypeError" && error.message.includes("Failed to fetch")) {
-                    showMessage('Error de conexión: No se pudo conectar al servidor. Verifica tu conexión a internet.', 'error');
+                    showMessage('Error de conexión: Verifica tu conexión a internet y la URL del script', 'error');
                 } else {
                     showMessage(`Error: ${error.message}`, 'error');
                 }
