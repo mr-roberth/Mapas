@@ -885,61 +885,21 @@
     </div>
     
     <script>
-        // URL de tu Google Apps Script
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHdPxorU-5fsKq-yUMOm1WXfYwF-rlDaA-cNDuZjCW5j71D0q7fjcZjD_YcaQVuDorrw/exec";
+        // URL de tu Google Apps Script (ACTUALIZAR CON LA TUYA)
+        const SCRIPT_URL = "https://script.google.com/macros/s/XXXXXXXXXXXXXXXXXXXXX/exec";
         
-        // Datos de ejemplo para la aplicación
+        // Datos de las preguntas (asegúrate de que los IDs sean numéricos)
         const preguntasAuditoria = [
-            {
-                id: 1,
-                texto: "¿Existe un programa documentado de limpieza y desinfección?",
-                categoria: "Limpieza y Desinfección"
-            },
-            {
-                id: 2,
-                texto: "¿Se realizan inspecciones periódicas a los equipos de protección personal?",
-                categoria: "Equipos de Protección"
-            },
-            {
-                id: 3,
-                texto: "¿Se cuenta con registros de capacitación en prácticas de higiene para el personal?",
-                categoria: "Capacitación"
-            },
-            {
-                id: 4,
-                texto: "¿Se verifica la eficacia de los procedimientos de limpieza y desinfección?",
-                categoria: "Verificación"
-            },
-            {
-                id: 5,
-                texto: "¿Se mantiene un control de plagas con registros de monitoreo y acciones tomadas?",
-                categoria: "Control de Plagas"
-            },
-            {
-                id: 6,
-                texto: "¿Existe un sistema de trazabilidad completo y actualizado?",
-                categoria: "Trazabilidad"
-            },
-            {
-                id: 7,
-                texto: "¿Se cuenta con procedimientos para el retiro de productos no conformes?",
-                categoria: "Productos No Conformes"
-            },
-            {
-                id: 8,
-                texto: "¿Se realizan auditorías internas según el cronograma establecido?",
-                categoria: "Auditorías Internas"
-            },
-            {
-                id: 9,
-                texto: "¿Se revisa la efectividad de las acciones correctivas implementadas?",
-                categoria: "Acciones Correctivas"
-            },
-            {
-                id: 10,
-                texto: "¿Existe un plan de mantenimiento preventivo para los equipos críticos?",
-                categoria: "Mantenimiento"
-            }
+            {id: 1, texto: "¿Existe un programa documentado de limpieza y desinfección?", categoria: "Limpieza y Desinfección"},
+            {id: 2, texto: "¿Se realizan inspecciones periódicas a los equipos de protección personal?", categoria: "Equipos de Protección"},
+            {id: 3, texto: "¿Se cuenta con registros de capacitación en prácticas de higiene para el personal?", categoria: "Capacitación"},
+            {id: 4, texto: "¿Se verifica la eficacia de los procedimientos de limpieza y desinfección?", categoria: "Verificación"},
+            {id: 5, texto: "¿Se mantiene un control de plagas con registros de monitoreo y acciones tomadas?", categoria: "Control de Plagas"},
+            {id: 6, texto: "¿Existe un sistema de trazabilidad completo y actualizado?", categoria: "Trazabilidad"},
+            {id: 7, texto: "¿Se cuenta con procedimientos para el retiro de productos no conformes?", categoria: "Productos No Conformes"},
+            {id: 8, texto: "¿Se realizan auditorías internas según el cronograma establecido?", categoria: "Auditorías Internas"},
+            {id: 9, texto: "¿Se revisa la efectividad de las acciones correctivas implementadas?", categoria: "Acciones Correctivas"},
+            {id: 10, texto: "¿Existe un plan de mantenimiento preventivo para los equipos críticos?", categoria: "Mantenimiento"}
         ];
         
         // Variables globales
@@ -1051,6 +1011,9 @@
             // Event listener para exportar a Excel
             document.getElementById('btn-exportar-excel').addEventListener('click', exportarAExcel);
             
+            // Event listener para compartir por WhatsApp
+            document.getElementById('compartir-whatsapp').addEventListener('click', compartirPorWhatsapp);
+            
             // Inicializar gráficos vacíos
             inicializarGraficos();
         });
@@ -1069,6 +1032,7 @@
             try {
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         action: "login",
                         email: email,
@@ -1114,6 +1078,7 @@
             try {
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         action: "register",
                         name: name,
@@ -1167,6 +1132,34 @@
             
             setTimeout(() => {
                 messageContainer.innerHTML = '';
+            }, 5000);
+        }
+        
+        // Función para mostrar mensajes de error globales
+        function showGlobalError(message) {
+            const errorContainer = document.createElement('div');
+            errorContainer.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px;
+                background: var(--ios-red);
+                color: white;
+                border-radius: var(--ios-radius);
+                z-index: 1000;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            `;
+            errorContainer.innerHTML = `
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(errorContainer);
+            
+            setTimeout(() => {
+                errorContainer.remove();
             }, 5000);
         }
         
@@ -1299,6 +1292,7 @@
                             try {
                                 const response = await fetch(SCRIPT_URL, {
                                     method: 'POST',
+                                    headers: {'Content-Type': 'application/json'},
                                     body: JSON.stringify({
                                         action: "uploadImage",
                                         image: event.target.result
@@ -1390,12 +1384,16 @@
             try {
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(payload)
                 });
                 
                 const data = await response.json();
                 
                 if (data.status === "success") {
+                    // Mostrar URL del PDF directamente
+                    alert(`¡Auditoría completada! PDF generado: ${data.pdfUrl}`);
+                    
                     auditorData.auditId = data.auditId;
                     auditorData.pdfUrl = data.pdfUrl; // Guardar URL del PDF
                     generarDetalleReporte();
@@ -1405,15 +1403,13 @@
                     document.querySelector('.sidebar-item[data-page="reportes"]').classList.add('active');
                     showPage('reportes');
                     
-                    alert('¡Auditoría completada con éxito! Se ha generado el reporte ejecutivo.');
-                    
                     // Recargar reportes
                     cargarReportes();
                 } else {
                     throw new Error(data.message || "Error en el servidor");
                 }
             } catch (error) {
-                alert('Error al enviar la auditoría: ' + error.message);
+                showGlobalError('Error al enviar auditoría: ' + error.message);
             }
         }
         
@@ -1527,6 +1523,7 @@
                 // Obtener datos reales del backend
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         action: "getDashboardData",
                         fecha: fecha,
@@ -1553,7 +1550,7 @@
                     throw new Error(data.message || "Error al cargar datos");
                 }
             } catch (error) {
-                alert('Error al cargar datos del dashboard: ' + error.message);
+                showGlobalError('Error al cargar datos del dashboard: ' + error.message);
             } finally {
                 // Ocultar loader y mostrar contenido
                 loader.style.display = 'none';
@@ -1577,6 +1574,7 @@
                 // Obtener datos reales del backend
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         action: "getAuditsForReport",
                         fecha: fecha,
@@ -1597,7 +1595,7 @@
                     throw new Error(data.message || "Error al cargar reportes");
                 }
             } catch (error) {
-                alert('Error al cargar reportes: ' + error.message);
+                showGlobalError('Error al cargar reportes: ' + error.message);
             } finally {
                 // Ocultar loader y mostrar contenido
                 loader.style.display = 'none';
@@ -1761,6 +1759,7 @@
                 
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         action: "sendEmail",
                         email: email,
@@ -1783,6 +1782,14 @@
             }
         }
         
+        // Compartir por WhatsApp
+        function compartirPorWhatsapp() {
+            const mensaje = `Reporte de Auditoría PPR\n\nAuditor: ${document.getElementById('reporte-auditor').textContent}\nÁrea: ${document.getElementById('reporte-area').textContent}\nFecha: ${document.getElementById('reporte-fecha').textContent}`;
+            const url = currentReportPdfUrl || auditorData.pdfUrl;
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(mensaje + '\n' + url)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+        
         // Exportar a Excel
         async function exportarAExcel() {
             const message = document.getElementById('export-message');
@@ -1791,6 +1798,7 @@
             try {
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         action: "exportToExcel"
                     })
