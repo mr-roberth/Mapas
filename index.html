@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.googleapis.com https://cors-anywhere.herokuapp.com blob: data: gap:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com">
-    <title>Auditorías FSSC22002</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Auditoría PPR TS FSSC 22002</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <style>
         :root {
             --primary: #2c3e50;
@@ -17,1322 +16,1843 @@
             --danger: #e74c3c;
             --light: #ecf0f1;
             --dark: #34495e;
+            --gray: #95a5a6;
+            --background: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --text-light: #777777;
+            --border: #e0e0e0;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
         
         body {
-            background-color: #f5f5f5;
-            color: #333;
-            overflow-x: hidden;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            font-size: 16px;
         }
         
-        #app {
-            max-width: 480px;
-            margin: 0 auto;
-            background: white;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            position: relative;
+        .container {
+            max-width: 100%;
+            padding: 0 15px;
         }
         
+        /* Header */
         header {
-            background: var(--primary);
+            background-color: var(--primary);
             color: white;
-            padding: 15px;
-            text-align: center;
-            font-size: 1.2rem;
+            padding: 15px 0;
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: var(--shadow);
+        }
+        
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
         }
         
-        .header-title {
-            flex: 1;
-            text-align: center;
-        }
-        
-        .logout-btn {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-        
-        #view {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            padding-bottom: 70px;
-        }
-        
-        footer {
-            background: var(--primary);
-            padding: 10px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            max-width: 480px;
-        }
-        
-        nav {
+        .logo {
             display: flex;
-            justify-content: space-around;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            font-size: 1.8rem;
+            color: var(--secondary);
+        }
+        
+        .logo h1 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 10px;
         }
         
         nav a {
             color: white;
             text-decoration: none;
-            padding: 10px;
-            font-size: 1.5rem;
+            padding: 8px 12px;
+            border-radius: 20px;
+            transition: background 0.3s;
             display: flex;
-            flex-direction: column;
             align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
         }
         
-        nav a i {
-            margin-bottom: 5px;
+        nav a:hover, nav a.active {
+            background: rgba(255,255,255,0.15);
         }
         
-        nav a span {
-            font-size: 0.7rem;
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
         }
         
-        .hidden {
-            display: none !important;
+        .user-info button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
         }
         
-        .view-section {
-            display: none;
-            animation: fadeIn 0.3s ease;
+        /* Formularios */
+        .form-section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: var(--shadow);
+            max-width: 100%;
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .view-section.active {
-            display: block;
+        .form-title {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
         }
         
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
         }
         
-        input, select, textarea {
+        input, select {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
             font-size: 1rem;
             transition: border 0.3s;
+            background: var(--card-bg);
+            color: var(--text);
         }
         
-        input:focus, select:focus, textarea:focus {
-            border-color: var(--secondary);
+        input:focus, select:focus {
             outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
         }
         
-        button {
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .btn-primary {
             background: var(--secondary);
             color: white;
-            border: none;
-            padding: 12px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: background 0.3s;
         }
         
-        button:hover {
-            background: #2980b9;
-        }
-        
-        button.btn-success {
+        .btn-success {
             background: var(--success);
+            color: white;
         }
         
-        button.btn-warning {
-            background: var(--warning);
-        }
-        
-        button.btn-danger {
+        .btn-danger {
             background: var(--danger);
+            color: white;
         }
         
-        .pregunta {
-            border: 1px solid #eee;
-            padding: 15px;
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        /* Preguntas */
+        .pregunta-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
             margin-bottom: 15px;
-            border-radius: 10px;
-            background: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--secondary);
         }
         
-        .pregunta h4 {
-            margin-bottom: 10px;
+        .pregunta-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 15px;
             color: var(--dark);
         }
         
         .opciones {
             display: flex;
+            flex-direction: column;
             gap: 10px;
-            margin: 15px 0;
-            flex-wrap: wrap;
+            margin-bottom: 15px;
         }
         
-        .opciones button {
-            flex: 1;
-            min-width: 100px;
+        .opcion {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 14px;
+            border-radius: 12px;
+            background: var(--background);
+            transition: all 0.3s;
+            border: 1px solid var(--border);
         }
         
-        .opciones button.active {
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.5);
+        .opcion input {
+            width: auto;
         }
         
-        .evidencia {
+        .opcion:hover {
+            background: #e9ecef;
+        }
+        
+        .opcion.selected {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+        
+        .evidencia-section {
             margin-top: 15px;
             padding-top: 15px;
-            border-top: 1px dashed #eee;
+            border-top: 1px dashed var(--border);
+            display: none;
         }
         
         .camera-preview {
             width: 100%;
             height: 200px;
-            background: #f1f1f1;
-            margin-bottom: 10px;
+            background: #f1f2f6;
+            border: 2px dashed #b2bec3;
+            border-radius: 12px;
+            margin: 15px 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 8px;
+            flex-direction: column;
+            cursor: pointer;
             overflow: hidden;
         }
         
-        .camera-preview img, .camera-preview video {
+        .camera-preview img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
         
-        .camera-controls {
-            display: flex;
-            gap: 10px;
+        .camera-preview i {
+            font-size: 3rem;
+            color: #636e72;
         }
         
-        .card {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        
-        .card h3 {
-            margin-bottom: 10px;
-            color: var(--dark);
-        }
-        
-        .stats {
-            display: flex;
-            justify-content: space-around;
+        .camera-preview span {
+            margin-top: 10px;
+            color: #636e72;
             text-align: center;
-            margin: 20px 0;
+            padding: 0 10px;
         }
         
-        .stat {
-            padding: 10px;
+        /* Dashboard */
+        .filtros-dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .filtro-item {
+            width: 100%;
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
         }
         
         .stat-value {
             font-size: 1.8rem;
-            font-weight: bold;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .stat-success {
+            color: var(--success);
+            border-top: 4px solid var(--success);
+        }
+        
+        .stat-warning {
+            color: var(--warning);
+            border-top: 4px solid var(--warning);
+        }
+        
+        .stat-danger {
+            color: var(--danger);
+            border-top: 4px solid var(--danger);
+        }
+        
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .chart-title {
+            margin-bottom: 15px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .chart-wrapper {
+            width: 100%;
+            height: 250px;
+            position: relative;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 30px 0;
+            margin-top: 30px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .footer-section {
+            flex: 1;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #bdc3c7;
+            font-size: 0.9rem;
+        }
+        
+        /* Login */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: var(--background);
+        }
+        
+        .login-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: var(--shadow);
+        }
+        
+        .login-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-logo i {
+            font-size: 3.5rem;
+            color: var(--secondary);
+        }
+        
+        .login-logo h1 {
+            margin-top: 15px;
             color: var(--primary);
         }
         
-        .stat-label {
-            font-size: 0.9rem;
-            color: #7f8c8d;
-        }
-        
-        .filter-group {
+        .tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .filter-group select {
-            flex: 1;
-        }
-        
-        .audit-item {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .audit-item:last-child {
-            border-bottom: none;
-        }
-        
-        .audit-info {
-            flex: 1;
-        }
-        
-        .audit-title {
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
-        
-        .audit-meta {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-        }
-        
-        .status-badge {
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-        
-        .status-completed {
-            background: #e8f8f0;
-            color: #27ae60;
-        }
-        
-        .status-pending {
-            background: #fef9e7;
-            color: #f39c12;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #7f8c8d;
-        }
-        
-        .error {
-            color: var(--danger);
-            padding: 10px;
-            text-align: center;
-        }
-        
-        .whatsapp-btn {
-            background: #25D366;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .report-summary {
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
             margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
         }
         
-        .summary-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .summary-stat {
+        .tab {
+            flex: 1;
             text-align: center;
-            padding: 10px;
-            border-radius: 8px;
-            color: white;
-            font-weight: 500;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
         }
         
-        .stat-cumple {
-            background: var(--success);
+        .tab.active {
+            border-bottom: 3px solid var(--secondary);
+            color: var(--secondary);
+            font-weight: 600;
         }
         
-        .stat-no-cumple {
-            background: var(--danger);
+        /* Responsive */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+            
+            .header-content, .footer-content {
+                padding: 0 20px;
+            }
+            
+            .filtros-dashboard {
+                flex-direction: row;
+            }
+            
+            .filtro-item {
+                flex: 1;
+            }
+            
+            .btn {
+                width: auto;
+            }
+            
+            .footer-content {
+                flex-direction: row;
+            }
+            
+            nav ul {
+                gap: 15px;
+            }
+            
+            nav a {
+                font-size: 1rem;
+            }
         }
         
-        .stat-parcial {
-            background: var(--warning);
+        /* Ocultar secciones */
+        .page-section {
+            display: none;
+        }
+        
+        .page-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--secondary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alert-success {
+            background: rgba(39, 174, 96, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(39, 174, 96, 0.3);
+        }
+        
+        .alert-error {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--danger);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+        
+        .reportes-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        @media (min-width: 992px) {
+            .reportes-container {
+                grid-template-columns: 300px 1fr;
+            }
+        }
+        
+        .filtros-reportes {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+        }
+        
+        .lista-reportes {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .reporte-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .reporte-item:hover {
+            background: var(--background);
+        }
+        
+        .reporte-item.active {
+            background: rgba(52, 152, 219, 0.1);
+            border-left: 4px solid var(--secondary);
         }
     </style>
 </head>
 <body>
-    <div id="app">
-        <header>
-            <button class="logout-btn hidden" id="logout-btn"><i class="fas fa-sign-out-alt"></i></button>
-            <div class="header-title" id="header-title">Auditorías FSSC22002</div>
-            <div style="width: 48px;"></div>
-        </header>
-        
-        <div id="view">
-            <!-- Vista de Login -->
-            <div id="login-view" class="view-section active">
-                <div class="card">
-                    <h2>Iniciar Sesión</h2>
-                    <form id="login-form">
-                        <div class="form-group">
-                            <label for="usuario">Usuario</label>
-                            <input type="text" id="usuario" required autocomplete="username">
-                        </div>
-                        <div class="form-group">
-                            <label for="contrasena">Contraseña</label>
-                            <input type="password" id="contrasena" required autocomplete="current-password">
-                        </div>
-                        <button type="submit">Ingresar</button>
-                    </form>
-                    <p style="text-align: center; margin-top: 15px;">
-                        ¿No tienes cuenta? <a href="#" id="registro-link">Regístrate</a>
-                    </p>
+    <!-- Login Section -->
+    <section id="login" class="page-section active">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-logo">
+                    <i class="fas fa-clipboard-check"></i>
+                    <h1>Auditoría PPR</h1>
                 </div>
-            </div>
-            
-            <!-- Vista de Registro -->
-            <div id="registro-view" class="view-section">
-                <div class="card">
-                    <h2>Registro</h2>
-                    <form id="registro-form">
-                        <div class="form-group">
-                            <label for="reg-usuario">Usuario</label>
-                            <input type="text" id="reg-usuario" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="reg-nombre">Nombre Completo</label>
-                            <input type="text" id="reg-nombre" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="reg-email">Email</label>
-                            <input type="email" id="reg-email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="reg-contrasena">Contraseña</label>
-                            <input type="password" id="reg-contrasena" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="reg-confirmar">Confirmar Contraseña</label>
-                            <input type="password" id="reg-confirmar" required>
-                        </div>
-                        <button type="submit">Registrarse</button>
-                    </form>
-                    <p style="text-align: center; margin-top: 15px;">
-                        ¿Ya tienes cuenta? <a href="#" id="login-link">Inicia Sesión</a>
-                    </p>
+                
+                <div class="tabs">
+                    <div class="tab active" data-tab="login">Iniciar Sesión</div>
+                    <div class="tab" data-tab="register">Registrarse</div>
                 </div>
-            </div>
-            
-            <!-- Vista de Dashboard -->
-            <div id="dashboard-view" class="view-section">
-                <div class="card">
-                    <h2>Dashboard</h2>
-                    <div id="dashboard-loading" class="loading">
-                        <i class="fas fa-spinner fa-spin"></i> Cargando estadísticas...
-                    </div>
-                    <div id="dashboard-content" class="hidden">
-                        <div class="stats">
-                            <div class="stat">
-                                <div class="stat-value" id="total-auditorias">0</div>
-                                <div class="stat-label">Auditorías</div>
-                            </div>
-                            <div class="stat">
-                                <div class="stat-value" id="cumplimiento">0%</div>
-                                <div class="stat-label">Cumplimiento</div>
-                            </div>
-                        </div>
-                        
-                        <h3>Cumplimiento por Área</h3>
-                        <canvas id="area-chart" height="250"></canvas>
-                        
-                        <h3 style="margin-top: 20px;">Tendencia Mensual</h3>
-                        <canvas id="trend-chart" height="250"></canvas>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Vista de Auditoría -->
-            <div id="auditoria-view" class="view-section">
-                <div class="card">
-                    <h2>Nueva Auditoría</h2>
+                
+                <div id="login-message"></div>
+                
+                <!-- Login Form -->
+                <div id="login-form">
                     <div class="form-group">
-                        <label for="area">Área</label>
-                        <select id="area"></select>
+                        <label for="login-email">Correo Electrónico</label>
+                        <input type="email" id="login-email" placeholder="tucorreo@empresa.com">
                     </div>
                     
-                    <div id="preguntas-loading" class="loading">
-                        <i class="fas fa-spinner fa-spin"></i> Cargando preguntas...
+                    <div class="form-group">
+                        <label for="login-password">Contraseña</label>
+                        <input type="password" id="login-password" placeholder="Ingresa tu contraseña">
                     </div>
                     
-                    <div id="respuestas" class="hidden"></div>
-                    
-                    <div style="margin-top: 20px;">
-                        <button id="finalizar-auditoria" class="btn-success">Finalizar Auditoría</button>
-                    </div>
+                    <button class="btn btn-primary" id="btn-login">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </button>
                 </div>
-            </div>
-            
-            <!-- Vista de Reportes -->
-            <div id="reportes-view" class="view-section">
-                <div class="card">
-                    <h2>Reportes</h2>
-                    
-                    <div class="filter-group">
-                        <select id="filter-area">
-                            <option value="">Todas las áreas</option>
-                        </select>
-                        <select id="filter-auditor">
-                            <option value="">Todos los auditores</option>
-                        </select>
+                
+                <!-- Registration Form -->
+                <div id="register-form" style="display: none;">
+                    <div class="form-group">
+                        <label for="register-name">Nombre Completo</label>
+                        <input type="text" id="register-name" placeholder="Ingresa tu nombre completo">
                     </div>
                     
-                    <div class="filter-group">
-                        <input type="month" id="filter-month">
-                        <button id="filter-apply">Aplicar</button>
+                    <div class="form-group">
+                        <label for="register-email">Correo Electrónico</label>
+                        <input type="email" id="register-email" placeholder="tucorreo@empresa.com">
                     </div>
                     
-                    <div id="reportes-loading" class="loading">
-                        <i class="fas fa-spinner fa-spin"></i> Cargando reportes...
+                    <div class="form-group">
+                        <label for="register-password">Contraseña</label>
+                        <input type="password" id="register-password" placeholder="Crea una contraseña segura">
                     </div>
                     
-                    <div id="reportes-list" class="hidden"></div>
-                </div>
-            </div>
-            
-            <!-- Vista de Detalle de Reporte -->
-            <div id="reporte-detail-view" class="view-section">
-                <div class="card">
-                    <div id="reporte-detail-header">
-                        <h2>Detalle de Auditoría</h2>
-                        <div id="reporte-meta"></div>
+                    <div class="form-group">
+                        <label for="register-confirm">Confirmar Contraseña</label>
+                        <input type="password" id="register-confirm" placeholder="Repite tu contraseña">
                     </div>
                     
-                    <div id="reporte-loading" class="loading">
-                        <i class="fas fa-spinner fa-spin"></i> Cargando detalle...
-                    </div>
-                    
-                    <div id="reporte-summary" class="report-summary hidden">
-                        <h3>Resumen de Cumplimiento</h3>
-                        <div class="summary-stats">
-                            <div class="summary-stat stat-cumple">
-                                <div class="stat-value" id="summary-cumple">0</div>
-                                <div class="stat-label">Cumple</div>
-                            </div>
-                            <div class="summary-stat stat-no-cumple">
-                                <div class="stat-value" id="summary-no-cumple">0</div>
-                                <div class="stat-label">No Cumple</div>
-                            </div>
-                            <div class="summary-stat stat-parcial">
-                                <div class="stat-value" id="summary-parcial">0</div>
-                                <div class="stat-label">Parcial</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div id="reporte-content" class="hidden"></div>
-                    
-                    <div style="margin-top: 20px; display: flex; gap: 10px;">
-                        <button id="download-pdf" class="btn-danger">Descargar PDF</button>
-                        <button id="share-whatsapp" class="whatsapp-btn">
-                            <i class="fab fa-whatsapp"></i> Compartir
-                        </button>
-                    </div>
+                    <button class="btn btn-success" id="btn-register">
+                        <i class="fas fa-user-plus"></i> Crear Cuenta
+                    </button>
                 </div>
             </div>
         </div>
-        
-        <footer>
-            <nav>
-                <a href="#dashboard" id="nav-dashboard">
-                    <i class="fas fa-home"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="#auditoria" id="nav-auditoria">
+    </section>
+    
+    <!-- Main App -->
+    <div id="main-app" style="display: none;">
+        <!-- Header -->
+        <header>
+            <div class="header-content">
+                <div class="logo">
                     <i class="fas fa-clipboard-check"></i>
-                    <span>Auditoría</span>
-                </a>
-                <a href="#reportes" id="nav-reportes">
-                    <i class="fas fa-file-alt"></i>
-                    <span>Reportes</span>
-                </a>
-            </nav>
-        </footer>
-    </div>
-
-    <script>
-        // Configuración
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwiA2sO5H9OIktR-acJoWiCGYTmKS6EHwSygFw02JUV1d2CK93zzCxrmqjvtpyMQht4/exec"; // Reemplazar con tu URL de GAS
-        const PAGE_LOAD_DELAY = 300; // ms para animaciones
-        const DEFAULT_IMAGE_URL = "https://via.placeholder.com/200x150?text=Sin+imagen";
-        const PROXY_URL = 'https://cors-anywhere.herokuapp.com/'; // Proxy CORS
-
-        // Estado de la aplicación
-        const appState = {
-            currentUser: null,
-            areas: [],
-            preguntas: [],
-            auditorias: [],
-            currentAuditoria: null,
-            currentReporte: null,
-            mediaStream: null
-        };
-
-        // Elementos del DOM
-        const viewSections = document.querySelectorAll('.view-section');
-        const loginView = document.getElementById('login-view');
-        const registroView = document.getElementById('registro-view');
-        const dashboardView = document.getElementById('dashboard-view');
-        const auditoriaView = document.getElementById('auditoria-view');
-        const reportesView = document.getElementById('reportes-view');
-        const reporteDetailView = document.getElementById('reporte-detail-view');
-        const loginForm = document.getElementById('login-form');
-        const registroForm = document.getElementById('registro-form');
-        const areaSelect = document.getElementById('area');
-        const respuestasDiv = document.getElementById('respuestas');
-        const preguntasLoading = document.getElementById('preguntas-loading');
-        const loginLink = document.getElementById('login-link');
-        const registroLink = document.getElementById('registro-link');
-        const finalizarBtn = document.getElementById('finalizar-auditoria');
-        const logoutBtn = document.getElementById('logout-btn');
-        const headerTitle = document.getElementById('header-title');
-        const navDashboard = document.getElementById('nav-dashboard');
-        const navAuditoria = document.getElementById('nav-auditoria');
-        const navReportes = document.getElementById('nav-reportes');
-        const dashboardContent = document.getElementById('dashboard-content');
-        const dashboardLoading = document.getElementById('dashboard-loading');
-        const reportesList = document.getElementById('reportes-list');
-        const reportesLoading = document.getElementById('reportes-loading');
-        const filterArea = document.getElementById('filter-area');
-        const filterAuditor = document.getElementById('filter-auditor');
-        const filterMonth = document.getElementById('filter-month');
-        const filterApply = document.getElementById('filter-apply');
-        const reporteContent = document.getElementById('reporte-content');
-        const reporteSummary = document.getElementById('reporte-summary');
-        const reporteLoading = document.getElementById('reporte-loading');
-        const downloadPdf = document.getElementById('download-pdf');
-        const shareWhatsapp = document.getElementById('share-whatsapp');
-        const reporteMeta = document.getElementById('reporte-meta');
-
-        // Inicialización
-        document.addEventListener('DOMContentLoaded', () => {
-            // Verificar si hay usuario logueado
-            const savedUser = localStorage.getItem('auditorUser');
-            if (savedUser) {
-                appState.currentUser = JSON.parse(savedUser);
-                updateUIForLoggedInUser();
-            }
-            
-            // Configurar eventos
-            setupEventListeners();
-            
-            // Cargar áreas si el usuario está logueado
-            if (appState.currentUser) {
-                loadAreas();
-                loadDashboardData();
-                loadReportes();
-            }
-        });
-
-        function setupEventListeners() {
-            // Navegación
-            loginLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                showView('login-view');
-            });
-            
-            registroLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                showView('registro-view');
-            });
-            
-            logoutBtn.addEventListener('click', logout);
-            
-            navDashboard.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (!appState.currentUser) return showView('login-view');
-                showView('dashboard-view');
-                loadDashboardData();
-            });
-            
-            navAuditoria.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (!appState.currentUser) return showView('login-view');
-                showView('auditoria-view');
-                loadAreas();
-            });
-            
-            navReportes.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (!appState.currentUser) return showView('login-view');
-                showView('reportes-view');
-                loadReportes();
-            });
-            
-            // Formularios
-            loginForm.addEventListener('submit', handleLogin);
-            registroForm.addEventListener('submit', handleRegister);
-            
-            // Área seleccionada
-            areaSelect.addEventListener('change', handleAreaChange);
-            
-            // Finalizar auditoría
-            finalizarBtn.addEventListener('click', finalizarAuditoria);
-            
-            // Filtros
-            filterApply.addEventListener('click', () => loadReportes());
-            
-            // Descargar PDF
-            downloadPdf.addEventListener('click', generatePDF);
-            
-            // Compartir por WhatsApp
-            shareWhatsapp.addEventListener('click', shareViaWhatsApp);
-        }
-
-        // Función para mostrar una vista específica
-        function showView(viewId) {
-            viewSections.forEach(view => {
-                view.classList.remove('active');
-            });
-            
-            setTimeout(() => {
-                document.getElementById(viewId).classList.add('active');
-                
-                // Actualizar título del header
-                switch(viewId) {
-                    case 'dashboard-view':
-                        headerTitle.textContent = 'Dashboard';
-                        break;
-                    case 'auditoria-view':
-                        headerTitle.textContent = 'Nueva Auditoría';
-                        break;
-                    case 'reportes-view':
-                        headerTitle.textContent = 'Reportes';
-                        break;
-                    case 'reporte-detail-view':
-                        headerTitle.textContent = 'Detalle Auditoría';
-                        break;
-                    default:
-                        headerTitle.textContent = 'Auditorías FSSC22002';
-                }
-            }, PAGE_LOAD_DELAY);
-        }
-
-        // Función para actualizar la UI cuando el usuario inicia sesión
-        function updateUIForLoggedInUser() {
-            logoutBtn.classList.remove('hidden');
-            headerTitle.textContent = `Hola, ${appState.currentUser.nombre}`;
-            showView('dashboard-view');
-        }
-
-        // Función para manejar el login
-        async function handleLogin(e) {
-            e.preventDefault();
-            const usuario = document.getElementById('usuario').value;
-            const contrasena = document.getElementById('contrasena').value;
-            
-            try {
-                const response = await fetchGAS('login', { usuario, contrasena });
-                
-                if (response.token) {
-                    appState.currentUser = {
-                        usuario,
-                        nombre: response.nombre,
-                        token: response.token
-                    };
-                    
-                    // Guardar en localStorage
-                    localStorage.setItem('auditorUser', JSON.stringify(appState.currentUser));
-                    
-                    // Actualizar UI
-                    updateUIForLoggedInUser();
-                    
-                    // Cargar datos iniciales
-                    loadAreas();
-                    loadDashboardData();
-                } else {
-                    alert('Credenciales incorrectas');
-                }
-            } catch (error) {
-                console.error('Error en login:', error);
-                alert('Error al iniciar sesión');
-            }
-        }
-
-        // Función para manejar el registro
-        async function handleRegister(e) {
-            e.preventDefault();
-            const usuario = document.getElementById('reg-usuario').value;
-            const nombre = document.getElementById('reg-nombre').value;
-            const email = document.getElementById('reg-email').value;
-            const contrasena = document.getElementById('reg-contrasena').value;
-            const confirmar = document.getElementById('reg-confirmar').value;
-            
-            if (contrasena !== confirmar) {
-                alert('Las contraseñas no coinciden');
-                return;
-            }
-            
-            try {
-                const response = await fetchGAS('registro', { 
-                    usuario, 
-                    nombre, 
-                    email, 
-                    contrasena 
-                });
-                
-                if (response.success) {
-                    alert('Registro exitoso. Ahora puedes iniciar sesión.');
-                    showView('login-view');
-                } else {
-                    alert('Error en el registro: ' + response.message);
-                }
-            } catch (error) {
-                console.error('Error en registro:', error);
-                alert('Error en el registro');
-            }
-        }
-
-        // Función para cerrar sesión
-        function logout() {
-            appState.currentUser = null;
-            localStorage.removeItem('auditorUser');
-            logoutBtn.classList.add('hidden');
-            headerTitle.textContent = 'Auditorías FSSC22002';
-            showView('login-view');
-        }
-
-        // Función para cargar áreas desde GAS
-        async function loadAreas() {
-            try {
-                const areas = await fetchGAS('getAreas');
-                appState.areas = areas;
-                
-                // Actualizar select de áreas
-                areaSelect.innerHTML = '';
-                areas.forEach(area => {
-                    const option = document.createElement('option');
-                    option.value = area;
-                    option.textContent = area;
-                    areaSelect.appendChild(option);
-                });
-                
-                // Actualizar filtro de áreas
-                filterArea.innerHTML = '<option value="">Todas las áreas</option>';
-                areas.forEach(area => {
-                    const option = document.createElement('option');
-                    option.value = area;
-                    option.textContent = area;
-                    filterArea.appendChild(option);
-                });
-            } catch (error) {
-                console.error('Error al cargar áreas:', error);
-                alert('Error al cargar las áreas');
-            }
-        }
-
-        // Función para manejar el cambio de área
-        async function handleAreaChange() {
-            const area = areaSelect.value;
-            if (!area) return;
-            
-            preguntasLoading.classList.remove('hidden');
-            respuestasDiv.classList.add('hidden');
-            
-            try {
-                appState.preguntas = await fetchGAS('getPreguntas', { area });
-                renderPreguntas();
-                
-                preguntasLoading.classList.add('hidden');
-                respuestasDiv.classList.remove('hidden');
-            } catch (error) {
-                console.error('Error al cargar preguntas:', error);
-                preguntasLoading.innerHTML = '<div class="error">Error al cargar preguntas</div>';
-            }
-        }
-
-        // Función para renderizar preguntas
-        function renderPreguntas() {
-            respuestasDiv.innerHTML = '';
-            
-            appState.preguntas.forEach((pregunta, index) => {
-                const preguntaDiv = document.createElement('div');
-                preguntaDiv.className = 'pregunta';
-                preguntaDiv.innerHTML = `
-                    <h4>${index + 1}. ${pregunta.texto}</h4>
-                    <div class="opciones">
-                        <button data-result="cumple" data-pregunta="${pregunta.id}">Cumple</button>
-                        <button data-result="no-cumple" data-pregunta="${pregunta.id}">No Cumple</button>
-                        <button data-result="parcial" data-pregunta="${pregunta.id}">Parcial</button>
+                    <h1>Auditoría PPR</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="nav-link" data-page="inicio"><i class="fas fa-home"></i> Inicio</a></li>
+                        <li><a href="#" class="nav-link" data-page="auditoria"><i class="fas fa-file-alt"></i> Auditoría</a></li>
+                        <li><a href="#" class="nav-link" data-page="dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+                        <li><a href="#" class="nav-link" data-page="reportes"><i class="fas fa-file-pdf"></i> Reportes</a></li>
+                    </ul>
+                </nav>
+                <div class="user-info">
+                    <span id="user-name">Usuario</span>
+                    <button id="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
+            </div>
+        </header>
+        
+        <div class="container">
+            <!-- Sección Inicio -->
+            <section id="inicio" class="page-section">
+                <div class="form-section">
+                    <h2 class="form-title"><i class="fas fa-user-circle"></i> Información del Auditor</h2>
+                    <div class="form-group">
+                        <label for="nombre-auditor">Nombre del Auditor</label>
+                        <input type="text" id="nombre-auditor" placeholder="Ingresa tu nombre completo">
                     </div>
-                    <div class="evidencia hidden">
-                        <div class="camera-preview">
-                            <div style="color: #7f8c8d; text-align: center;">
-                                <i class="fas fa-camera fa-3x"></i>
-                                <p>Previsualización</p>
+                    <div class="form-group">
+                        <label for="area-auditada">Área a Auditar</label>
+                        <select id="area-auditada">
+                            <option value="">Selecciona un área</option>
+                            <option value="produccion">Producción</option>
+                            <option value="almacen">Almacén</option>
+                            <option value="calidad">Control de Calidad</option>
+                            <option value="mantenimiento">Mantenimiento</option>
+                            <option value="logistica">Logística</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha-auditoria">Fecha de Auditoría</label>
+                        <input type="date" id="fecha-auditoria">
+                    </div>
+                    <button class="btn btn-primary" id="iniciar-auditoria">
+                        <i class="fas fa-play-circle"></i> Iniciar Auditoría
+                    </button>
+                </div>
+                
+                <div class="form-section">
+                    <h2 class="form-title"><i class="fas fa-info-circle"></i> Instrucciones</h2>
+                    <p>Esta aplicación te permite realizar auditorías de cumplimiento de PPR según la norma TS FSSC 22002.</p>
+                    <ul style="margin: 15px 0 15px 30px;">
+                        <li>Selecciona "Cumple", "Cumple Parcial" o "No Cumple" para cada requisito</li>
+                        <li>Para los casos de "Cumple Parcial" o "No Cumple" debes adjuntar evidencia fotográfica</li>
+                        <li>Al finalizar, se generará un reporte ejecutivo en PDF</li>
+                        <li>Puedes compartir el reporte por correo o WhatsApp</li>
+                        <li>Los administradores recibirán notificaciones de incumplimientos</li>
+                    </ul>
+                    <p>Toda la información se almacena de forma segura en Google Sheets para su posterior análisis.</p>
+                </div>
+            </section>
+            
+            <!-- Sección Auditoría -->
+            <section id="auditoria" class="page-section">
+                <div class="form-section">
+                    <h2 class="form-title"><i class="fas fa-file-alt"></i> Cuestionario de Auditoría</h2>
+                    <div id="auditor-info" style="background: #e3f2fd; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                        <p><strong>Auditor:</strong> <span id="current-auditor">-</span></p>
+                        <p><strong>Área:</strong> <span id="current-area">-</span></p>
+                        <p><strong>Fecha:</strong> <span id="current-date">-</span></p>
+                    </div>
+                    
+                    <!-- Preguntas de auditoría -->
+                    <div id="preguntas-container">
+                        <!-- Las preguntas se generarán dinámicamente con JavaScript -->
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 30px;">
+                        <button class="btn btn-primary" id="guardar-progreso">
+                            <i class="fas fa-save"></i> Guardar Progreso
+                        </button>
+                        <button class="btn btn-success" id="finalizar-auditoria">
+                            <i class="fas fa-check-circle"></i> Finalizar Auditoría
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Sección Dashboard -->
+            <section id="dashboard" class="page-section">
+                <div class="form-section">
+                    <h2 class="form-title"><i class="fas fa-chart-bar"></i> Dashboard de Cumplimiento</h2>
+                    
+                    <div class="filtros-dashboard">
+                        <div class="filtro-item">
+                            <label for="filtro-fecha">Filtrar por Fecha</label>
+                            <input type="date" id="filtro-fecha">
+                        </div>
+                        
+                        <div class="filtro-item">
+                            <label for="filtro-area">Filtrar por Área</label>
+                            <select id="filtro-area">
+                                <option value="">Todas las áreas</option>
+                                <option value="produccion">Producción</option>
+                                <option value="almacen">Almacén</option>
+                                <option value="calidad">Control de Calidad</option>
+                                <option value="mantenimiento">Mantenimiento</option>
+                                <option value="logistica">Logística</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filtro-item">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-primary" id="aplicar-filtros">
+                                <i class="fas fa-filter"></i> Aplicar Filtros
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="loader" id="dashboard-loader"></div>
+                    
+                    <div id="dashboard-content">
+                        <div class="dashboard-stats">
+                            <div class="stat-card stat-success">
+                                <i class="fas fa-check-circle fa-2x"></i>
+                                <h3>Cumplimiento</h3>
+                                <div class="stat-value" id="stat-cumple">0%</div>
+                                <p>Requisitos cumplidos</p>
+                            </div>
+                            
+                            <div class="stat-card stat-warning">
+                                <i class="fas fa-exclamation-circle fa-2x"></i>
+                                <h3>Parcial</h3>
+                                <div class="stat-value" id="stat-parcial">0%</div>
+                                <p>Cumplimiento parcial</p>
+                            </div>
+                            
+                            <div class="stat-card stat-danger">
+                                <i class="fas fa-times-circle fa-2x"></i>
+                                <h3>No Cumple</h3>
+                                <div class="stat-value" id="stat-no-cumple">0%</div>
+                                <p>Requisitos no cumplidos</p>
                             </div>
                         </div>
-                        <div class="camera-controls">
-                            <button class="btn-warning take-photo" data-pregunta="${pregunta.id}">
-                                <i class="fas fa-camera"></i> Tomar Foto
-                            </button>
-                            <input type="file" accept="image/*" capture="camera" class="hidden" data-pregunta="${pregunta.id}">
+                        
+                        <div class="chart-container">
+                            <h3 class="chart-title"><i class="fas fa-chart-pie"></i> Distribución de Cumplimiento</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="chart-distribucion"></canvas>
+                            </div>
                         </div>
-                        <textarea placeholder="Comentario..." data-pregunta="${pregunta.id}" style="margin-top: 10px;"></textarea>
+                        
+                        <div class="chart-container">
+                            <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Cumplimiento por Área</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="chart-areas"></canvas>
+                            </div>
+                        </div>
                     </div>
-                `;
-                respuestasDiv.appendChild(preguntaDiv);
+                </div>
+            </section>
+            
+            <!-- Sección Reportes -->
+            <section id="reportes" class="page-section">
+                <div class="form-section">
+                    <h2 class="form-title"><i class="fas fa-file-pdf"></i> Reportes de Auditoría</h2>
+                    
+                    <div class="reportes-container">
+                        <div class="filtros-reportes">
+                            <h3><i class="fas fa-filter"></i> Filtros</h3>
+                            
+                            <div class="form-group">
+                                <label for="filtro-fecha-reporte">Fecha de Auditoría</label>
+                                <input type="date" id="filtro-fecha-reporte">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="filtro-area-reporte">Área Auditada</label>
+                                <select id="filtro-area-reporte">
+                                    <option value="">Todas las áreas</option>
+                                    <option value="produccion">Producción</option>
+                                    <option value="almacen">Almacén</option>
+                                    <option value="calidad">Control de Calidad</option>
+                                    <option value="mantenimiento">Mantenimiento</option>
+                                    <option value="logistica">Logística</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="filtro-auditor-reporte">Auditor</label>
+                                <select id="filtro-auditor-reporte">
+                                    <option value="">Todos los auditores</option>
+                                </select>
+                            </div>
+                            
+                            <button class="btn btn-primary" id="aplicar-filtros-reportes">
+                                <i class="fas fa-search"></i> Buscar Reportes
+                            </button>
+                        </div>
+                        
+                        <div class="lista-reportes">
+                            <div class="loader" id="reportes-loader"></div>
+                            <div id="lista-reportes-content">
+                                <h3>Reportes Disponibles</h3>
+                                <p>Selecciona un reporte para ver los detalles</p>
+                                <div id="reportes-container">
+                                    <!-- Reportes se cargarán aquí -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="detalle-reporte" style="display: none;">
+                        <div id="reporte-preview" style="background: white; padding: 20px; border: 1px solid #ddd; border-radius: 12px; margin: 20px 0;">
+                            <h3 style="text-align: center; color: var(--primary); margin-bottom: 20px;">Reporte de Auditoría PPR</h3>
+                            
+                            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                                <div>
+                                    <p><strong>Auditor:</strong> <span id="reporte-auditor">-</span></p>
+                                    <p><strong>Área auditada:</strong> <span id="reporte-area">-</span></p>
+                                    <p><strong>Fecha:</strong> <span id="reporte-fecha">-</span></p>
+                                </div>
+                                <div>
+                                    <p><strong>Estado:</strong> <span style="color: var(--success);">Completado</span></p>
+                                    <p><strong>Resultado:</strong> <span id="reporte-resultado" style="color: var(--warning);">-</span></p>
+                                </div>
+                            </div>
+                            
+                            <h4 style="color: var(--dark); border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 15px;">Resumen de Cumplimiento</h4>
+                            <div style="display: flex; justify-content: space-around; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                                <div style="text-align: center; flex: 1; min-width: 100px;">
+                                    <div style="font-size: 1.8rem; color: var(--success); font-weight: bold;" id="reporte-cumple">0%</div>
+                                    <div>Cumple</div>
+                                </div>
+                                <div style="text-align: center; flex: 1; min-width: 100px;">
+                                    <div style="font-size: 1.8rem; color: var(--warning); font-weight: bold;" id="reporte-parcial">0%</div>
+                                    <div>Cumple Parcial</div>
+                                </div>
+                                <div style="text-align: center; flex: 1; min-width: 100px;">
+                                    <div style="font-size: 1.8rem; color: var(--danger); font-weight: bold;" id="reporte-no-cumple">0%</div>
+                                    <div>No Cumple</div>
+                                </div>
+                            </div>
+                            
+                            <h4 style="color: var(--dark); border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 15px;">Detalle de Requisitos</h4>
+                            <div style="overflow-x: auto;">
+                                <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+                                    <thead>
+                                        <tr style="background: #f1f2f6;">
+                                            <th style="padding: 10px; text-align: left;">Requisito</th>
+                                            <th style="padding: 10px; text-align: center; width: 120px;">Estado</th>
+                                            <th style="padding: 10px; text-align: center; width: 120px;">Evidencia</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="reporte-detalle">
+                                        <!-- Detalle se generará con JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div style="margin-top: 30px; font-style: italic; text-align: center;">
+                                <p>Este reporte fue generado automáticamente por el Sistema de Auditoría PPR TS FSSC 22002</p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <button class="btn btn-primary" id="generar-pdf">
+                                <i class="fas fa-file-download"></i> Descargar PDF
+                            </button>
+                            <button class="btn btn-success" id="compartir-whatsapp">
+                                <i class="fab fa-whatsapp"></i> Compartir por WhatsApp
+                            </button>
+                            <button class="btn btn-danger" id="compartir-email">
+                                <i class="fas fa-envelope"></i> Enviar por Correo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Auditoría PPR</h3>
+                    <p>Sistema para la gestión de auditorías de cumplimiento de PPR según la norma TS FSSC 22002.</p>
+                    <p>Toda la información se almacena de forma segura en Google Sheets para su posterior análisis.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="#" class="nav-link" data-page="inicio"><i class="fas fa-home"></i> Inicio</a></li>
+                        <li><a href="#" class="nav-link" data-page="auditoria"><i class="fas fa-file-alt"></i> Auditoría</a></li>
+                        <li><a href="#" class="nav-link" data-page="dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+                        <li><a href="#" class="nav-link" data-page="reportes"><i class="fas fa-file-pdf"></i> Reportes</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-envelope"></i> soporte@auditoriappr.com</a></li>
+                        <li><a href="#"><i class="fas fa-phone"></i> +1 (555) 123-4567</a></li>
+                        <li><a href="#"><i class="fab fa-whatsapp"></i> Enviar mensaje</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 Sistema de Auditoría PPR TS FSSC 22002. Todos los derechos reservados.</p>
+            </div>
+        </footer>
+    </div>
+    
+    <script>
+        // URL de tu Google Apps Script
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu3COfRM0E8f8vQlgXXzqTOXS_s8FZEWwt2JtCqBng5Y1sRACNfay60Mi158SJxlpx/exec";
+        
+        // Datos de ejemplo para la aplicación
+        const preguntasAuditoria = [
+            {
+                id: 1,
+                texto: "¿Existe un programa documentado de limpieza y desinfección?",
+                categoria: "Limpieza y Desinfección"
+            },
+            {
+                id: 2,
+                texto: "¿Se realizan inspecciones periódicas a los equipos de protección personal?",
+                categoria: "Equipos de Protección"
+            },
+            {
+                id: 3,
+                texto: "¿Se cuenta con registros de capacitación en prácticas de higiene para el personal?",
+                categoria: "Capacitación"
+            },
+            {
+                id: 4,
+                texto: "¿Se verifica la eficacia de los procedimientos de limpieza y desinfección?",
+                categoria: "Verificación"
+            },
+            {
+                id: 5,
+                texto: "¿Se mantiene un control de plagas con registros de monitoreo y acciones tomadas?",
+                categoria: "Control de Plagas"
+            },
+            {
+                id: 6,
+                texto: "¿Existe un sistema de trazabilidad completo y actualizado?",
+                categoria: "Trazabilidad"
+            },
+            {
+                id: 7,
+                texto: "¿Se cuenta con procedimientos para el retiro de productos no conformes?",
+                categoria: "Productos No Conformes"
+            },
+            {
+                id: 8,
+                texto: "¿Se realizan auditorías internas según el cronograma establecido?",
+                categoria: "Auditorías Internas"
+            },
+            {
+                id: 9,
+                texto: "¿Se revisa la efectividad de las acciones correctivas implementadas?",
+                categoria: "Acciones Correctivas"
+            },
+            {
+                id: 10,
+                texto: "¿Existe un plan de mantenimiento preventivo para los equipos críticos?",
+                categoria: "Mantenimiento"
+            }
+        ];
+        
+        // Variables globales
+        let auditorData = {};
+        let respuestas = {};
+        let chartDistribucion, chartAreas;
+        let currentUser = null;
+        let reportesData = [];
+        
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar fecha actual
+            const today = new Date();
+            document.getElementById('fecha-auditoria').valueAsDate = today;
+            
+            // Event listeners para navegación
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.getAttribute('data-page');
+                    showPage(page);
+                    
+                    // Actualizar navegación activa
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Cargar datos del dashboard si es necesario
+                    if (page === 'dashboard') {
+                        cargarDashboard();
+                    } else if (page === 'reportes') {
+                        cargarReportes();
+                    }
+                });
             });
             
-            // Manejar clic en opciones
-            respuestasDiv.addEventListener('click', (e) => {
-                if (e.target.tagName === 'BUTTON' && e.target.dataset.result) {
-                    const buttons = e.target.parentElement.querySelectorAll('button');
-                    buttons.forEach(btn => btn.classList.remove('active'));
-                    e.target.classList.add('active');
+            // Event listener para iniciar auditoría
+            document.getElementById('iniciar-auditoria').addEventListener('click', iniciarAuditoria);
+            
+            // Event listener para finalizar auditoría
+            document.getElementById('finalizar-auditoria').addEventListener('click', finalizarAuditoria);
+            
+            // Event listener para generar PDF
+            document.getElementById('generar-pdf').addEventListener('click', generarPDF);
+            
+            // Event listener para aplicar filtros
+            document.getElementById('aplicar-filtros').addEventListener('click', cargarDashboard);
+            
+            // Event listener para login
+            document.getElementById('btn-login').addEventListener('click', login);
+            
+            // Event listener para registro
+            document.getElementById('btn-register').addEventListener('click', register);
+            
+            // Event listener para logout
+            document.getElementById('btn-logout').addEventListener('click', logout);
+            
+            // Event listener para tabs de login/registro
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
                     
-                    const preguntaDiv = e.target.closest('.pregunta');
-                    const evidenciaDiv = preguntaDiv.querySelector('.evidencia');
+                    // Actualizar tabs
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
                     
-                    // Mostrar evidencia solo si es no-cumple o parcial
-                    if (['no-cumple', 'parcial'].includes(e.target.dataset.result)) {
-                        evidenciaDiv.classList.remove('hidden');
+                    // Mostrar el formulario correspondiente
+                    if (tabId === 'login') {
+                        document.getElementById('login-form').style.display = 'block';
+                        document.getElementById('register-form').style.display = 'none';
                     } else {
-                        evidenciaDiv.classList.add('hidden');
+                        document.getElementById('login-form').style.display = 'none';
+                        document.getElementById('register-form').style.display = 'block';
+                    }
+                });
+            });
+            
+            // Event listener para filtros de reportes
+            document.getElementById('aplicar-filtros-reportes').addEventListener('click', cargarReportes);
+            
+            // Inicializar gráficos vacíos
+            inicializarGraficos();
+        });
+        
+        // Login
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const messageContainer = document.getElementById('login-message');
+            
+            if (!email || !password) {
+                showMessage('Por favor completa todos los campos', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "login",
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    currentUser = data.user;
+                    document.getElementById('user-name').textContent = currentUser.name || currentUser.email;
+                    document.getElementById('login').classList.remove('active');
+                    document.getElementById('main-app').style.display = 'block';
+                    showPage('inicio');
+                } else {
+                    showMessage(data.message || "Credenciales incorrectas", 'error');
+                }
+            } catch (error) {
+                showMessage('Error de conexión: ' + error.message, 'error');
+            }
+        }
+        
+        // Registro
+        async function register() {
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirm = document.getElementById('register-confirm').value;
+            
+            if (!name || !email || !password || !confirm) {
+                showMessage('Por favor completa todos los campos', 'error');
+                return;
+            }
+            
+            if (password !== confirm) {
+                showMessage('Las contraseñas no coinciden', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "register",
+                        name: name,
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    showMessage('¡Cuenta creada con éxito! Por favor inicia sesión', 'success');
+                    
+                    // Cambiar a pestaña de login
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelector('.tab[data-tab="login"]').classList.add('active');
+                    document.getElementById('login-form').style.display = 'block';
+                    document.getElementById('register-form').style.display = 'none';
+                    
+                    // Limpiar formulario de registro
+                    document.getElementById('register-name').value = '';
+                    document.getElementById('register-email').value = '';
+                    document.getElementById('register-password').value = '';
+                    document.getElementById('register-confirm').value = '';
+                } else {
+                    showMessage(data.message || "Error al crear la cuenta", 'error');
+                }
+            } catch (error) {
+                showMessage('Error de conexión: ' + error.message, 'error');
+            }
+        }
+        
+        // Logout
+        function logout() {
+            currentUser = null;
+            document.getElementById('main-app').style.display = 'none';
+            document.getElementById('login').classList.add('active');
+            document.getElementById('login-email').value = '';
+            document.getElementById('login-password').value = '';
+        }
+        
+        // Mostrar mensaje en login
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('login-message');
+            messageContainer.innerHTML = `
+                <div class="alert alert-${type}">
+                    <i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}-circle"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                messageContainer.innerHTML = '';
+            }, 5000);
+        }
+        
+        // Mostrar página específica
+        function showPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+        
+        // Iniciar proceso de auditoría
+        function iniciarAuditoria() {
+            const nombre = document.getElementById('nombre-auditor').value;
+            const area = document.getElementById('area-auditada').value;
+            const fecha = document.getElementById('fecha-auditoria').value;
+            
+            if (!nombre || !area || !fecha) {
+                alert('Por favor completa todos los campos antes de iniciar la auditoría.');
+                return;
+            }
+            
+            // Guardar datos del auditor
+            auditorData = {
+                nombre: nombre,
+                area: area,
+                fecha: fecha
+            };
+            
+            // Actualizar información en la sección de auditoría
+            document.getElementById('current-auditor').textContent = nombre;
+            document.getElementById('current-area').textContent = document.querySelector(`#area-auditada option[value="${area}"]`).textContent;
+            document.getElementById('current-date').textContent = fecha;
+            
+            // Actualizar información en la sección de reportes
+            document.getElementById('reporte-auditor').textContent = nombre;
+            document.getElementById('reporte-area').textContent = document.querySelector(`#area-auditada option[value="${area}"]`).textContent;
+            document.getElementById('reporte-fecha').textContent = fecha;
+            
+            // Generar preguntas
+            generarPreguntas();
+            
+            // Mostrar sección de auditoría
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.querySelector('.nav-link[data-page="auditoria"]').classList.add('active');
+            showPage('auditoria');
+        }
+        
+        // Generar preguntas de auditoría
+        function generarPreguntas() {
+            const container = document.getElementById('preguntas-container');
+            container.innerHTML = '';
+            
+            preguntasAuditoria.forEach((pregunta, index) => {
+                const preguntaElement = document.createElement('div');
+                preguntaElement.className = 'pregunta-card';
+                preguntaElement.innerHTML = `
+                    <div class="pregunta-text">${pregunta.id}. ${pregunta.texto}</div>
+                    <div class="opciones">
+                        <div class="opcion" data-value="cumple" data-pregunta="${pregunta.id}">
+                            <input type="radio" name="pregunta-${pregunta.id}" value="cumple" id="p${pregunta.id}-cumple">
+                            <label for="p${pregunta.id}-cumple">Cumple</label>
+                        </div>
+                        <div class="opcion" data-value="parcial" data-pregunta="${pregunta.id}">
+                            <input type="radio" name="pregunta-${pregunta.id}" value="parcial" id="p${pregunta.id}-parcial">
+                            <label for="p${pregunta.id}-parcial">Cumple Parcial</label>
+                        </div>
+                        <div class="opcion" data-value="no_cumple" data-pregunta="${pregunta.id}">
+                            <input type="radio" name="pregunta-${pregunta.id}" value="no_cumple" id="p${pregunta.id}-no_cumple">
+                            <label for="p${pregunta.id}-no_cumple">No Cumple</label>
+                        </div>
+                    </div>
+                    <div class="evidencia-section" id="evidencia-${pregunta.id}">
+                        <p><strong>Evidencia fotográfica requerida:</strong></p>
+                        <div class="camera-preview" id="camera-preview-${pregunta.id}">
+                            <i class="fas fa-camera"></i>
+                            <span>Haz clic para tomar foto</span>
+                        </div>
+                        <input type="file" accept="image/*" capture="environment" style="display: none;" id="camera-input-${pregunta.id}">
+                    </div>
+                `;
+                container.appendChild(preguntaElement);
+                
+                // Event listeners para las opciones
+                const opciones = preguntaElement.querySelectorAll('.opcion');
+                opciones.forEach(opcion => {
+                    opcion.addEventListener('click', function() {
+                        const value = this.getAttribute('data-value');
+                        const preguntaId = this.getAttribute('data-pregunta');
+                        
+                        // Guardar respuesta
+                        respuestas[preguntaId] = {
+                            estado: value,
+                            evidencia: null,
+                            evidenciaUrl: null
+                        };
+                        
+                        // Mostrar/ocultar sección de evidencia
+                        const evidenciaSection = document.getElementById(`evidencia-${preguntaId}`);
+                        if (value === 'parcial' || value === 'no_cumple') {
+                            evidenciaSection.style.display = 'block';
+                        } else {
+                            evidenciaSection.style.display = 'none';
+                        }
+                        
+                        // Actualizar estilo de opciones
+                        opciones.forEach(o => o.classList.remove('selected'));
+                        this.classList.add('selected');
+                    });
+                });
+                
+                // Event listener para la cámara
+                const cameraPreview = document.getElementById(`camera-preview-${pregunta.id}`);
+                const cameraInput = document.getElementById(`camera-input-${pregunta.id}`);
+                
+                cameraPreview.addEventListener('click', function() {
+                    cameraInput.click();
+                });
+                
+                cameraInput.addEventListener('change', async function(e) {
+                    if (e.target.files && e.target.files[0]) {
+                        const file = e.target.files[0];
+                        const reader = new FileReader();
+                        
+                        reader.onload = async function(event) {
+                            cameraPreview.innerHTML = `<img src="${event.target.result}" alt="Evidencia fotográfica">`;
+                            
+                            // Subir imagen al backend
+                            try {
+                                const response = await fetch(SCRIPT_URL, {
+                                    method: 'POST',
+                                    body: JSON.stringify({
+                                        action: "uploadImage",
+                                        image: event.target.result
+                                    })
+                                });
+                                
+                                const data = await response.json();
+                                
+                                if (data.status === "success") {
+                                    // Guardar evidencia
+                                    respuestas[pregunta.id].evidencia = file;
+                                    respuestas[pregunta.id].evidenciaUrl = data.url;
+                                } else {
+                                    throw new Error(data.message || "Error al subir imagen");
+                                }
+                            } catch (error) {
+                                alert('Error al subir evidencia: ' + error.message);
+                                cameraPreview.innerHTML = `
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span>Error: ${error.message}</span>
+                                `;
+                            }
+                        };
+                        
+                        reader.readAsDataURL(file);
+                    }
+                });
+            });
+        }
+        
+        // Finalizar auditoría
+        async function finalizarAuditoria() {
+            // Validar que todas las preguntas tienen respuesta
+            const preguntasContestadas = Object.keys(respuestas).length;
+            if (preguntasContestadas < preguntasAuditoria.length) {
+                alert('Por favor responde todas las preguntas antes de finalizar la auditoría.');
+                return;
+            }
+            
+            // Calcular estadísticas
+            const totalPreguntas = preguntasAuditoria.length;
+            const cumple = Object.values(respuestas).filter(r => r.estado === 'cumple').length;
+            const parcial = Object.values(respuestas).filter(r => r.estado === 'parcial').length;
+            const noCumple = Object.values(respuestas).filter(r => r.estado === 'no_cumple').length;
+            
+            // Actualizar reporte con estadísticas reales
+            document.getElementById('reporte-cumple').textContent = Math.round((cumple / totalPreguntas) * 100) + '%';
+            document.getElementById('reporte-parcial').textContent = Math.round((parcial / totalPreguntas) * 100) + '%';
+            document.getElementById('reporte-no-cumple').textContent = Math.round((noCumple / totalPreguntas) * 100) + '%';
+            
+            // Determinar resultado general
+            let resultado = "Cumplimiento Total";
+            let color = "var(--success)";
+            
+            if (noCumple > 0 || parcial > totalPreguntas * 0.2) {
+                resultado = "Cumplimiento Parcial";
+                color = "var(--warning)";
+            }
+            
+            if (noCumple > totalPreguntas * 0.1) {
+                resultado = "No Cumple";
+                color = "var(--danger)";
+            }
+            
+            document.getElementById('reporte-resultado').textContent = resultado;
+            document.getElementById('reporte-resultado').style.color = color;
+            
+            // Preparar datos para enviar al backend
+            const preguntasData = [];
+            
+            for (const [id, respuesta] of Object.entries(respuestas)) {
+                const pregunta = preguntasAuditoria.find(p => p.id === parseInt(id));
+                preguntasData.push({
+                    id: `p${pregunta.id}`,
+                    texto: pregunta.texto,
+                    estado: respuesta.estado,
+                    evidenciaUrl: respuesta.evidenciaUrl || null
+                });
+            }
+            
+            const payload = {
+                action: "submitAudit",
+                auditor: auditorData.nombre,
+                area: auditorData.area,
+                fecha: auditorData.fecha,
+                preguntas: preguntasData
+            };
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    auditorData.auditId = data.auditId;
+                    generarDetalleReporte();
+                    
+                    // Mostrar sección de reportes
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    document.querySelector('.nav-link[data-page="reportes"]').classList.add('active');
+                    showPage('reportes');
+                    
+                    alert('¡Auditoría completada con éxito! Se ha generado el reporte ejecutivo.');
+                    
+                    // Recargar reportes
+                    cargarReportes();
+                } else {
+                    throw new Error(data.message || "Error en el servidor");
+                }
+            } catch (error) {
+                alert('Error al enviar la auditoría: ' + error.message);
+            }
+        }
+        
+        // Generar detalle para el reporte PDF
+        function generarDetalleReporte() {
+            const detalle = document.getElementById('reporte-detalle');
+            detalle.innerHTML = '';
+            
+            preguntasAuditoria.forEach(pregunta => {
+                const respuesta = respuestas[pregunta.id];
+                let estadoText, estadoColor;
+                
+                switch(respuesta.estado) {
+                    case 'cumple':
+                        estadoText = 'Cumple';
+                        estadoColor = 'green';
+                        break;
+                    case 'parcial':
+                        estadoText = 'Cumple Parcial';
+                        estadoColor = 'orange';
+                        break;
+                    case 'no_cumple':
+                        estadoText = 'No Cumple';
+                        estadoColor = 'red';
+                        break;
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="padding: 10px;">${pregunta.texto}</td>
+                    <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
+                    <td style="padding: 10px; text-align: center;">${respuesta.evidencia ? 'Sí' : 'No'}</td>
+                `;
+                detalle.appendChild(row);
+            });
+        }
+        
+        // Inicializar gráficos
+        function inicializarGraficos() {
+            const ctxDistribucion = document.getElementById('chart-distribucion').getContext('2d');
+            const ctxAreas = document.getElementById('chart-areas').getContext('2d');
+            
+            // Gráfico de distribución
+            chartDistribucion = new Chart(ctxDistribucion, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Cumple', 'Cumple Parcial', 'No Cumple'],
+                    datasets: [{
+                        data: [0, 0, 0],
+                        backgroundColor: [
+                            'rgba(39, 174, 96, 0.8)',
+                            'rgba(243, 156, 18, 0.8)',
+                            'rgba(231, 76, 60, 0.8)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
                     }
                 }
-                
-                // Tomar foto
-                if (e.target.classList.contains('take-photo')) {
-                    const preguntaId = e.target.dataset.pregunta;
-                    openCamera(preguntaId);
-                }
             });
-        }
-
-        // Función para abrir la cámara
-        async function openCamera(preguntaId) {
-            try {
-                // Detener stream anterior si existe
-                if (appState.mediaStream) {
-                    appState.mediaStream.getTracks().forEach(track => track.stop());
-                }
-                
-                // Obtener acceso a la cámara
-                appState.mediaStream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: 'environment' } 
-                });
-                
-                // Encontrar el contenedor de previsualización para esta pregunta
-                const previewContainer = document.querySelector(`.evidencia[data-pregunta="${preguntaId}"] .camera-preview`);
-                previewContainer.innerHTML = '<video autoplay playsinline></video>';
-                const video = previewContainer.querySelector('video');
-                video.srcObject = appState.mediaStream;
-                
-                // Actualizar botones
-                const takePhotoBtn = document.querySelector(`.take-photo[data-pregunta="${preguntaId}"]`);
-                takePhotoBtn.textContent = 'Capturar Foto';
-                takePhotoBtn.onclick = () => capturePhoto(preguntaId);
-                
-            } catch (error) {
-                console.error('Error al acceder a la cámara:', error);
-                alert('No se pudo acceder a la cámara. Asegúrate de permitir el acceso.');
-            }
-        }
-
-        // Función para capturar foto
-        function capturePhoto(preguntaId) {
-            const previewContainer = document.querySelector(`.evidencia[data-pregunta="${preguntaId}"] .camera-preview`);
-            const video = previewContainer.querySelector('video');
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
             
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            // Detener la cámara
-            appState.mediaStream.getTracks().forEach(track => track.stop());
-            appState.mediaStream = null;
-            
-            // Mostrar la imagen capturada
-            previewContainer.innerHTML = `<img src="${canvas.toDataURL('image/jpeg')}" alt="Foto capturada">`;
-            
-            // Actualizar botón
-            const takePhotoBtn = document.querySelector(`.take-photo[data-pregunta="${preguntaId}"]`);
-            takePhotoBtn.textContent = 'Tomar Otra Foto';
-            takePhotoBtn.onclick = () => openCamera(preguntaId);
-        }
-
-        // Función para finalizar la auditoría
-        async function finalizarAuditoria() {
-            const area = areaSelect.value;
-            if (!area) {
-                alert('Selecciona un área primero');
-                return;
-            }
-            
-            const respuestas = [];
-            let tieneIncumplimientos = false;
-            
-            // Recopilar respuestas
-            const preguntasDivs = respuestasDiv.querySelectorAll('.pregunta');
-            for (const pregDiv of preguntasDivs) {
-                const preguntaId = pregDiv.querySelector('button').dataset.pregunta;
-                const selectedButton = pregDiv.querySelector('.opciones button.active');
-                
-                if (!selectedButton) {
-                    alert('Por favor, responde todas las preguntas');
-                    return;
-                }
-                
-                const resultado = selectedButton.dataset.result;
-                const comentario = pregDiv.querySelector('textarea')?.value || '';
-                const foto = pregDiv.querySelector('img')?.src || DEFAULT_IMAGE_URL;
-                
-                // Verificar si hay incumplimiento
-                if (resultado === 'no-cumple' || resultado === 'parcial') {
-                    tieneIncumplimientos = true;
-                }
-                
-                respuestas.push({
-                    preguntaId,
-                    resultado,
-                    comentario,
-                    foto
-                });
-            }
-            
-            try {
-                finalizarBtn.disabled = true;
-                finalizarBtn.textContent = 'Guardando...';
-                
-                // Guardar auditoría
-                const response = await fetchGAS('guardarAuditoria', {
-                    auditor: appState.currentUser.nombre,
-                    area,
-                    respuestas,
-                    tieneIncumplimientos
-                });
-                
-                if (response.success) {
-                    alert('Auditoría guardada exitosamente');
-                    // Limpiar formulario
-                    areaSelect.value = '';
-                    respuestasDiv.innerHTML = '';
-                    showView('dashboard-view');
-                    loadDashboardData();
-                } else {
-                    alert('Error al guardar auditoría');
-                }
-            } catch (error) {
-                console.error('Error al guardar auditoría:', error);
-                alert('Error al guardar auditoría');
-            } finally {
-                finalizarBtn.disabled = false;
-                finalizarBtn.textContent = 'Finalizar Auditoría';
-            }
-        }
-
-        // Función para cargar datos del dashboard
-        async function loadDashboardData() {
-            dashboardContent.classList.add('hidden');
-            dashboardLoading.classList.remove('hidden');
-            
-            try {
-                const data = await fetchGAS('getDashboardData');
-                
-                // Actualizar estadísticas
-                document.getElementById('total-auditorias').textContent = data.totalAuditorias;
-                document.getElementById('cumplimiento').textContent = `${data.cumplimiento}%`;
-                
-                // Cargar gráficos (usando Chart.js si está disponible)
-                if (typeof Chart !== 'undefined') {
-                    // Gráfico de áreas
-                    const areaCtx = document.getElementById('area-chart').getContext('2d');
-                    new Chart(areaCtx, {
-                        type: 'bar',
-                        data: {
-                            labels: data.areas.map(a => a.area),
-                            datasets: [{
-                                label: '% Cumplimiento',
-                                data: data.areas.map(a => a.cumplimiento),
-                                backgroundColor: '#3498db'
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    max: 100
+            // Gráfico por áreas
+            chartAreas = new Chart(ctxAreas, {
+                type: 'bar',
+                data: {
+                    labels: ['Producción', 'Almacén', 'Calidad', 'Mantenimiento', 'Logística'],
+                    datasets: [{
+                        label: 'Porcentaje de Cumplimiento',
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: 'rgba(52, 152, 219, 0.8)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
                                 }
                             }
                         }
-                    });
+                    }
+                }
+            });
+        }
+        
+        // Cargar datos para el dashboard
+        async function cargarDashboard() {
+            const loader = document.getElementById('dashboard-loader');
+            const content = document.getElementById('dashboard-content');
+            const fecha = document.getElementById('filtro-fecha').value;
+            const area = document.getElementById('filtro-area').value;
+            
+            // Mostrar loader y ocultar contenido
+            loader.style.display = 'block';
+            content.style.opacity = '0.3';
+            
+            try {
+                // Obtener datos reales del backend
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "getDashboardData",
+                        fecha: fecha,
+                        area: area
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    // Actualizar estadísticas
+                    document.getElementById('stat-cumple').textContent = data.porcCumple + '%';
+                    document.getElementById('stat-parcial').textContent = data.porcParcial + '%';
+                    document.getElementById('stat-no-cumple').textContent = data.porcNoCumple + '%';
                     
-                    // Gráfico de tendencia
-                    const trendCtx = document.getElementById('trend-chart').getContext('2d');
-                    new Chart(trendCtx, {
-                        type: 'line',
-                        data: {
-                            labels: data.trend.map(t => t.mes),
-                            datasets: [{
-                                label: 'Cumplimiento',
-                                data: data.trend.map(t => t.cumplimiento),
-                                borderColor: '#27ae60',
-                                tension: 0.3,
-                                fill: false
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    max: 100
-                                }
-                            }
-                        }
-                    });
+                    // Actualizar gráfico de distribución
+                    chartDistribucion.data.datasets[0].data = [data.porcCumple, data.porcParcial, data.porcNoCumple];
+                    chartDistribucion.update();
+                    
+                    // Actualizar gráfico por áreas
+                    chartAreas.data.datasets[0].data = data.areasData;
+                    chartAreas.update();
+                } else {
+                    throw new Error(data.message || "Error al cargar datos");
                 }
-                
-                dashboardContent.classList.remove('hidden');
-                dashboardLoading.classList.add('hidden');
-                
             } catch (error) {
-                console.error('Error al cargar dashboard:', error);
-                dashboardLoading.innerHTML = '<div class="error">Error al cargar datos</div>';
+                alert('Error al cargar datos del dashboard: ' + error.message);
+            } finally {
+                // Ocultar loader y mostrar contenido
+                loader.style.display = 'none';
+                content.style.opacity = '1';
             }
         }
-
-        // Función para cargar reportes
-        async function loadReportes() {
-            reportesList.classList.add('hidden');
-            reportesLoading.classList.remove('hidden');
+        
+        // Cargar reportes
+        async function cargarReportes() {
+            const loader = document.getElementById('reportes-loader');
+            const content = document.getElementById('lista-reportes-content');
+            const fecha = document.getElementById('filtro-fecha-reporte').value;
+            const area = document.getElementById('filtro-area-reporte').value;
+            const auditor = document.getElementById('filtro-auditor-reporte').value;
             
-            const area = filterArea.value;
-            const auditor = filterAuditor.value;
-            const mes = filterMonth.value;
+            // Mostrar loader y ocultar contenido
+            loader.style.display = 'block';
+            content.style.opacity = '0.3';
             
             try {
-                appState.auditorias = await fetchGAS('getReportes', { area, auditor, mes });
-                renderReportesList();
+                // Obtener datos reales del backend
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "getAuditsForReport",
+                        fecha: fecha,
+                        area: area,
+                        auditor: auditor
+                    })
+                });
                 
-                reportesList.classList.remove('hidden');
-                reportesLoading.classList.add('hidden');
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    reportesData = data.reportes;
+                    renderReportesList();
+                } else {
+                    throw new Error(data.message || "Error al cargar reportes");
+                }
             } catch (error) {
-                console.error('Error al cargar reportes:', error);
-                reportesLoading.innerHTML = '<div class="error">Error al cargar reportes</div>';
+                alert('Error al cargar reportes: ' + error.message);
+            } finally {
+                // Ocultar loader y mostrar contenido
+                loader.style.display = 'none';
+                content.style.opacity = '1';
             }
         }
-
-        // Función para renderizar lista de reportes
+        
+        // Renderizar lista de reportes
         function renderReportesList() {
-            reportesList.innerHTML = '';
+            const container = document.getElementById('reportes-container');
+            container.innerHTML = '';
             
-            if (appState.auditorias.length === 0) {
-                reportesList.innerHTML = '<div class="card">No se encontraron auditorías</div>';
+            if (reportesData.length === 0) {
+                container.innerHTML = '<p>No se encontraron reportes con los filtros seleccionados</p>';
                 return;
             }
             
-            appState.auditorias.forEach(auditoria => {
-                const auditItem = document.createElement('div');
-                auditItem.className = 'audit-item';
-                auditItem.innerHTML = `
-                    <div class="audit-info">
-                        <div class="audit-title">${auditoria.area}</div>
-                        <div class="audit-meta">${auditoria.fecha} | ${auditoria.auditor}</div>
-                    </div>
-                    <div class="status-badge status-completed">${auditoria.cumplimiento}%</div>
+            reportesData.forEach((reporte, index) => {
+                const item = document.createElement('div');
+                item.className = 'reporte-item';
+                item.dataset.id = reporte.id;
+                item.innerHTML = `
+                    <p><strong>${reporte.auditor}</strong> - ${reporte.area}</p>
+                    <p><i class="fas fa-calendar"></i> ${reporte.fecha}</p>
+                    <p>${reporte.totalPreguntas} requisitos evaluados</p>
                 `;
                 
-                auditItem.addEventListener('click', () => {
-                    appState.currentReporte = auditoria.id;
-                    showView('reporte-detail-view');
-                    loadReporteDetail();
+                item.addEventListener('click', function() {
+                    cargarDetalleReporte(reporte.id);
                 });
                 
-                reportesList.appendChild(auditItem);
+                container.appendChild(item);
             });
         }
-
-        // Función para cargar detalle de reporte
-        async function loadReporteDetail() {
-            reporteContent.classList.add('hidden');
-            reporteSummary.classList.add('hidden');
-            reporteLoading.classList.remove('hidden');
+        
+        // Cargar detalle de un reporte específico
+        async function cargarDetalleReporte(reporteId) {
+            const reporte = reportesData.find(r => r.id === reporteId);
+            if (!reporte) return;
             
-            try {
-                const reporte = await fetchGAS('getReporteDetail', { id: appState.currentReporte });
-                
-                // Actualizar metadatos
-                reporteMeta.innerHTML = `
-                    <div><strong>Área:</strong> ${reporte.area}</div>
-                    <div><strong>Auditor:</strong> ${reporte.auditor}</div>
-                    <div><strong>Fecha:</strong> ${reporte.fecha}</div>
-                `;
-                
-                // Actualizar resumen
-                document.getElementById('summary-cumple').textContent = reporte.resumen.cumple;
-                document.getElementById('summary-no-cumple').textContent = reporte.resumen.noCumple;
-                document.getElementById('summary-parcial').textContent = reporte.resumen.parcial;
-                reporteSummary.classList.remove('hidden');
-                
-                // Renderizar detalle
-                reporteContent.innerHTML = '';
-                reporte.detalle.forEach(item => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'pregunta';
-                    itemDiv.innerHTML = `
-                        <h4>${item.pregunta}</h4>
-                        <div><strong>Resultado:</strong> ${formatResultado(item.resultado)}</div>
-                        ${item.comentario ? `<div><strong>Comentario:</strong> ${item.comentario}</div>` : ''}
-                        ${item.foto !== DEFAULT_IMAGE_URL ? `<div style="margin-top: 10px;"><img src="${item.foto}" alt="Evidencia" style="max-width: 100%; border-radius: 8px;"></div>` : ''}
-                    `;
-                    reporteContent.appendChild(itemDiv);
-                });
-                
-                reporteContent.classList.remove('hidden');
-                reporteLoading.classList.add('hidden');
-                
-            } catch (error) {
-                console.error('Error al cargar detalle:', error);
-                reporteLoading.innerHTML = '<div class="error">Error al cargar detalle</div>';
+            // Resaltar el reporte seleccionado
+            document.querySelectorAll('.reporte-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`.reporte-item[data-id="${reporteId}"]`).classList.add('active');
+            
+            // Actualizar información del reporte
+            document.getElementById('reporte-auditor').textContent = reporte.auditor;
+            document.getElementById('reporte-area').textContent = reporte.area;
+            document.getElementById('reporte-fecha').textContent = reporte.fecha;
+            document.getElementById('reporte-cumple').textContent = reporte.porcCumple + '%';
+            document.getElementById('reporte-parcial').textContent = reporte.porcParcial + '%';
+            document.getElementById('reporte-no-cumple').textContent = reporte.porcNoCumple + '%';
+            
+            // Determinar resultado general
+            let resultado = "Cumplimiento Total";
+            let color = "var(--success)";
+            
+            if (reporte.porcNoCumple > 0 || reporte.porcParcial > 20) {
+                resultado = "Cumplimiento Parcial";
+                color = "var(--warning)";
             }
+            
+            if (reporte.porcNoCumple > 10) {
+                resultado = "No Cumple";
+                color = "var(--danger)";
+            }
+            
+            document.getElementById('reporte-resultado').textContent = resultado;
+            document.getElementById('reporte-resultado').style.color = color;
+            
+            // Generar detalle de requisitos
+            const detalle = document.getElementById('reporte-detalle');
+            detalle.innerHTML = '';
+            
+            reporte.preguntas.forEach(pregunta => {
+                let estadoText, estadoColor;
+                
+                switch(pregunta.estado) {
+                    case 'cumple':
+                        estadoText = 'Cumple';
+                        estadoColor = 'green';
+                        break;
+                    case 'parcial':
+                        estadoText = 'Cumple Parcial';
+                        estadoColor = 'orange';
+                        break;
+                    case 'no_cumple':
+                        estadoText = 'No Cumple';
+                        estadoColor = 'red';
+                        break;
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="padding: 10px;">${pregunta.texto}</td>
+                    <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
+                    <td style="padding: 10px; text-align: center;">${pregunta.evidenciaUrl ? 'Sí' : 'No'}</td>
+                `;
+                detalle.appendChild(row);
+            });
+            
+            // Mostrar detalle del reporte
+            document.getElementById('detalle-reporte').style.display = 'block';
         }
-
-        // Función para formatear resultado
-        function formatResultado(resultado) {
-            const status = {
-                'cumple': 'Cumple',
-                'no-cumple': 'No Cumple',
-                'parcial': 'Cumple Parcial'
-            };
-            return status[resultado] || resultado;
-        }
-
-        // Función para generar PDF
-        async function generatePDF() {
+        
+        // Generar PDF
+        function generarPDF() {
             const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
+            const doc = new jsPDF();
             
             // Título
-            pdf.setFontSize(22);
-            pdf.text('Reporte de Auditoría', 105, 20, null, null, 'center');
+            doc.setFontSize(20);
+            doc.text('Reporte de Auditoría PPR TS FSSC 22002', 105, 20, null, null, 'center');
             
-            // Metadatos
-            pdf.setFontSize(12);
-            pdf.text(`Área: ${appState.currentReporte.area}`, 20, 30);
-            pdf.text(`Auditor: ${appState.currentReporte.auditor}`, 20, 37);
-            pdf.text(`Fecha: ${appState.currentReporte.fecha}`, 20, 44);
+            // Información de auditoría
+            doc.setFontSize(12);
+            doc.text(`Auditor: ${document.getElementById('reporte-auditor').textContent}`, 20, 35);
+            doc.text(`Área auditada: ${document.getElementById('reporte-area').textContent}`, 20, 45);
+            doc.text(`Fecha: ${document.getElementById('reporte-fecha').textContent}`, 20, 55);
             
-            // Resumen
-            pdf.setFontSize(16);
-            pdf.text('Resumen de Cumplimiento', 20, 60);
+            // Resumen de cumplimiento
+            doc.setFontSize(14);
+            doc.text('Resumen de Cumplimiento', 20, 70);
             
-            pdf.setFillColor(39, 174, 96);
-            pdf.rect(20, 70, 50, 10, 'F');
-            pdf.text('Cumple: ' + appState.currentReporte.resumen.cumple, 75, 77);
+            // Gráfico de resumen (simplificado)
+            doc.setFillColor(39, 174, 96); // Cumple
+            doc.rect(30, 80, 40, 40, 'F');
+            doc.setFillColor(243, 156, 18); // Parcial
+            doc.rect(80, 80, 40, 30, 'F');
+            doc.setFillColor(231, 76, 60); // No cumple
+            doc.rect(130, 80, 40, 20, 'F');
             
-            pdf.setFillColor(231, 76, 60);
-            pdf.rect(20, 85, 50, 10, 'F');
-            pdf.text('No Cumple: ' + appState.currentReporte.resumen.noCumple, 75, 92);
+            doc.setFontSize(10);
+            doc.text(`${document.getElementById('reporte-cumple').textContent} Cumple`, 50, 125, null, null, 'center');
+            doc.text(`${document.getElementById('reporte-parcial').textContent} Parcial`, 100, 125, null, null, 'center');
+            doc.text(`${document.getElementById('reporte-no-cumple').textContent} No cumple`, 150, 125, null, null, 'center');
             
-            pdf.setFillColor(243, 156, 18);
-            pdf.rect(20, 100, 50, 10, 'F');
-            pdf.text('Parcial: ' + appState.currentReporte.resumen.parcial, 75, 107);
+            // Detalle de requisitos
+            doc.setFontSize(14);
+            doc.text('Detalle de Requisitos', 20, 140);
             
-            // Detalle
-            pdf.setFontSize(16);
-            pdf.text('Detalle de Preguntas', 20, 125);
-            pdf.setFontSize(12);
+            let yPosition = 150;
+            doc.setFontSize(10);
             
-            let y = 135;
-            appState.currentReporte.detalle.forEach((item, index) => {
-                if (y > 280) {
-                    pdf.addPage();
-                    y = 20;
+            const detalle = document.querySelectorAll('#reporte-detalle tr');
+            detalle.forEach((fila, index) => {
+                if (yPosition > 280) {
+                    doc.addPage();
+                    yPosition = 20;
                 }
                 
-                pdf.text(`${index + 1}. ${item.pregunta}`, 20, y);
-                pdf.text(`Resultado: ${formatResultado(item.resultado)}`, 25, y + 7);
+                const celdas = fila.querySelectorAll('td');
+                const pregunta = celdas[0].textContent;
+                const estado = celdas[1].textContent;
+                const estadoColor = celdas[1].style.color;
                 
-                if (item.comentario) {
-                    pdf.text(`Comentario: ${item.comentario}`, 25, y + 14);
-                }
+                // Convertir color CSS a RGB
+                let rgbColor = [0, 0, 0];
+                if (estadoColor === 'green') rgbColor = [39, 174, 96];
+                if (estadoColor === 'orange') rgbColor = [243, 156, 18];
+                if (estadoColor === 'red') rgbColor = [231, 76, 60];
                 
-                y += item.comentario ? 25 : 15;
+                doc.setTextColor(0, 0, 0);
+                doc.text(pregunta, 25, yPosition);
+                
+                doc.setTextColor(...rgbColor);
+                doc.text(estado, 180, yPosition, null, null, 'right');
+                
+                yPosition += 8;
             });
             
             // Guardar PDF
-            pdf.save(`auditoria_${appState.currentReporte.id}.pdf`);
-        }
-
-        // Función para compartir por WhatsApp
-        function shareViaWhatsApp() {
-            const text = `Reporte de Auditoría - ${appState.currentReporte.area}\n` +
-                         `Fecha: ${appState.currentReporte.fecha}\n` +
-                         `Cumplimiento: ${appState.currentReporte.cumplimiento}%\n` +
-                         `Ver detalles: ${window.location.href}`;
-            
-            const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-            window.open(url, '_blank');
-        }
-
-        // Función genérica para llamar a GAS con proxy CORS
-        async function fetchGAS(action, data = {}) {
-            // Usar proxy para evitar problemas de CORS
-            const url = PROXY_URL + GAS_URL + '?action=' + action;
-            
-            const options = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': appState.currentUser?.token || ''
-                }
-            };
-            
-            if (Object.keys(data).length > 0) {
-                options.body = JSON.stringify(data);
-            }
-            
-            try {
-                const response = await fetch(url, options);
-                
-                if (!response.ok) {
-                    throw new Error(`Error ${response.status}: ${response.statusText}`);
-                }
-                
-                return await response.json();
-            } catch (error) {
-                console.error('Error en fetchGAS:', error);
-                throw error;
-            }
+            doc.save(`Reporte_Auditoria_${document.getElementById('reporte-fecha').textContent}.pdf`);
         }
     </script>
-    
-    <!-- Cargar Chart.js solo si está disponible (para GitHub Pages) -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
