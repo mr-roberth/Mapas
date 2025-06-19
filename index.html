@@ -1004,7 +1004,7 @@
     </div>
     
     <script>
-        // URL de tu Google Apps Script
+        // URL de tu Google Apps Script (REEMPLAZA CON TU URL)
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu3COfRM0E8f8vQlgXXzqTOXS_s8FZEWwt2JtCqBng5Y1sRACNfay60Mi158SJxlpx/exec";
         
         // Datos de ejemplo para la aplicación
@@ -1753,32 +1753,51 @@
             const detalle = document.getElementById('reporte-detalle');
             detalle.innerHTML = '';
             
-            reporte.preguntas.forEach(pregunta => {
-                let estadoText, estadoColor;
+            // Obtener detalles completos del reporte
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "getAuditDetails",
+                        auditId: reporteId
+                    })
+                });
                 
-                switch(pregunta.estado) {
-                    case 'cumple':
-                        estadoText = 'Cumple';
-                        estadoColor = 'green';
-                        break;
-                    case 'parcial':
-                        estadoText = 'Cumple Parcial';
-                        estadoColor = 'orange';
-                        break;
-                    case 'no_cumple':
-                        estadoText = 'No Cumple';
-                        estadoColor = 'red';
-                        break;
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    data.preguntas.forEach(pregunta => {
+                        let estadoText, estadoColor;
+                        
+                        switch(pregunta.estado) {
+                            case 'cumple':
+                                estadoText = 'Cumple';
+                                estadoColor = 'green';
+                                break;
+                            case 'parcial':
+                                estadoText = 'Cumple Parcial';
+                                estadoColor = 'orange';
+                                break;
+                            case 'no_cumple':
+                                estadoText = 'No Cumple';
+                                estadoColor = 'red';
+                                break;
+                        }
+                        
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td style="padding: 10px;">${pregunta.texto}</td>
+                            <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
+                            <td style="padding: 10px; text-align: center;">${pregunta.evidenciaUrl ? 'Sí' : 'No'}</td>
+                        `;
+                        detalle.appendChild(row);
+                    });
+                } else {
+                    throw new Error(data.message || "Error al obtener detalles");
                 }
-                
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td style="padding: 10px;">${pregunta.texto}</td>
-                    <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
-                    <td style="padding: 10px; text-align: center;">${pregunta.evidenciaUrl ? 'Sí' : 'No'}</td>
-                `;
-                detalle.appendChild(row);
-            });
+            } catch (error) {
+                alert('Error al cargar detalles: ' + error.message);
+            }
             
             // Mostrar detalle del reporte
             document.getElementById('detalle-reporte').style.display = 'block';
