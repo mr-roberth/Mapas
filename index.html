@@ -743,6 +743,19 @@
                         <input type="text" id="nombre-auditor" readonly>
                     </div>
                     <div class="form-group">
+                        <label for="unidad-negocio">Unidad de Negocio</label>
+                        <select id="unidad-negocio">
+                            <option value="">Selecciona una unidad</option>
+                            <option value="Ingenio Huixtla">Ingenio Huixtla</option>
+                            <option value="Ingenio Modelo">Ingenio Modelo</option>
+                            <option value="Ingenio San Pedro">Ingenio San Pedro</option>
+                            <option value="Ingenio Santa Clara">Ingenio Santa Clara</option>
+                            <option value="Dulcinea - Chiapas">Dulcinea - Chiapas</option>
+                            <option value="Dulcinea Michoacán">Dulcinea Michoacán</option>
+                            <option value="Cafetalera - Cordoba">Cafetalera - Cordoba</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="area-auditada">Área a Auditar</label>
                         <select id="area-auditada">
                             <option value="">Selecciona un área</option>
@@ -767,8 +780,8 @@
                     <p>Esta aplicación te permite realizar auditorías de cumplimiento de PPR según la norma TS FSSC 22002.</p>
                     <ul style="margin: 15px 0 15px 30px;">
                         <li>Selecciona "Cumple", "Cumple Parcial" o "No Cumple" para cada requisito</li>
+                        <li>Si una pregunta no aplica, déjala sin responder (se guardará como "No aplica")</li>
                         <li>Para los casos de "Cumple Parcial" o "No Cumple" debes adjuntar evidencia fotográfica</li>
-                        <li>Puedes agregar observaciones para cada requisito</li>
                         <li>Al finalizar, se generará un reporte ejecutivo en PDF</li>
                         <li>Puedes compartir el reporte por correo o WhatsApp</li>
                         <li>Los administradores recibirán notificaciones de incumplimientos</li>
@@ -783,6 +796,7 @@
                     <h2 class="form-title"><i class="fas fa-file-alt"></i> Cuestionario de Auditoría</h2>
                     <div id="auditor-info" style="background: #e3f2fd; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
                         <p><strong>Auditor:</strong> <span id="current-auditor">-</span></p>
+                        <p><strong>Unidad de Negocio:</strong> <span id="current-unidad">-</span></p>
                         <p><strong>Área:</strong> <span id="current-area">-</span></p>
                         <p><strong>Fecha:</strong> <span id="current-date">-</span></p>
                     </div>
@@ -815,14 +829,16 @@
                         </div>
                         
                         <div class="filtro-item">
-                            <label for="filtro-area">Filtrar por Área</label>
-                            <select id="filtro-area">
-                                <option value="">Todas las áreas</option>
-                                <option value="produccion">Producción</option>
-                                <option value="almacen">Almacén</option>
-                                <option value="calidad">Control de Calidad</option>
-                                <option value="mantenimiento">Mantenimiento</option>
-                                <option value="logistica">Logística</option>
+                            <label for="filtro-unidad">Filtrar por Unidad</label>
+                            <select id="filtro-unidad">
+                                <option value="">Todas las unidades</option>
+                                <option value="Ingenio Huixtla">Ingenio Huixtla</option>
+                                <option value="Ingenio Modelo">Ingenio Modelo</option>
+                                <option value="Ingenio San Pedro">Ingenio San Pedro</option>
+                                <option value="Ingenio Santa Clara">Ingenio Santa Clara</option>
+                                <option value="Dulcinea - Chiapas">Dulcinea - Chiapas</option>
+                                <option value="Dulcinea Michoacán">Dulcinea Michoacán</option>
+                                <option value="Cafetalera - Cordoba">Cafetalera - Cordoba</option>
                             </select>
                         </div>
                         
@@ -868,9 +884,9 @@
                         </div>
                         
                         <div class="chart-container">
-                            <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Cumplimiento por Área</h3>
+                            <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Cumplimiento por Unidad</h3>
                             <div class="chart-wrapper">
-                                <canvas id="chart-areas"></canvas>
+                                <canvas id="chart-unidades"></canvas>
                             </div>
                         </div>
                     </div>
@@ -889,6 +905,20 @@
                             <div class="form-group">
                                 <label for="filtro-fecha-reporte">Fecha de Auditoría</label>
                                 <input type="date" id="filtro-fecha-reporte">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="filtro-unidad-reporte">Unidad de Negocio</label>
+                                <select id="filtro-unidad-reporte">
+                                    <option value="">Todas las unidades</option>
+                                    <option value="Ingenio Huixtla">Ingenio Huixtla</option>
+                                    <option value="Ingenio Modelo">Ingenio Modelo</option>
+                                    <option value="Ingenio San Pedro">Ingenio San Pedro</option>
+                                    <option value="Ingenio Santa Clara">Ingenio Santa Clara</option>
+                                    <option value="Dulcinea - Chiapas">Dulcinea - Chiapas</option>
+                                    <option value="Dulcinea Michoacán">Dulcinea Michoacán</option>
+                                    <option value="Cafetalera - Cordoba">Cafetalera - Cordoba</option>
+                                </select>
                             </div>
                             
                             <div class="form-group">
@@ -934,6 +964,7 @@
                             <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
                                 <div>
                                     <p><strong>Auditor:</strong> <span id="reporte-auditor">-</span></p>
+                                    <p><strong>Unidad de Negocio:</strong> <span id="reporte-unidad">-</span></p>
                                     <p><strong>Área auditada:</strong> <span id="reporte-area">-</span></p>
                                     <p><strong>Fecha:</strong> <span id="reporte-fecha">-</span></p>
                                 </div>
@@ -956,6 +987,10 @@
                                 <div style="text-align: center; flex: 1; min-width: 100px;">
                                     <div style="font-size: 1.8rem; color: var(--danger); font-weight: bold;" id="reporte-no-cumple">0%</div>
                                     <div>No Cumple</div>
+                                </div>
+                                <div style="text-align: center; flex: 1; min-width: 100px;">
+                                    <div style="font-size: 1.8rem; color: var(--gray); font-weight: bold;" id="reporte-no-aplica">0%</div>
+                                    <div>No Aplica</div>
                                 </div>
                             </div>
                             
@@ -982,7 +1017,7 @@
                         </div>
                         
                         <!-- Visor de PDF -->
-                        <div id="pdf-viewer-container" style="display: none;">
+                        <div id="pdf-viewer-container">
                             <iframe id="pdf-viewer" src=""></iframe>
                         </div>
                         
@@ -991,9 +1026,6 @@
                         <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
                             <button class="btn btn-primary" id="generar-pdf">
                                 <i class="fas fa-file-download"></i> Descargar PDF
-                            </button>
-                            <button class="btn btn-secondary" id="ver-pdf">
-                                <i class="fas fa-eye"></i> Ver PDF
                             </button>
                             <button class="btn btn-success" id="compartir-whatsapp">
                                 <i class="fab fa-whatsapp"></i> Compartir por WhatsApp
@@ -1023,14 +1055,16 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="area-exportar">Área</label>
-                            <select id="area-exportar">
-                                <option value="">Todas las áreas</option>
-                                <option value="produccion">Producción</option>
-                                <option value="almacen">Almacén</option>
-                                <option value="calidad">Control de Calidad</option>
-                                <option value="mantenimiento">Mantenimiento</option>
-                                <option value="logistica">Logística</option>
+                            <label for="unidad-exportar">Unidad de Negocio</label>
+                            <select id="unidad-exportar">
+                                <option value="">Todas las unidades</option>
+                                <option value="Ingenio Huixtla">Ingenio Huixtla</option>
+                                <option value="Ingenio Modelo">Ingenio Modelo</option>
+                                <option value="Ingenio San Pedro">Ingenio San Pedro</option>
+                                <option value="Ingenio Santa Clara">Ingenio Santa Clara</option>
+                                <option value="Dulcinea - Chiapas">Dulcinea - Chiapas</option>
+                                <option value="Dulcinea Michoacán">Dulcinea Michoacán</option>
+                                <option value="Cafetalera - Cordoba">Cafetalera - Cordoba</option>
                             </select>
                         </div>
                     </div>
@@ -1141,11 +1175,9 @@
         // Variables globales
         let auditorData = {};
         let respuestas = {};
-        let chartDistribucion, chartAreas;
+        let chartDistribucion, chartUnidades;
         let currentUser = null;
         let reportesData = [];
-        let logosLoaded = false;
-        let logo1Data, logo2Data;
         
         // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
@@ -1222,17 +1254,8 @@
             // Event listener para exportar datos
             document.getElementById('btn-exportar').addEventListener('click', exportarDatos);
             
-            // Event listener para ver PDF
-            document.getElementById('ver-pdf').addEventListener('click', function() {
-                const pdfUrl = document.getElementById('reporte-pdf-url').value;
-                mostrarPDF(pdfUrl);
-            });
-            
             // Inicializar gráficos vacíos
             inicializarGraficos();
-            
-            // Cargar logos para PDF
-            cargarLogos();
         });
         
         // Login
@@ -1360,10 +1383,11 @@
         // Iniciar proceso de auditoría
         function iniciarAuditoria() {
             const nombre = document.getElementById('nombre-auditor').value;
+            const unidad = document.getElementById('unidad-negocio').value;
             const area = document.getElementById('area-auditada').value;
             const fecha = document.getElementById('fecha-auditoria').value;
             
-            if (!nombre || !area || !fecha) {
+            if (!nombre || !unidad || !area || !fecha) {
                 alert('Por favor completa todos los campos antes de iniciar la auditoría.');
                 return;
             }
@@ -1371,17 +1395,20 @@
             // Guardar datos del auditor
             auditorData = {
                 nombre: nombre,
+                unidad: unidad,
                 area: area,
                 fecha: fecha
             };
             
             // Actualizar información en la sección de auditoría
             document.getElementById('current-auditor').textContent = nombre;
+            document.getElementById('current-unidad').textContent = unidad;
             document.getElementById('current-area').textContent = document.querySelector(`#area-auditada option[value="${area}"]`).textContent;
             document.getElementById('current-date').textContent = fecha;
             
             // Actualizar información en la sección de reportes
             document.getElementById('reporte-auditor').textContent = nombre;
+            document.getElementById('reporte-unidad').textContent = unidad;
             document.getElementById('reporte-area').textContent = document.querySelector(`#area-auditada option[value="${area}"]`).textContent;
             document.getElementById('reporte-fecha').textContent = fecha;
             
@@ -1416,6 +1443,10 @@
                         <div class="opcion" data-value="no_cumple" data-pregunta="${pregunta.id}">
                             <input type="radio" name="pregunta-${pregunta.id}" value="no_cumple" id="p${pregunta.id}-no_cumple">
                             <label for="p${pregunta.id}-no_cumple">No Cumple</label>
+                        </div>
+                        <div class="opcion" data-value="no_aplica" data-pregunta="${pregunta.id}">
+                            <input type="radio" name="pregunta-${pregunta.id}" value="no_aplica" id="p${pregunta.id}-no_aplica">
+                            <label for="p${pregunta.id}-no_aplica">No Aplica</label>
                         </div>
                     </div>
                     <div class="evidencia-section" id="evidencia-${pregunta.id}">
@@ -1517,23 +1548,33 @@
         
         // Finalizar auditoría
         async function finalizarAuditoria() {
-            // Validar que todas las preguntas tienen respuesta
-            const preguntasContestadas = Object.keys(respuestas).length;
-            if (preguntasContestadas < preguntasAuditoria.length) {
-                alert('Por favor responde todas las preguntas antes de finalizar la auditoría.');
-                return;
-            }
-            
-            // Calcular estadísticas
+            // Calcular estadísticas (incluyendo no aplica)
             const totalPreguntas = preguntasAuditoria.length;
-            const cumple = Object.values(respuestas).filter(r => r.estado === 'cumple').length;
-            const parcial = Object.values(respuestas).filter(r => r.estado === 'parcial').length;
-            const noCumple = Object.values(respuestas).filter(r => r.estado === 'no_cumple').length;
+            let cumple = 0;
+            let parcial = 0;
+            let noCumple = 0;
+            let noAplica = 0;
             
-            // Actualizar reporte con estadísticas reales
+            preguntasAuditoria.forEach(pregunta => {
+                const respuesta = respuestas[pregunta.id];
+                if (!respuesta) {
+                    noAplica++;
+                } else {
+                    switch(respuesta.estado) {
+                        case 'cumple': cumple++; break;
+                        case 'parcial': parcial++; break;
+                        case 'no_cumple': noCumple++; break;
+                        case 'no_aplica': noAplica++; break;
+                        default: noAplica++;
+                    }
+                }
+            });
+            
+            // Actualizar reporte con estadísticas
             document.getElementById('reporte-cumple').textContent = Math.round((cumple / totalPreguntas) * 100) + '%';
             document.getElementById('reporte-parcial').textContent = Math.round((parcial / totalPreguntas) * 100) + '%';
             document.getElementById('reporte-no-cumple').textContent = Math.round((noCumple / totalPreguntas) * 100) + '%';
+            document.getElementById('reporte-no-aplica').textContent = Math.round((noAplica / totalPreguntas) * 100) + '%';
             
             // Determinar resultado general
             let resultado = "Cumplimiento Total";
@@ -1555,20 +1596,22 @@
             // Preparar datos para enviar al backend
             const preguntasData = [];
             
-            for (const [id, respuesta] of Object.entries(respuestas)) {
-                const pregunta = preguntasAuditoria.find(p => p.id === parseInt(id));
+            preguntasAuditoria.forEach(pregunta => {
+                const respuesta = respuestas[pregunta.id] || { estado: "no_aplica" };
+                
                 preguntasData.push({
                     id: `p${pregunta.id}`,
                     texto: pregunta.texto,
                     estado: respuesta.estado,
                     evidenciaUrl: respuesta.evidenciaUrl || null,
-                    observaciones: respuesta.observaciones || "" // Nuevo campo
+                    observaciones: respuesta.observaciones || ""
                 });
-            }
+            });
             
             const payload = {
                 action: "submitAudit",
                 auditor: auditorData.nombre,
+                unidad: auditorData.unidad,
                 area: auditorData.area,
                 fecha: auditorData.fecha,
                 preguntas: preguntasData
@@ -1591,10 +1634,18 @@
                     document.querySelector('.nav-link[data-page="reportes"]').classList.add('active');
                     showPage('reportes');
                     
-                    alert('¡Auditoría completada con éxito! Se ha generado el reporte ejecutivo.');
+                    // Mostrar PDF automáticamente
+                    setTimeout(() => {
+                        cargarReportes();
+                        setTimeout(() => {
+                            const reporteItem = document.querySelector(`.reporte-item[data-id="${auditorData.auditId}"]`);
+                            if (reporteItem) {
+                                reporteItem.click();
+                            }
+                        }, 1000);
+                    }, 500);
                     
-                    // Recargar reportes
-                    cargarReportes();
+                    alert('¡Auditoría completada con éxito! Se ha generado el reporte ejecutivo.');
                 } else {
                     throw new Error(data.message || "Error en el servidor");
                 }
@@ -1609,7 +1660,7 @@
             detalle.innerHTML = '';
             
             preguntasAuditoria.forEach(pregunta => {
-                const respuesta = respuestas[pregunta.id];
+                const respuesta = respuestas[pregunta.id] || { estado: "no_aplica" };
                 let estadoText, estadoColor;
                 
                 switch(respuesta.estado) {
@@ -1624,6 +1675,10 @@
                     case 'no_cumple':
                         estadoText = 'No Cumple';
                         estadoColor = 'red';
+                        break;
+                    case 'no_aplica':
+                        estadoText = 'No Aplica';
+                        estadoColor = 'gray';
                         break;
                 }
                 
@@ -1641,19 +1696,20 @@
         // Inicializar gráficos
         function inicializarGraficos() {
             const ctxDistribucion = document.getElementById('chart-distribucion').getContext('2d');
-            const ctxAreas = document.getElementById('chart-areas').getContext('2d');
+            const ctxUnidades = document.getElementById('chart-unidades').getContext('2d');
             
             // Gráfico de distribución
             chartDistribucion = new Chart(ctxDistribucion, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Cumple', 'Cumple Parcial', 'No Cumple'],
+                    labels: ['Cumple', 'Cumple Parcial', 'No Cumple', 'No Aplica'],
                     datasets: [{
-                        data: [0, 0, 0],
+                        data: [0, 0, 0, 0],
                         backgroundColor: [
                             'rgba(39, 174, 96, 0.8)',
                             'rgba(243, 156, 18, 0.8)',
-                            'rgba(231, 76, 60, 0.8)'
+                            'rgba(231, 76, 60, 0.8)',
+                            'rgba(149, 165, 166, 0.8)'
                         ],
                         borderWidth: 1
                     }]
@@ -1669,14 +1725,14 @@
                 }
             });
             
-            // Gráfico por áreas
-            chartAreas = new Chart(ctxAreas, {
+            // Gráfico por unidades
+            chartUnidades = new Chart(ctxUnidades, {
                 type: 'bar',
                 data: {
-                    labels: ['Producción', 'Almacén', 'Calidad', 'Mantenimiento', 'Logística'],
+                    labels: [],
                     datasets: [{
                         label: 'Porcentaje de Cumplimiento',
-                        data: [0, 0, 0, 0, 0],
+                        data: [],
                         backgroundColor: 'rgba(52, 152, 219, 0.8)',
                         borderWidth: 1
                     }]
@@ -1704,7 +1760,7 @@
             const loader = document.getElementById('dashboard-loader');
             const content = document.getElementById('dashboard-content');
             const fecha = document.getElementById('filtro-fecha').value;
-            const area = document.getElementById('filtro-area').value;
+            const unidad = document.getElementById('filtro-unidad').value;
             
             // Mostrar loader y ocultar contenido
             loader.style.display = 'block';
@@ -1717,7 +1773,7 @@
                     body: JSON.stringify({
                         action: "getDashboardData",
                         fecha: fecha,
-                        area: area
+                        unidad: unidad
                     })
                 });
                 
@@ -1730,12 +1786,18 @@
                     document.getElementById('stat-no-cumple').textContent = data.porcNoCumple + '%';
                     
                     // Actualizar gráfico de distribución
-                    chartDistribucion.data.datasets[0].data = [data.porcCumple, data.porcParcial, data.porcNoCumple];
+                    chartDistribucion.data.datasets[0].data = [
+                        data.porcCumple,
+                        data.porcParcial,
+                        data.porcNoCumple,
+                        data.porcNoAplica
+                    ];
                     chartDistribucion.update();
                     
-                    // Actualizar gráfico por áreas
-                    chartAreas.data.datasets[0].data = data.areasData;
-                    chartAreas.update();
+                    // Actualizar gráfico por unidades
+                    chartUnidades.data.labels = data.unidades;
+                    chartUnidades.data.datasets[0].data = data.unidadesData;
+                    chartUnidades.update();
                 } else {
                     throw new Error(data.message || "Error al cargar datos");
                 }
@@ -1753,6 +1815,7 @@
             const loader = document.getElementById('reportes-loader');
             const content = document.getElementById('lista-reportes-content');
             const fecha = document.getElementById('filtro-fecha-reporte').value;
+            const unidad = document.getElementById('filtro-unidad-reporte').value;
             const area = document.getElementById('filtro-area-reporte').value;
             const auditor = document.getElementById('filtro-auditor-reporte').value;
             
@@ -1767,6 +1830,7 @@
                     body: JSON.stringify({
                         action: "getAuditsForReport",
                         fecha: fecha,
+                        unidad: unidad,
                         area: area,
                         auditor: auditor
                     })
@@ -1804,7 +1868,7 @@
                 item.className = 'reporte-item';
                 item.dataset.id = reporte.id;
                 item.innerHTML = `
-                    <p><strong>${reporte.auditor}</strong> - ${reporte.area}</p>
+                    <p><strong>${reporte.auditor}</strong> - ${reporte.unidad}</p>
                     <p><i class="fas fa-calendar"></i> ${reporte.fecha}</p>
                     <p>${reporte.totalPreguntas} requisitos evaluados</p>
                 `;
@@ -1830,11 +1894,13 @@
             
             // Actualizar información del reporte
             document.getElementById('reporte-auditor').textContent = reporte.auditor;
+            document.getElementById('reporte-unidad').textContent = reporte.unidad;
             document.getElementById('reporte-area').textContent = reporte.area;
             document.getElementById('reporte-fecha').textContent = reporte.fecha;
             document.getElementById('reporte-cumple').textContent = reporte.porcCumple + '%';
             document.getElementById('reporte-parcial').textContent = reporte.porcParcial + '%';
             document.getElementById('reporte-no-cumple').textContent = reporte.porcNoCumple + '%';
+            document.getElementById('reporte-no-aplica').textContent = reporte.porcNoAplica + '%';
             document.getElementById('reporte-pdf-url').value = reporte.pdfUrl;
             
             // Mostrar PDF automáticamente
@@ -1890,6 +1956,10 @@
                                 estadoText = 'No Cumple';
                                 estadoColor = 'red';
                                 break;
+                            case 'no_aplica':
+                                estadoText = 'No Aplica';
+                                estadoColor = 'gray';
+                                break;
                         }
                         
                         const row = document.createElement('tr');
@@ -1909,146 +1979,31 @@
                 }
             } catch (error) {
                 alert('Error al cargar detalles: ' + error.message);
-                document.getElementById('detalle-reporte').style.display = 'none';
             }
         }
         
-        // Cargar logos para el PDF
-        function cargarLogos() {
-            const logo1 = new Image();
-            logo1.crossOrigin = "Anonymous";
-            logo1.src = "https://grupoporres.com.mx/assets/images/resources/logo.png";
-            
-            const logo2 = new Image();
-            logo2.crossOrigin = "Anonymous";
-            logo2.src = "https://grupoporres.com.mx/assets/images/resources/logo.png";
-            
-            Promise.all([
-                new Promise(resolve => { logo1.onload = resolve; }),
-                new Promise(resolve => { logo2.onload = resolve; })
-            ]).then(() => {
-                // Crear canvas para convertir a Base64
-                const canvas1 = document.createElement('canvas');
-                const ctx1 = canvas1.getContext('2d');
-                canvas1.width = logo1.width;
-                canvas1.height = logo1.height;
-                ctx1.drawImage(logo1, 0, 0);
-                logo1Data = canvas1.toDataURL('image/png');
-                
-                const canvas2 = document.createElement('canvas');
-                const ctx2 = canvas2.getContext('2d');
-                canvas2.width = logo2.width;
-                canvas2.height = logo2.height;
-                ctx2.drawImage(logo2, 0, 0);
-                logo2Data = canvas2.toDataURL('image/png');
-                
-                logosLoaded = true;
-            }).catch(error => {
-                console.error("Error cargando logos:", error);
-            });
-        }
-        
-        // Generar PDF con logos
+        // Generar PDF sin logos
         function generarPDF() {
-            if (!logosLoaded) {
-                alert("Los logos aún se están cargando. Por favor intente nuevamente en unos segundos.");
+            const pdfUrl = document.getElementById('reporte-pdf-url').value;
+            if (!pdfUrl) {
+                alert('No hay PDF disponible para descargar');
                 return;
             }
             
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const pageWidth = doc.internal.pageSize.getWidth();
-            
-            // Título
-            doc.setFontSize(20);
-            doc.text('Reporte de Auditoría PPR TS FSSC 22002', pageWidth / 2, 20, null, null, 'center');
-            
-            // Agregar logos
-            doc.addImage(logo1Data, 'PNG', 20, 30, 30, 15);
-            doc.addImage(logo2Data, 'PNG', pageWidth - 50, 30, 30, 15);
-            
-            // Información de auditoría
-            doc.setFontSize(12);
-            doc.text(`Auditor: ${document.getElementById('reporte-auditor').textContent}`, 20, 60);
-            doc.text(`Área auditada: ${document.getElementById('reporte-area').textContent}`, 20, 70);
-            doc.text(`Fecha: ${document.getElementById('reporte-fecha').textContent}`, 20, 80);
-            
-            // Resumen de cumplimiento
-            doc.setFontSize(14);
-            doc.text('Resumen de Cumplimiento', 20, 95);
-            
-            // Gráfico de resumen (simplificado)
-            doc.setFillColor(39, 174, 96); // Cumple
-            doc.rect(30, 105, 40, 40, 'F');
-            doc.setFillColor(243, 156, 18); // Parcial
-            doc.rect(80, 105, 40, 30, 'F');
-            doc.setFillColor(231, 76, 60); // No cumple
-            doc.rect(130, 105, 40, 20, 'F');
-            
-            doc.setFontSize(10);
-            doc.text(`${document.getElementById('reporte-cumple').textContent} Cumple`, 50, 150, null, null, 'center');
-            doc.text(`${document.getElementById('reporte-parcial').textContent} Parcial`, 100, 150, null, null, 'center');
-            doc.text(`${document.getElementById('reporte-no-cumple').textContent} No cumple`, 150, 150, null, null, 'center');
-            
-            // Detalle de requisitos
-            doc.setFontSize(14);
-            doc.text('Detalle de Requisitos', 20, 165);
-            
-            let yPosition = 175;
-            doc.setFontSize(10);
-            
-            const detalle = document.querySelectorAll('#reporte-detalle tr');
-            detalle.forEach((fila, index) => {
-                if (yPosition > 280) {
-                    doc.addPage();
-                    yPosition = 20;
-                    
-                    // Agregar logos en páginas adicionales
-                    doc.addImage(logo1Data, 'PNG', 20, 10, 30, 15);
-                    doc.addImage(logo2Data, 'PNG', pageWidth - 50, 10, 30, 15);
-                }
-                
-                const celdas = fila.querySelectorAll('td');
-                const pregunta = celdas[0].textContent;
-                const estado = celdas[1].textContent;
-                const evidencia = celdas[2].textContent;
-                const observaciones = celdas[3].textContent;
-                const estadoColor = celdas[1].style.color;
-                
-                // Convertir color CSS a RGB
-                let rgbColor = [0, 0, 0];
-                if (estadoColor === 'green') rgbColor = [39, 174, 96];
-                if (estadoColor === 'orange') rgbColor = [243, 156, 18];
-                if (estadoColor === 'red') rgbColor = [231, 76, 60];
-                
-                doc.setTextColor(0, 0, 0);
-                doc.text(pregunta, 25, yPosition);
-                
-                doc.setTextColor(...rgbColor);
-                doc.text(estado, 180, yPosition, null, null, 'right');
-                
-                doc.setTextColor(0, 0, 0);
-                doc.text(evidencia, 190, yPosition, null, null, 'right');
-                
-                doc.text(`Obs: ${observaciones}`, 25, yPosition + 5);
-                
-                yPosition += 15;
-            });
-            
-            // Guardar PDF
-            doc.save(`Reporte_Auditoria_${document.getElementById('reporte-fecha').textContent}.pdf`);
+            // Descargar PDF
+            const link = document.createElement('a');
+            link.href = pdfUrl;
+            link.download = `Reporte_Auditoria_${new Date().toISOString().slice(0,10)}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
         
         // Función para mostrar PDF
         function mostrarPDF(url) {
             const viewer = document.getElementById('pdf-viewer');
-            const container = document.getElementById('pdf-viewer-container');
-            
             if (url) {
                 viewer.src = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`;
-                container.style.display = 'block';
-            } else {
-                container.style.display = 'none';
             }
         }
         
@@ -2056,7 +2011,7 @@
         async function exportarDatos() {
             const fechaInicio = document.getElementById('fecha-inicio-exportar').value;
             const fechaFin = document.getElementById('fecha-fin-exportar').value;
-            const area = document.getElementById('area-exportar').value;
+            const unidad = document.getElementById('unidad-exportar').value;
             
             try {
                 const response = await fetch(SCRIPT_URL, {
@@ -2065,7 +2020,7 @@
                         action: "exportAudits",
                         fechaInicio: fechaInicio,
                         fechaFin: fechaFin,
-                        area: area
+                        unidad: unidad
                     })
                 });
                 
