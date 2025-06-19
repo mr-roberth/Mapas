@@ -1067,6 +1067,8 @@
         let chartDistribucion, chartAreas;
         let currentUser = null;
         let reportesData = [];
+        let logosLoaded = false;
+        let logo1Data, logo2Data;
         
         // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
@@ -1140,6 +1142,9 @@
             
             // Inicializar gráficos vacíos
             inicializarGraficos();
+            
+            // Cargar logos para PDF
+            cargarLogos();
         });
         
         // Login
@@ -1792,54 +1797,100 @@
                         `;
                         detalle.appendChild(row);
                     });
+                    
+                    // Mostrar detalle del reporte
+                    document.getElementById('detalle-reporte').style.display = 'block';
                 } else {
                     throw new Error(data.message || "Error al obtener detalles");
                 }
             } catch (error) {
                 alert('Error al cargar detalles: ' + error.message);
+                document.getElementById('detalle-reporte').style.display = 'none';
             }
-            
-            // Mostrar detalle del reporte
-            document.getElementById('detalle-reporte').style.display = 'block';
         }
         
-        // Generar PDF
+        // Cargar logos para el PDF
+        function cargarLogos() {
+            const logo1 = new Image();
+            logo1.crossOrigin = "Anonymous";
+            logo1.src = "https://ejemplo.com/logo1.png";
+            
+            const logo2 = new Image();
+            logo2.crossOrigin = "Anonymous";
+            logo2.src = "https://ejemplo.com/logo2.png";
+            
+            Promise.all([
+                new Promise(resolve => { logo1.onload = resolve; }),
+                new Promise(resolve => { logo2.onload = resolve; })
+            ]).then(() => {
+                // Crear canvas para convertir a Base64
+                const canvas1 = document.createElement('canvas');
+                const ctx1 = canvas1.getContext('2d');
+                canvas1.width = logo1.width;
+                canvas1.height = logo1.height;
+                ctx1.drawImage(logo1, 0, 0);
+                logo1Data = canvas1.toDataURL('image/png');
+                
+                const canvas2 = document.createElement('canvas');
+                const ctx2 = canvas2.getContext('2d');
+                canvas2.width = logo2.width;
+                canvas2.height = logo2.height;
+                ctx2.drawImage(logo2, 0, 0);
+                logo2Data = canvas2.toDataURL('image/png');
+                
+                logosLoaded = true;
+            }).catch(error => {
+                console.error("Error cargando logos:", error);
+            });
+        }
+        
+        // Generar PDF con logos
         function generarPDF() {
+            if (!logosLoaded) {
+                alert("Los logos aún se están cargando. Por favor intente nuevamente en unos segundos.");
+                return;
+            }
+            
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
             
             // Título
             doc.setFontSize(20);
-            doc.text('Reporte de Auditoría PPR TS FSSC 22002', 105, 20, null, null, 'center');
+            doc.text('Reporte de Auditoría PPR TS FSSC 22002', pageWidth / 2, 20, null, null, 'center');
+            
+            // Agregar logos
+            doc.addImage(logo1Data, 'PNG', 20, 30, 30, 15);
+            doc.addImage(logo2Data, 'PNG', pageWidth - 50, 30, 30, 15);
             
             // Información de auditoría
             doc.setFontSize(12);
-            doc.text(`Auditor: ${document.getElementById('reporte-auditor').textContent}`, 20, 35);
-            doc.text(`Área auditada: ${document.getElementById('reporte-area').textContent}`, 20, 45);
-            doc.text(`Fecha: ${document.getElementById('reporte-fecha').textContent}`, 20, 55);
+            doc.text(`Auditor: ${document.getElementById('reporte-auditor').textContent}`, 20, 60);
+            doc.text(`Área auditada: ${document.getElementById('reporte-area').textContent}`, 20, 70);
+            doc.text(`Fecha: ${document.getElementById('reporte-fecha').textContent}`, 20, 80);
             
             // Resumen de cumplimiento
             doc.setFontSize(14);
-            doc.text('Resumen de Cumplimiento', 20, 70);
+            doc.text('Resumen de Cumplimiento', 20, 95);
             
             // Gráfico de resumen (simplificado)
             doc.setFillColor(39, 174, 96); // Cumple
-            doc.rect(30, 80, 40, 40, 'F');
+            doc.rect(30, 105, 40, 40, 'F');
             doc.setFillColor(243, 156, 18); // Parcial
-            doc.rect(80, 80, 40, 30, 'F');
+            doc.rect(80, 105, 40, 30, 'F');
             doc.setFillColor(231, 76, 60); // No cumple
-            doc.rect(130, 80, 40, 20, 'F');
+            doc.rect(130, 105, 40, 20, 'F');
             
             doc.setFontSize(10);
-            doc.text(`${document.getElementById('reporte-cumple').textContent} Cumple`, 50, 125, null, null, 'center');
-            doc.text(`${document.getElementById('reporte-parcial').textContent} Parcial`, 100, 125, null, null, 'center');
-            doc.text(`${document.getElementById('reporte-no-cumple').textContent} No cumple`, 150, 125, null, null, 'center');
+            doc.text(`${document.getElementById('reporte-cumple').textContent} Cumple`, 50, 150, null, null, 'center');
+            doc.text(`${document.getElementById('reporte-parcial').textContent} Parcial`, 100, 150, null, null, 'center');
+            doc.text(`${document.getElementById('reporte-no-cumple').textContent} No cumple`, 150, 150, null, null, 'center');
             
             // Detalle de requisitos
             doc.setFontSize(14);
-            doc.text('Detalle de Requisitos', 20, 140);
+            doc.text('Detalle de Requisitos', 20, 165);
             
-            let yPosition = 150;
+            let yPosition = 175;
             doc.setFontSize(10);
             
             const detalle = document.querySelectorAll('#reporte-detalle tr');
@@ -1847,11 +1898,16 @@
                 if (yPosition > 280) {
                     doc.addPage();
                     yPosition = 20;
+                    
+                    // Agregar logos en páginas adicionales
+                    doc.addImage(logo1Data, 'PNG', 20, 10, 30, 15);
+                    doc.addImage(logo2Data, 'PNG', pageWidth - 50, 10, 30, 15);
                 }
                 
                 const celdas = fila.querySelectorAll('td');
                 const pregunta = celdas[0].textContent;
                 const estado = celdas[1].textContent;
+                const evidencia = celdas[2].textContent;
                 const estadoColor = celdas[1].style.color;
                 
                 // Convertir color CSS a RGB
@@ -1865,6 +1921,9 @@
                 
                 doc.setTextColor(...rgbColor);
                 doc.text(estado, 180, yPosition, null, null, 'right');
+                
+                doc.setTextColor(0, 0, 0);
+                doc.text(evidencia, 190, yPosition, null, null, 'right');
                 
                 yPosition += 8;
             });
