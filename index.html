@@ -1061,7 +1061,12 @@
                 // Intento de login real
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    mode: 'cors',
+                    credentials: 'omit',
                     body: JSON.stringify({
                         action: "login",
                         email: email,
@@ -1145,6 +1150,8 @@
                         'Content-Type': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest'
                     },
+                    mode: 'cors',
+                    credentials: 'omit',
                     body: JSON.stringify({
                         action: "register",
                         name: name,
@@ -1374,7 +1381,12 @@
                             try {
                                 const response = await fetch(SCRIPT_URL, {
                                     method: 'POST',
-                                    headers: {'Content-Type': 'application/json'},
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-Requested-With': 'XMLHttpRequest'
+                                    },
+                                    mode: 'cors',
+                                    credentials: 'omit',
                                     body: JSON.stringify({
                                         action: "uploadImage",
                                         image: event.target.result
@@ -1477,7 +1489,12 @@
                 
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    mode: 'cors',
+                    credentials: 'omit',
                     body: JSON.stringify(payload)
                 });
 
@@ -1635,7 +1652,12 @@
                 // Obtener datos reales del backend
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    mode: 'cors',
+                    credentials: 'omit',
                     body: JSON.stringify({
                         action: "getDashboardData",
                         fecha: fecha,
@@ -1696,7 +1718,12 @@
                 // Obtener datos reales del backend
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    mode: 'cors',
+                    credentials: 'omit',
                     body: JSON.stringify({
                         action: "getAuditsForReport",
                         fecha: fecha,
@@ -1888,7 +1915,12 @@
                 
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    mode: 'cors',
+                    credentials: 'omit',
                     body: JSON.stringify({
                         action: "sendEmail",
                         email: email,
@@ -1935,7 +1967,12 @@
             try {
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    mode: 'cors',
+                    credentials: 'omit',
                     body: JSON.stringify({
                         action: "exportToExcel"
                     })
