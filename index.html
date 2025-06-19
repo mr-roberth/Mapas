@@ -1058,22 +1058,6 @@
                     throw new Error('No tienes conexión a internet. Por favor, verifica tu conexión.');
                 }
 
-                // Verificar que la URL del script no esté vacía
-                if (!SCRIPT_URL || SCRIPT_URL.includes("TU_URL_DE_DESPLEGUE_AQUI")) {
-                    throw new Error('La URL del servidor no está configurada correctamente.');
-                }
-                
-                // Prueba de conexión básica
-                const testConnection = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({action: "testConnection"})
-                });
-                
-                if (!testConnection.ok) {
-                    throw new Error('El servidor no responde. Verifica la URL o inténtalo más tarde.');
-                }
-
                 // Intento de login real
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
@@ -1093,7 +1077,7 @@
                 } catch (e) {
                     throw new Error(`Respuesta no válida del servidor: ${responseText}`);
                 }
-
+                
                 // Restaurar botón
                 btnLogin.disabled = false;
                 btnLogin.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
@@ -1108,8 +1092,6 @@
                     document.getElementById('login').classList.remove('active');
                     document.getElementById('main-app').style.display = 'block';
                     showPage('inicio');
-                    
-                    // Limpiar campos de contraseña después del login
                     document.getElementById('login-password').value = '';
                 } else {
                     throw new Error(data.message || "Credenciales incorrectas");
@@ -1117,12 +1099,19 @@
             } catch (error) {
                 console.error("Error en login:", error);
                 
-                // Restaurar botón en caso de error
+                // Mensaje de error mejorado
+                let errorMsg = error.message;
+                if (error.message.includes('Failed to fetch')) {
+                    errorMsg = 'Error de conexión con el servidor. Verifica:';
+                    errorMsg += '<br>1. Que la URL del script sea correcta';
+                    errorMsg += '<br>2. Que no haya errores en la consola del navegador (F12)';
+                    errorMsg += '<br>3. Que el despliegue de Google Apps Script esté configurado como "Cualquier persona"';
+                }
+                
                 btnLogin.disabled = false;
                 btnLogin.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
                 btnLogin.classList.remove('btn-loading');
-                
-                showMessage(`Error: ${error.message}`, 'error');
+                showMessage(`Error: ${errorMsg}`, 'error');
             }
         }
         
