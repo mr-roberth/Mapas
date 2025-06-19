@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.googleapis.com https://cors-anywhere.herokuapp.com blob: data: gap:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com">
     <title>Auditorías FSSC22002</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -581,9 +582,10 @@
 
     <script>
         // Configuración
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbylonk2n0QdlQpK90M3dX3wtBZa_lqP6S8amS5cGJO_EudRdxS87X77UvOIrsjQ9SKp/exec"; // Reemplazar con tu URL de GAS
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwiA2sO5H9OIktR-acJoWiCGYTmKS6EHwSygFw02JUV1d2CK93zzCxrmqjvtpyMQht4/exec"; // Reemplazar con tu URL de GAS
         const PAGE_LOAD_DELAY = 300; // ms para animaciones
         const DEFAULT_IMAGE_URL = "https://via.placeholder.com/200x150?text=Sin+imagen";
+        const PROXY_URL = 'https://cors-anywhere.herokuapp.com/'; // Proxy CORS
 
         // Estado de la aplicación
         const appState = {
@@ -1298,10 +1300,10 @@
             window.open(url, '_blank');
         }
 
-        // Función genérica para llamar a GAS
+        // Función genérica para llamar a GAS con proxy CORS
         async function fetchGAS(action, data = {}) {
-            const url = new URL(GAS_URL);
-            url.searchParams.append('action', action);
+            // Usar proxy para evitar problemas de CORS
+            const url = PROXY_URL + GAS_URL + '?action=' + action;
             
             const options = {
                 method: 'POST',
@@ -1315,13 +1317,18 @@
                 options.body = JSON.stringify(data);
             }
             
-            const response = await fetch(url, options);
-            
-            if (!response.ok) {
-                throw new Error(`Error ${response.status}: ${response.statusText}`);
+            try {
+                const response = await fetch(url, options);
+                
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('Error en fetchGAS:', error);
+                throw error;
             }
-            
-            return await response.json();
         }
     </script>
     
