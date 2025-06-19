@@ -152,7 +152,7 @@
             font-size: 0.95rem;
         }
         
-        input, select {
+        input, select, textarea {
             width: 100%;
             padding: 14px 16px;
             border: 1px solid var(--border);
@@ -163,7 +163,12 @@
             color: var(--text);
         }
         
-        input:focus, select:focus {
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: var(--secondary);
             box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
@@ -196,6 +201,11 @@
         
         .btn-danger {
             background: var(--danger);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: var(--gray);
             color: white;
         }
         
@@ -298,6 +308,10 @@
             color: #636e72;
             text-align: center;
             padding: 0 10px;
+        }
+        
+        .observaciones-section {
+            margin-top: 15px;
         }
         
         /* Dashboard */
@@ -495,7 +509,7 @@
                 padding: 0 20px;
             }
             
-            .filtros-dashboard {
+            .filtros-dashboard, .filtros-exportar {
                 flex-direction: row;
             }
             
@@ -584,7 +598,7 @@
             }
         }
         
-        .filtros-reportes {
+        .filtros-reportes, .filtros-exportar {
             background: var(--card-bg);
             border-radius: 16px;
             padding: 20px;
@@ -615,6 +629,18 @@
         .reporte-item.active {
             background: rgba(52, 152, 219, 0.1);
             border-left: 4px solid var(--secondary);
+        }
+        
+        #pdf-viewer-container {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        #pdf-viewer {
+            width: 100%;
+            height: 600px;
         }
     </style>
 </head>
@@ -697,6 +723,7 @@
                         <li><a href="#" class="nav-link" data-page="auditoria"><i class="fas fa-file-alt"></i> Auditoría</a></li>
                         <li><a href="#" class="nav-link" data-page="dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
                         <li><a href="#" class="nav-link" data-page="reportes"><i class="fas fa-file-pdf"></i> Reportes</a></li>
+                        <li><a href="#" class="nav-link" data-page="exportar"><i class="fas fa-file-export"></i> Exportar</a></li>
                     </ul>
                 </nav>
                 <div class="user-info">
@@ -713,7 +740,7 @@
                     <h2 class="form-title"><i class="fas fa-user-circle"></i> Información del Auditor</h2>
                     <div class="form-group">
                         <label for="nombre-auditor">Nombre del Auditor</label>
-                        <input type="text" id="nombre-auditor" placeholder="Ingresa tu nombre completo">
+                        <input type="text" id="nombre-auditor" readonly>
                     </div>
                     <div class="form-group">
                         <label for="area-auditada">Área a Auditar</label>
@@ -741,6 +768,7 @@
                     <ul style="margin: 15px 0 15px 30px;">
                         <li>Selecciona "Cumple", "Cumple Parcial" o "No Cumple" para cada requisito</li>
                         <li>Para los casos de "Cumple Parcial" o "No Cumple" debes adjuntar evidencia fotográfica</li>
+                        <li>Puedes agregar observaciones para cada requisito</li>
                         <li>Al finalizar, se generará un reporte ejecutivo en PDF</li>
                         <li>Puedes compartir el reporte por correo o WhatsApp</li>
                         <li>Los administradores recibirán notificaciones de incumplimientos</li>
@@ -939,6 +967,7 @@
                                             <th style="padding: 10px; text-align: left;">Requisito</th>
                                             <th style="padding: 10px; text-align: center; width: 120px;">Estado</th>
                                             <th style="padding: 10px; text-align: center; width: 120px;">Evidencia</th>
+                                            <th style="padding: 10px; text-align: left;">Observaciones</th>
                                         </tr>
                                     </thead>
                                     <tbody id="reporte-detalle">
@@ -952,9 +981,19 @@
                             </div>
                         </div>
                         
-                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <!-- Visor de PDF -->
+                        <div id="pdf-viewer-container" style="display: none;">
+                            <iframe id="pdf-viewer" src=""></iframe>
+                        </div>
+                        
+                        <input type="hidden" id="reporte-pdf-url">
+                        
+                        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
                             <button class="btn btn-primary" id="generar-pdf">
                                 <i class="fas fa-file-download"></i> Descargar PDF
+                            </button>
+                            <button class="btn btn-secondary" id="ver-pdf">
+                                <i class="fas fa-eye"></i> Ver PDF
                             </button>
                             <button class="btn btn-success" id="compartir-whatsapp">
                                 <i class="fab fa-whatsapp"></i> Compartir por WhatsApp
@@ -964,6 +1003,43 @@
                             </button>
                         </div>
                     </div>
+                </div>
+            </section>
+            
+            <!-- Sección Exportar -->
+            <section id="exportar" class="page-section">
+                <div class="form-section">
+                    <h2 class="form-title"><i class="fas fa-file-export"></i> Exportar Datos</h2>
+                    
+                    <div class="filtros-exportar">
+                        <div class="form-group">
+                            <label for="fecha-inicio-exportar">Fecha Inicio</label>
+                            <input type="date" id="fecha-inicio-exportar">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="fecha-fin-exportar">Fecha Fin</label>
+                            <input type="date" id="fecha-fin-exportar">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="area-exportar">Área</label>
+                            <select id="area-exportar">
+                                <option value="">Todas las áreas</option>
+                                <option value="produccion">Producción</option>
+                                <option value="almacen">Almacén</option>
+                                <option value="calidad">Control de Calidad</option>
+                                <option value="mantenimiento">Mantenimiento</option>
+                                <option value="logistica">Logística</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-success" id="btn-exportar">
+                        <i class="fas fa-file-csv"></i> Exportar a CSV
+                    </button>
+                    
+                    <div id="exportar-resultado" style="margin-top: 20px;"></div>
                 </div>
             </section>
         </div>
@@ -984,6 +1060,7 @@
                         <li><a href="#" class="nav-link" data-page="auditoria"><i class="fas fa-file-alt"></i> Auditoría</a></li>
                         <li><a href="#" class="nav-link" data-page="dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
                         <li><a href="#" class="nav-link" data-page="reportes"><i class="fas fa-file-pdf"></i> Reportes</a></li>
+                        <li><a href="#" class="nav-link" data-page="exportar"><i class="fas fa-file-export"></i> Exportar</a></li>
                     </ul>
                 </div>
                 
@@ -1004,7 +1081,7 @@
     </div>
     
     <script>
-        // URL de tu Google Apps Script (REEMPLAZA CON TU URL)
+        // URL de tu Google Apps Script
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu3COfRM0E8f8vQlgXXzqTOXS_s8FZEWwt2JtCqBng5Y1sRACNfay60Mi158SJxlpx/exec";
         
         // Datos de ejemplo para la aplicación
@@ -1075,6 +1152,8 @@
             // Configurar fecha actual
             const today = new Date();
             document.getElementById('fecha-auditoria').valueAsDate = today;
+            document.getElementById('fecha-inicio-exportar').valueAsDate = new Date(today.getFullYear(), today.getMonth(), 1);
+            document.getElementById('fecha-fin-exportar').valueAsDate = today;
             
             // Event listeners para navegación
             document.querySelectorAll('.nav-link').forEach(link => {
@@ -1140,6 +1219,15 @@
             // Event listener para filtros de reportes
             document.getElementById('aplicar-filtros-reportes').addEventListener('click', cargarReportes);
             
+            // Event listener para exportar datos
+            document.getElementById('btn-exportar').addEventListener('click', exportarDatos);
+            
+            // Event listener para ver PDF
+            document.getElementById('ver-pdf').addEventListener('click', function() {
+                const pdfUrl = document.getElementById('reporte-pdf-url').value;
+                mostrarPDF(pdfUrl);
+            });
+            
             // Inicializar gráficos vacíos
             inicializarGraficos();
             
@@ -1173,6 +1261,7 @@
                 if (data.status === "success") {
                     currentUser = data.user;
                     document.getElementById('user-name').textContent = currentUser.name || currentUser.email;
+                    document.getElementById('nombre-auditor').value = currentUser.name; // Autorellenar nombre
                     document.getElementById('login').classList.remove('active');
                     document.getElementById('main-app').style.display = 'block';
                     showPage('inicio');
@@ -1337,6 +1426,10 @@
                         </div>
                         <input type="file" accept="image/*" capture="environment" style="display: none;" id="camera-input-${pregunta.id}">
                     </div>
+                    <div class="observaciones-section">
+                        <label for="observaciones-${pregunta.id}">Observaciones:</label>
+                        <textarea id="observaciones-${pregunta.id}" placeholder="Ingresa observaciones relevantes"></textarea>
+                    </div>
                 `;
                 container.appendChild(preguntaElement);
                 
@@ -1348,11 +1441,8 @@
                         const preguntaId = this.getAttribute('data-pregunta');
                         
                         // Guardar respuesta
-                        respuestas[preguntaId] = {
-                            estado: value,
-                            evidencia: null,
-                            evidenciaUrl: null
-                        };
+                        if (!respuestas[preguntaId]) respuestas[preguntaId] = {};
+                        respuestas[preguntaId].estado = value;
                         
                         // Mostrar/ocultar sección de evidencia
                         const evidenciaSection = document.getElementById(`evidencia-${preguntaId}`);
@@ -1398,6 +1488,7 @@
                                 
                                 if (data.status === "success") {
                                     // Guardar evidencia
+                                    if (!respuestas[pregunta.id]) respuestas[pregunta.id] = {};
                                     respuestas[pregunta.id].evidencia = file;
                                     respuestas[pregunta.id].evidenciaUrl = data.url;
                                 } else {
@@ -1414,6 +1505,12 @@
                         
                         reader.readAsDataURL(file);
                     }
+                });
+                
+                // Event listener para observaciones
+                document.getElementById(`observaciones-${pregunta.id}`).addEventListener('input', function(e) {
+                    if (!respuestas[pregunta.id]) respuestas[pregunta.id] = {};
+                    respuestas[pregunta.id].observaciones = e.target.value;
                 });
             });
         }
@@ -1464,7 +1561,8 @@
                     id: `p${pregunta.id}`,
                     texto: pregunta.texto,
                     estado: respuesta.estado,
-                    evidenciaUrl: respuesta.evidenciaUrl || null
+                    evidenciaUrl: respuesta.evidenciaUrl || null,
+                    observaciones: respuesta.observaciones || "" // Nuevo campo
                 });
             }
             
@@ -1534,6 +1632,7 @@
                     <td style="padding: 10px;">${pregunta.texto}</td>
                     <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
                     <td style="padding: 10px; text-align: center;">${respuesta.evidencia ? 'Sí' : 'No'}</td>
+                    <td style="padding: 10px;">${respuesta.observaciones || ''}</td>
                 `;
                 detalle.appendChild(row);
             });
@@ -1736,6 +1835,10 @@
             document.getElementById('reporte-cumple').textContent = reporte.porcCumple + '%';
             document.getElementById('reporte-parcial').textContent = reporte.porcParcial + '%';
             document.getElementById('reporte-no-cumple').textContent = reporte.porcNoCumple + '%';
+            document.getElementById('reporte-pdf-url').value = reporte.pdfUrl;
+            
+            // Mostrar PDF automáticamente
+            mostrarPDF(reporte.pdfUrl);
             
             // Determinar resultado general
             let resultado = "Cumplimiento Total";
@@ -1794,6 +1897,7 @@
                             <td style="padding: 10px;">${pregunta.texto}</td>
                             <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
                             <td style="padding: 10px; text-align: center;">${pregunta.evidenciaUrl ? 'Sí' : 'No'}</td>
+                            <td style="padding: 10px;">${pregunta.observaciones || ''}</td>
                         `;
                         detalle.appendChild(row);
                     });
@@ -1813,11 +1917,11 @@
         function cargarLogos() {
             const logo1 = new Image();
             logo1.crossOrigin = "Anonymous";
-            logo1.src = "https://ejemplo.com/logo1.png";
+            logo1.src = "https://grupoporres.com.mx/assets/images/resources/logo.png";
             
             const logo2 = new Image();
             logo2.crossOrigin = "Anonymous";
-            logo2.src = "https://ejemplo.com/logo2.png";
+            logo2.src = "https://grupoporres.com.mx/assets/images/resources/logo.png";
             
             Promise.all([
                 new Promise(resolve => { logo1.onload = resolve; }),
@@ -1908,6 +2012,7 @@
                 const pregunta = celdas[0].textContent;
                 const estado = celdas[1].textContent;
                 const evidencia = celdas[2].textContent;
+                const observaciones = celdas[3].textContent;
                 const estadoColor = celdas[1].style.color;
                 
                 // Convertir color CSS a RGB
@@ -1925,11 +2030,67 @@
                 doc.setTextColor(0, 0, 0);
                 doc.text(evidencia, 190, yPosition, null, null, 'right');
                 
-                yPosition += 8;
+                doc.text(`Obs: ${observaciones}`, 25, yPosition + 5);
+                
+                yPosition += 15;
             });
             
             // Guardar PDF
             doc.save(`Reporte_Auditoria_${document.getElementById('reporte-fecha').textContent}.pdf`);
+        }
+        
+        // Función para mostrar PDF
+        function mostrarPDF(url) {
+            const viewer = document.getElementById('pdf-viewer');
+            const container = document.getElementById('pdf-viewer-container');
+            
+            if (url) {
+                viewer.src = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`;
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+        
+        // Función para exportar datos
+        async function exportarDatos() {
+            const fechaInicio = document.getElementById('fecha-inicio-exportar').value;
+            const fechaFin = document.getElementById('fecha-fin-exportar').value;
+            const area = document.getElementById('area-exportar').value;
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "exportAudits",
+                        fechaInicio: fechaInicio,
+                        fechaFin: fechaFin,
+                        area: area
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    const blob = new Blob([data.csvContent], { type: 'text/csv;charset=utf-8;' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', `auditorias_${new Date().toISOString().slice(0,10)}.csv`);
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } else {
+                    throw new Error(data.message || "Error al exportar datos");
+                }
+            } catch (error) {
+                document.getElementById('exportar-resultado').innerHTML = `
+                    <div class="alert alert-error">
+                        <i class="fas fa-exclamation-circle"></i> Error al exportar: ${error.message}
+                    </div>
+                `;
+            }
         }
     </script>
 </body>
