@@ -1171,105 +1171,13 @@
         // URL de tu Google Apps Script
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu3COfRM0E8f8vQlgXXzqTOXS_s8FZEWwt2JtCqBng5Y1sRACNfay60Mi158SJxlpx/exec";
         
-        // Nuevas preguntas de auditoría
-        const preguntasAuditoria = [
-            { id: 1, texto: "Mantenimiento de edificios", categoria: "4 Construcción y distribución de instalaciones" },
-            { id: 2, texto: "Identificación de fuentes locales de contaminación", categoria: "4 Construcción y distribución de instalaciones" },
-            { id: 3, texto: "Efectividad de contramedidas de protección a contaminantes", categoria: "4 Construcción y distribución de instalaciones" },
-            { id: 4, texto: "Identificación y delimitación de áreas", categoria: "4 Construcción y distribución de instalaciones" },
-            { id: 5, texto: "Acceso controlado", categoria: "4 Construcción y distribución de instalaciones" },
-            { id: 6, texto: "Mantenimiento y conservación de áreas verdes", categoria: "4 Construcción y distribución de instalaciones" },
-            { id: 7, texto: "Estancamiento de aguas", categoria: "4 Construcción y distribución de instalaciones" },
-            { id: 8, texto: "Espacio adecuado y flujo lógico de materiales, productos y personas", categoria: "5 Distribución de la instalación y espacios de trabajo" },
-            { id: 9, texto: "Diseño higiénico de paredes, pisos y techos", categoria: "5 Distribución de la instalación y espacios de trabajo" },
-            { id: 10, texto: "Diseño y ubicación higiénico de los equipos", categoria: "5 Distribución de la instalación y espacios de trabajo" },
-            { id: 11, texto: "Control de instalaciones de laboratorio", categoria: "5 Distribución de la instalación y espacios de trabajo" },
-            { id: 12, texto: "Diseño y ubicación higiénico de las instalaciones temporales o móviles", categoria: "5 Distribución de la instalación y espacios de trabajo" },
-            { id: 13, texto: "Control de máquinas expendedoras", categoria: "5 Distribución de la instalación y espacios de trabajo" },
-            { id: 14, texto: "Control de almacenamiento de envases e insumos de proceso", categoria: "5 Distribución de la instalación y espacios de trabajo" },
-            { id: 15, texto: "Abastecimiento de agua potable al proceso", categoria: "6 Servicios: aire, agua, energía" },
-            { id: 16, texto: "Control de temperatura en el agua, en procesos que aplique", categoria: "6 Servicios: aire, agua, energía" },
-            { id: 17, texto: "Almacenamiento y distribución de agua", categoria: "6 Servicios: aire, agua, energía" },
-            { id: 18, texto: "Separación del sistema de alimentación de agua", categoria: "6 Servicios: aire, agua, energía" },
-            { id: 19, texto: "Insumos de calderas grado alimenticio", categoria: "6 Servicios: aire, agua, energía" },
-            { id: 20, texto: "Control de almacenamiento de productos químicos de calderas", categoria: "6 Servicios: aire, agua, energía" },
-            { id: 21, texto: "Sistema de control y verificación de aire", categoria: "6 Servicios: aire, agua, energía" },
-            { id: 22, texto: "Control y monitoreo a sistemas de ventilación", categoria: "6 Servicios: aire, agua, energía" },
-            { id: 23, texto: "Aceite grado alimenticio en compresores de aire en contacto con el producto", categoria: "6 Servicios: aire, agua, energía" },
-            { id: 24, texto: "Intensidad de iluminación suficiente para operar de manera higiénica", categoria: "6 Servicios: aire, agua, energía" },
-            { id: 25, texto: "Lámparas protegidas en áreas de procesos", categoria: "6 Servicios: aire, agua, energía" },
-            { id: 26, texto: "Contenedores para desechos y sustancias peligrosas", categoria: "7 Disposición de residuos" },
-            { id: 27, texto: "Manejo y eliminación de residuos", categoria: "7 Disposición de residuos" },
-            { id: 28, texto: "Proveedores autorizados para la disposición de residuos peligrosos", categoria: "7 Disposición de residuos" },
-            { id: 29, texto: "Registros de disposición", categoria: "7 Disposición de residuos" },
-            { id: 30, texto: "Alcantarillado y drenaje", categoria: "7 Disposición de residuos" },
-            { id: 31, texto: "Diseño higiénico de equipos", categoria: "8 Diseño de equipos, limpieza y mantenimiento" },
-            { id: 32, texto: "Superficies impermeables y libres de óxido", categoria: "8 Diseño de equipos, limpieza y mantenimiento" },
-            { id: 33, texto: "Control de temperatura y verificación de equipos", categoria: "8 Diseño de equipos, limpieza y mantenimiento" },
-            { id: 34, texto: "Programas de limpieza a equipos", categoria: "8 Diseño de equipos, limpieza y mantenimiento" },
-            { id: 35, texto: "Programa de mantenimiento preventivo de equipos críticos para inocuidad", categoria: "8 Diseño de equipos, limpieza y mantenimiento" },
-            { id: 36, texto: "Mantenimiento correctivo sin riesgos de contaminación", categoria: "8 Diseño de equipos, limpieza y mantenimiento" },
-            { id: 37, texto: "Programa de reemplazo de reparaciones temporales a permanentes", categoria: "8 Diseño de equipos, limpieza y mantenimiento" },
-            { id: 38, texto: "Lubricantes grado alimenticio en equipos en contacto directo con el alimento", categoria: "8 Diseño de equipos, limpieza y mantenimiento" },
-            { id: 39, texto: "Entrega de equipos incluyendo limpieza y desinfección", categoria: "8 Diseño de equipos, limpieza y mantenimiento" },
-            { id: 40, texto: "Aplicación de PPR´s en mantenimiento a áreas de proceso", categoria: "8 Diseño de equipos, limpieza y mantenimiento" },
-            { id: 41, texto: "Procedimiento de selección y evaluación de proveedores", categoria: "9 Requisito de ingreso de materiales" },
-            { id: 42, texto: "Verificación de unidades de transporte de insumos previo a descarga", categoria: "9 Requisito de ingreso de materiales" },
-            { id: 43, texto: "Control y segregación de insumos no conformes y evitar uso", categoria: "9 Requisito de ingreso de materiales" },
-            { id: 44, texto: "Aprobación de insumos a granel previa descarga", categoria: "9 Requisito de ingreso de materiales" },
-            { id: 45, texto: "Controles para evitar la contaminación microbiológica", categoria: "10 Medidas para prevenir la contaminación cruzada" },
-            { id: 46, texto: "Administración de alérgenos en proceso", categoria: "10 Medidas para prevenir la contaminación cruzada" },
-            { id: 47, texto: "Control y monitoreo de vidrio y plástico quebradizo", categoria: "10 Medidas para prevenir la contaminación cruzada" },
-            { id: 48, texto: "Ausencia de materiales de madera, goma y materiales desprendibles", categoria: "10 Medidas para prevenir la contaminación cruzada" },
-            { id: 49, texto: "Identificación y almacenamiento de productos químicos de limpieza", categoria: "11 Limpieza y desinfección" },
-            { id: 50, texto: "Utensilios y herramientas de limpieza identificados y en condiciones", categoria: "11 Limpieza y desinfección" },
-            { id: 51, texto: "Programas de limpieza en áreas", categoria: "11 Limpieza y desinfección" },
-            { id: 52, texto: "Inspección de la sanitización efectiva", categoria: "11 Limpieza y desinfección" },
-            { id: 53, texto: "Programa de control de plagas y trampas plaga objetivo", categoria: "12 Control de plagas" },
-            { id: 54, texto: "Fichas técnicas y hojas de seguridad de químicos autorizados", categoria: "12 Control de plagas" },
-            { id: 55, texto: "Sellado de acceso potenciales de plagas", categoria: "12 Control de plagas" },
-            { id: 56, texto: "Control de materiales y productos dañados por plagas", categoria: "12 Control de plagas" },
-            { id: 57, texto: "Eliminación de potenciales anidamientos de plagas", categoria: "12 Control de plagas" },
-            { id: 58, texto: "Layout de detectores y trampas actualizado", categoria: "12 Control de plagas" },
-            { id: 59, texto: "Planes de acción de erradicación de plagas", categoria: "12 Control de plagas" },
-            { id: 60, texto: "Análisis de resultados y evaluación de tendencias", categoria: "12 Control de plagas" },
-            { id: 61, texto: "Instalaciones higiénicas del personal y sanitarios", categoria: "13 Higiene del personal e instalaciones para los empleados" },
-            { id: 62, texto: "Comedores del personal", categoria: "13 Higiene del personal e instalaciones para los empleados" },
-            { id: 63, texto: "Ropa de trabajo y de protección", categoria: "13 Higiene del personal e instalaciones para los empleados" },
-            { id: 64, texto: "Exámenes médicos planificados", categoria: "13 Higiene del personal e instalaciones para los empleados" },
-            { id: 65, texto: "Informe y seguimiento a enfermedades y lesiones", categoria: "13 Higiene del personal e instalaciones para los empleados" },
-            { id: 66, texto: "Lavado de manos", categoria: "13 Higiene del personal e instalaciones para los empleados" },
-            { id: 67, texto: "No escupir/toser sobre el producto e insumos", categoria: "13 Higiene del personal e instalaciones para los empleados" },
-            { id: 68, texto: "Uñas limpias y cortas", categoria: "13 Higiene del personal e instalaciones para los empleados" },
-            { id: 69, texto: "Política documentada del comportamiento del personal", categoria: "13 Higiene del personal e instalaciones para los empleados" },
-            { id: 70, texto: "Comportamiento del personal acorde a la política", categoria: "13 Higiene del personal e instalaciones para los empleados" },
-            { id: 71, texto: "Almacenamiento, identificación y trazabilidad del reproceso de PNC", categoria: "14 Reproceso" },
-            { id: 72, texto: "Cumplimiento del procedimiento para el tratamiento de PNC", categoria: "14 Reproceso" },
-            { id: 73, texto: "Cancelación de etiquetas y segregación de envases de desecho", categoria: "14 Reproceso" },
-            { id: 74, texto: "Lista de contactos clave", categoria: "15 Procedimiento de recuperación de productos (RECALL)" },
-            { id: 75, texto: "Simulacros de retiro de producto", categoria: "15 Procedimiento de recuperación de productos (RECALL)" },
-            { id: 76, texto: "Procedimiento documentado de retiro de producto", categoria: "15 Procedimiento de recuperación de productos (RECALL)" },
-            { id: 77, texto: "Espacios secos, limpios y bien ventilados", categoria: "16 Almacenamiento" },
-            { id: 78, texto: "Estibas protegidas", categoria: "16 Almacenamiento" },
-            { id: 79, texto: "Materiales de desecho y productos químicos almacenados por separado", categoria: "16 Almacenamiento" },
-            { id: 80, texto: "Área designada para almacenamiento de PNC y PNI", categoria: "16 Almacenamiento" },
-            { id: 81, texto: "Primeras Entradas Primeras Salidas", categoria: "16 Almacenamiento" },
-            { id: 82, texto: "Montacargas eléctricos", categoria: "16 Almacenamiento" },
-            { id: 83, texto: "Unidades de transporte que garanticen la conservación del producto", categoria: "16 Almacenamiento" },
-            { id: 84, texto: "Cumplimiento normativo de etiquetado", categoria: "17 Información del producto al consumidor" },
-            { id: 85, texto: "Ficha técnica de producto", categoria: "17 Información del producto al consumidor" },
-            { id: 86, texto: "Comunicación de almacenamiento y conservación", categoria: "17 Información del producto al consumidor" },
-            { id: 87, texto: "Evaluación de riesgos de altos potenciales", categoria: "18 Defensa alimentaria, biovigilancia y bioterrorismo" },
-            { id: 88, texto: "Implementación de medidas de control", categoria: "18 Defensa alimentaria, biovigilancia y bioterrorismo" },
-            { id: 89, texto: "Control de acceso y videovigilancia", categoria: "18 Defensa alimentaria, biovigilancia y bioterrorismo" }
-        ];
-        
         // Variables globales
         let auditorData = {};
         let respuestas = {};
         let chartDistribucion, chartAreas;
         let currentUser = null;
         let reportesData = [];
+        let preguntasPorArea = [];
         
         // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
@@ -1479,7 +1387,7 @@
         }
         
         // Iniciar proceso de auditoría
-        function iniciarAuditoria() {
+        async function iniciarAuditoria() {
             const nombre = document.getElementById('nombre-auditor').value;
             const unidad = document.getElementById('unidad-negocio').value;
             const area = document.getElementById('area-auditada').value;
@@ -1487,6 +1395,28 @@
             
             if (!nombre || !unidad || !area || !fecha) {
                 alert('Por favor completa todos los campos antes de iniciar la auditoría.');
+                return;
+            }
+            
+            // Obtener preguntas para esta área
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "getPreguntasPorArea",
+                        area: area
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    preguntasPorArea = data.preguntas;
+                } else {
+                    throw new Error(data.message || "Error al cargar preguntas");
+                }
+            } catch (error) {
+                alert('Error al cargar preguntas: ' + error.message);
                 return;
             }
             
@@ -1524,7 +1454,7 @@
             const container = document.getElementById('preguntas-container');
             container.innerHTML = '';
             
-            preguntasAuditoria.forEach((pregunta, index) => {
+            preguntasPorArea.forEach((pregunta, index) => {
                 const preguntaElement = document.createElement('div');
                 preguntaElement.className = 'pregunta-card';
                 preguntaElement.innerHTML = `
@@ -1651,13 +1581,13 @@
         async function finalizarAuditoria() {
             // Validar que todas las preguntas tienen respuesta
             const preguntasContestadas = Object.keys(respuestas).length;
-            if (preguntasContestadas < preguntasAuditoria.length) {
+            if (preguntasContestadas < preguntasPorArea.length) {
                 alert('Por favor responde todas las preguntas antes de finalizar la auditoría.');
                 return;
             }
             
             // Calcular estadísticas
-            const totalPreguntas = preguntasAuditoria.length;
+            const totalPreguntas = preguntasPorArea.length;
             const cumple = Object.values(respuestas).filter(r => r.estado === 'cumple').length;
             const parcial = Object.values(respuestas).filter(r => r.estado === 'parcial').length;
             const noCumple = Object.values(respuestas).filter(r => r.estado === 'no_cumple').length;
@@ -1696,10 +1626,11 @@
             const preguntasData = [];
             
             for (const [id, respuesta] of Object.entries(respuestas)) {
-                const pregunta = preguntasAuditoria.find(p => p.id === parseInt(id));
+                const pregunta = preguntasPorArea.find(p => p.id === parseInt(id));
                 preguntasData.push({
                     id: pregunta.id,
                     texto: pregunta.texto,
+                    categoria: pregunta.categoria,
                     estado: respuesta.estado,
                     evidenciaUrl: respuesta.evidenciaUrl || null,
                     observaciones: respuesta.observaciones || ""
@@ -1759,11 +1690,13 @@
             const detalle = document.getElementById('reporte-detalle');
             detalle.innerHTML = '';
             
-            preguntasAuditoria.forEach(pregunta => {
-                const respuesta = respuestas[pregunta.id];
+            Object.values(respuestas).forEach((respuesta, index) => {
+                const pregunta = preguntasPorArea.find(p => p.id === parseInt(respuesta.id));
+                if (!pregunta) return;
+                
                 let estadoText, estadoColor;
                 
-                switch(respuesta?.estado) {
+                switch(respuesta.estado) {
                     case 'cumple':
                         estadoText = 'Cumple';
                         estadoColor = 'green';
@@ -1789,8 +1722,8 @@
                 row.innerHTML = `
                     <td style="padding: 10px;">${pregunta.texto}</td>
                     <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
-                    <td style="padding: 10px; text-align: center;">${respuesta?.evidencia ? 'Sí' : 'No'}</td>
-                    <td style="padding: 10px;">${respuesta?.observaciones || ''}</td>
+                    <td style="padding: 10px; text-align: center;">${respuesta.evidencia ? 'Sí' : 'No'}</td>
+                    <td style="padding: 10px;">${respuesta.observaciones || ''}</td>
                 `;
                 detalle.appendChild(row);
             });
@@ -2003,27 +1936,6 @@
             document.getElementById('reporte-no-cumple').textContent = reporte.porcNoCumple + '%';
             document.getElementById('reporte-no-aplica').textContent = reporte.porcNoAplica + '%';
             document.getElementById('reporte-pdf-url').value = reporte.pdfUrl;
-            
-            // Función mejorada para mostrar PDF
-function mostrarPDF(url) {
-  const viewer = document.getElementById('pdf-viewer');
-  const container = document.getElementById('pdf-viewer-container');
-  
-  if (url) {
-    // Usar visor nativo del navegador
-    viewer.src = url;
-    container.style.display = 'block';
-    
-    // Forzar recarga si es necesario
-    setTimeout(() => {
-      if (viewer.contentDocument?.title === "about:blank") {
-        viewer.src = url + "?t=" + new Date().getTime();
-      }
-    }, 1000);
-  } else {
-    container.style.display = 'none';
-  }
-}
             
             // Determinar resultado general
             let resultado = "Cumplimiento Total";
