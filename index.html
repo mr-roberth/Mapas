@@ -755,17 +755,22 @@
                             <option value="Cafetalera - Cordoba">Cafetalera - Cordoba</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="area-auditada">Área a Auditar</label>
-                        <select id="area-auditada">
-                            <option value="">Selecciona un área</option>
-                            <option value="produccion">Producción</option>
-                            <option value="almacen">Almacén</option>
-                            <option value="calidad">Control de Calidad</option>
-                            <option value="mantenimiento">Mantenimiento</option>
-                            <option value="logistica">Logística</option>
-                        </select>
-                    </div>
+                   <div class="form-group">
+    <label for="area-auditada">Área a Auditar</label>
+    <select id="area-auditada">
+        <option value="">Selecciona un área</option>
+        <option value="batey">Batey</option>
+        <option value="molinos">Molinos</option>
+        <option value="clarificacion">Clarificación</option>
+        <option value="evaporacion">Evaporación</option>
+        <option value="cristalizacion">Cristalización</option>
+        <option value="centrifugas">Centrifugas</option>
+        <option value="secado">Secado</option>
+        <option value="envase">Envase</option>
+        <option value="calderas">Calderas</option>
+        <option value="almacen_pt">Almacén de producto terminado</option>
+    </select>
+</div>
                     <div class="form-group">
                         <label for="fecha-auditoria">Fecha de Auditoría</label>
                         <input type="date" id="fecha-auditoria">
@@ -1982,30 +1987,32 @@
             }
         }
         
-        // Generar PDF sin logos
-        function generarPDF() {
-            const pdfUrl = document.getElementById('reporte-pdf-url').value;
-            if (!pdfUrl) {
-                alert('No hay PDF disponible para descargar');
-                return;
-            }
-            
-            // Descargar PDF
-            const link = document.createElement('a');
-            link.href = pdfUrl;
-            link.download = `Reporte_Auditoria_${new Date().toISOString().slice(0,10)}.pdf`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-        
-        // Función para mostrar PDF
-        function mostrarPDF(url) {
-            const viewer = document.getElementById('pdf-viewer');
-            if (url) {
-                viewer.src = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`;
-            }
-        }
+        // Función para generar PDF
+function generarPDF() {
+    const pdfUrl = document.getElementById('reporte-pdf-url').value;
+    if (!pdfUrl) {
+        alert('No hay PDF disponible para descargar');
+        return;
+    }
+    
+    // Descargar usando el enlace directo
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.download = `Reporte_Auditoria_${new Date().toISOString().slice(0,10)}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Función para mostrar PDF
+function mostrarPDF(url) {
+    const viewer = document.getElementById('pdf-viewer');
+    if (url) {
+        viewer.src = `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
+    } else {
+        viewer.src = '';
+    }
+}
         
         // Función para exportar datos
         async function exportarDatos() {
