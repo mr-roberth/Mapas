@@ -14,6 +14,7 @@
             --success: #27ae60;
             --warning: #f39c12;
             --danger: #e74c3c;
+            --info: #9b59b6;
             --light: #ecf0f1;
             --dark: #34495e;
             --gray: #95a5a6;
@@ -209,6 +210,11 @@
             color: white;
         }
         
+        .btn-info {
+            background: var(--info);
+            color: white;
+        }
+        
         .btn-outline {
             background: transparent;
             border: 2px solid var(--secondary);
@@ -268,6 +274,11 @@
             background: var(--secondary);
             color: white;
             border-color: var(--secondary);
+        }
+        
+        .opcion.selected.info {
+            background: var(--info);
+            border-color: var(--info);
         }
         
         .evidencia-section {
@@ -360,6 +371,11 @@
         .stat-danger {
             color: var(--danger);
             border-top: 4px solid var(--danger);
+        }
+        
+        .stat-info {
+            color: var(--info);
+            border-top: 4px solid var(--info);
         }
         
         .chart-container {
@@ -746,31 +762,26 @@
                         <label for="unidad-negocio">Unidad de Negocio</label>
                         <select id="unidad-negocio">
                             <option value="">Selecciona una unidad</option>
-                            <option value="Ingenio Huixtla">Ingenio Huixtla</option>
-                            <option value="Ingenio Modelo">Ingenio Modelo</option>
-                            <option value="Ingenio San Pedro">Ingenio San Pedro</option>
-                            <option value="Ingenio Santa Clara">Ingenio Santa Clara</option>
-                            <option value="Dulcinea - Chiapas">Dulcinea - Chiapas</option>
-                            <option value="Dulcinea Michoacán">Dulcinea Michoacán</option>
-                            <option value="Cafetalera - Cordoba">Cafetalera - Cordoba</option>
+                            <option value="ingenio_huixtla">Ingenio Huixtla</option>
+                            <option value="ingenio_modelo">Ingenio Modelo</option>
+                            <option value="ingenio_san_pedro">Ingenio San Pedro</option>
+                            <option value="ingenio_santa_clara">Ingenio Santa Clara</option>
+                            <option value="dulcinea_chiapas">Dulcinea - Chiapas</option>
+                            <option value="dulcinea_michoacan">Dulcinea Michoacán</option>
+                            <option value="cafetalera_cordoba">Cafetalera - Cordoba</option>
                         </select>
                     </div>
-                   <div class="form-group">
-    <label for="area-auditada">Área a Auditar</label>
-    <select id="area-auditada">
-        <option value="">Selecciona un área</option>
-        <option value="batey">Batey</option>
-        <option value="molinos">Molinos</option>
-        <option value="clarificacion">Clarificación</option>
-        <option value="evaporacion">Evaporación</option>
-        <option value="cristalizacion">Cristalización</option>
-        <option value="centrifugas">Centrifugas</option>
-        <option value="secado">Secado</option>
-        <option value="envase">Envase</option>
-        <option value="calderas">Calderas</option>
-        <option value="almacen_pt">Almacén de producto terminado</option>
-    </select>
-</div>
+                    <div class="form-group">
+                        <label for="area-auditada">Área a Auditar</label>
+                        <select id="area-auditada">
+                            <option value="">Selecciona un área</option>
+                            <option value="produccion">Producción</option>
+                            <option value="almacen">Almacén</option>
+                            <option value="calidad">Control de Calidad</option>
+                            <option value="mantenimiento">Mantenimiento</option>
+                            <option value="logistica">Logística</option>
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label for="fecha-auditoria">Fecha de Auditoría</label>
                         <input type="date" id="fecha-auditoria">
@@ -784,9 +795,9 @@
                     <h2 class="form-title"><i class="fas fa-info-circle"></i> Instrucciones</h2>
                     <p>Esta aplicación te permite realizar auditorías de cumplimiento de PPR según la norma TS FSSC 22002.</p>
                     <ul style="margin: 15px 0 15px 30px;">
-                        <li>Selecciona "Cumple", "Cumple Parcial" o "No Cumple" para cada requisito</li>
-                        <li>Si una pregunta no aplica, déjala sin responder (se guardará como "No aplica")</li>
+                        <li>Selecciona "Cumple", "Cumple Parcial", "No Cumple" o "No Aplica" para cada requisito</li>
                         <li>Para los casos de "Cumple Parcial" o "No Cumple" debes adjuntar evidencia fotográfica</li>
+                        <li>Puedes agregar observaciones para cada requisito</li>
                         <li>Al finalizar, se generará un reporte ejecutivo en PDF</li>
                         <li>Puedes compartir el reporte por correo o WhatsApp</li>
                         <li>Los administradores recibirán notificaciones de incumplimientos</li>
@@ -801,7 +812,7 @@
                     <h2 class="form-title"><i class="fas fa-file-alt"></i> Cuestionario de Auditoría</h2>
                     <div id="auditor-info" style="background: #e3f2fd; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
                         <p><strong>Auditor:</strong> <span id="current-auditor">-</span></p>
-                        <p><strong>Unidad de Negocio:</strong> <span id="current-unidad">-</span></p>
+                        <p><strong>Unidad:</strong> <span id="current-unidad">-</span></p>
                         <p><strong>Área:</strong> <span id="current-area">-</span></p>
                         <p><strong>Fecha:</strong> <span id="current-date">-</span></p>
                     </div>
@@ -837,13 +848,25 @@
                             <label for="filtro-unidad">Filtrar por Unidad</label>
                             <select id="filtro-unidad">
                                 <option value="">Todas las unidades</option>
-                                <option value="Ingenio Huixtla">Ingenio Huixtla</option>
-                                <option value="Ingenio Modelo">Ingenio Modelo</option>
-                                <option value="Ingenio San Pedro">Ingenio San Pedro</option>
-                                <option value="Ingenio Santa Clara">Ingenio Santa Clara</option>
-                                <option value="Dulcinea - Chiapas">Dulcinea - Chiapas</option>
-                                <option value="Dulcinea Michoacán">Dulcinea Michoacán</option>
-                                <option value="Cafetalera - Cordoba">Cafetalera - Cordoba</option>
+                                <option value="ingenio_huixtla">Ingenio Huixtla</option>
+                                <option value="ingenio_modelo">Ingenio Modelo</option>
+                                <option value="ingenio_san_pedro">Ingenio San Pedro</option>
+                                <option value="ingenio_santa_clara">Ingenio Santa Clara</option>
+                                <option value="dulcinea_chiapas">Dulcinea - Chiapas</option>
+                                <option value="dulcinea_michoacan">Dulcinea Michoacán</option>
+                                <option value="cafetalera_cordoba">Cafetalera - Cordoba</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filtro-item">
+                            <label for="filtro-area">Filtrar por Área</label>
+                            <select id="filtro-area">
+                                <option value="">Todas las áreas</option>
+                                <option value="produccion">Producción</option>
+                                <option value="almacen">Almacén</option>
+                                <option value="calidad">Control de Calidad</option>
+                                <option value="mantenimiento">Mantenimiento</option>
+                                <option value="logistica">Logística</option>
                             </select>
                         </div>
                         
@@ -879,6 +902,13 @@
                                 <div class="stat-value" id="stat-no-cumple">0%</div>
                                 <p>Requisitos no cumplidos</p>
                             </div>
+                            
+                            <div class="stat-card stat-info">
+                                <i class="fas fa-ban fa-2x"></i>
+                                <h3>No Aplica</h3>
+                                <div class="stat-value" id="stat-no-aplica">0%</div>
+                                <p>Requisitos no aplicables</p>
+                            </div>
                         </div>
                         
                         <div class="chart-container">
@@ -889,9 +919,9 @@
                         </div>
                         
                         <div class="chart-container">
-                            <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Cumplimiento por Unidad</h3>
+                            <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Cumplimiento por Área</h3>
                             <div class="chart-wrapper">
-                                <canvas id="chart-unidades"></canvas>
+                                <canvas id="chart-areas"></canvas>
                             </div>
                         </div>
                     </div>
@@ -916,13 +946,13 @@
                                 <label for="filtro-unidad-reporte">Unidad de Negocio</label>
                                 <select id="filtro-unidad-reporte">
                                     <option value="">Todas las unidades</option>
-                                    <option value="Ingenio Huixtla">Ingenio Huixtla</option>
-                                    <option value="Ingenio Modelo">Ingenio Modelo</option>
-                                    <option value="Ingenio San Pedro">Ingenio San Pedro</option>
-                                    <option value="Ingenio Santa Clara">Ingenio Santa Clara</option>
-                                    <option value="Dulcinea - Chiapas">Dulcinea - Chiapas</option>
-                                    <option value="Dulcinea Michoacán">Dulcinea Michoacán</option>
-                                    <option value="Cafetalera - Cordoba">Cafetalera - Cordoba</option>
+                                    <option value="ingenio_huixtla">Ingenio Huixtla</option>
+                                    <option value="ingenio_modelo">Ingenio Modelo</option>
+                                    <option value="ingenio_san_pedro">Ingenio San Pedro</option>
+                                    <option value="ingenio_santa_clara">Ingenio Santa Clara</option>
+                                    <option value="dulcinea_chiapas">Dulcinea - Chiapas</option>
+                                    <option value="dulcinea_michoacan">Dulcinea Michoacán</option>
+                                    <option value="cafetalera_cordoba">Cafetalera - Cordoba</option>
                                 </select>
                             </div>
                             
@@ -968,8 +998,8 @@
                             
                             <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
                                 <div>
+                                    <p><strong>Unidad:</strong> <span id="reporte-unidad">-</span></p>
                                     <p><strong>Auditor:</strong> <span id="reporte-auditor">-</span></p>
-                                    <p><strong>Unidad de Negocio:</strong> <span id="reporte-unidad">-</span></p>
                                     <p><strong>Área auditada:</strong> <span id="reporte-area">-</span></p>
                                     <p><strong>Fecha:</strong> <span id="reporte-fecha">-</span></p>
                                 </div>
@@ -994,7 +1024,7 @@
                                     <div>No Cumple</div>
                                 </div>
                                 <div style="text-align: center; flex: 1; min-width: 100px;">
-                                    <div style="font-size: 1.8rem; color: var(--gray); font-weight: bold;" id="reporte-no-aplica">0%</div>
+                                    <div style="font-size: 1.8rem; color: var(--info); font-weight: bold;" id="reporte-no-aplica">0%</div>
                                     <div>No Aplica</div>
                                 </div>
                             </div>
@@ -1032,6 +1062,9 @@
                             <button class="btn btn-primary" id="generar-pdf">
                                 <i class="fas fa-file-download"></i> Descargar PDF
                             </button>
+                            <button class="btn btn-secondary" id="ver-pdf">
+                                <i class="fas fa-eye"></i> Ver PDF
+                            </button>
                             <button class="btn btn-success" id="compartir-whatsapp">
                                 <i class="fab fa-whatsapp"></i> Compartir por WhatsApp
                             </button>
@@ -1063,13 +1096,25 @@
                             <label for="unidad-exportar">Unidad de Negocio</label>
                             <select id="unidad-exportar">
                                 <option value="">Todas las unidades</option>
-                                <option value="Ingenio Huixtla">Ingenio Huixtla</option>
-                                <option value="Ingenio Modelo">Ingenio Modelo</option>
-                                <option value="Ingenio San Pedro">Ingenio San Pedro</option>
-                                <option value="Ingenio Santa Clara">Ingenio Santa Clara</option>
-                                <option value="Dulcinea - Chiapas">Dulcinea - Chiapas</option>
-                                <option value="Dulcinea Michoacán">Dulcinea Michoacán</option>
-                                <option value="Cafetalera - Cordoba">Cafetalera - Cordoba</option>
+                                <option value="ingenio_huixtla">Ingenio Huixtla</option>
+                                <option value="ingenio_modelo">Ingenio Modelo</option>
+                                <option value="ingenio_san_pedro">Ingenio San Pedro</option>
+                                <option value="ingenio_santa_clara">Ingenio Santa Clara</option>
+                                <option value="dulcinea_chiapas">Dulcinea - Chiapas</option>
+                                <option value="dulcinea_michoacan">Dulcinea Michoacán</option>
+                                <option value="cafetalera_cordoba">Cafetalera - Cordoba</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="area-exportar">Área</label>
+                            <select id="area-exportar">
+                                <option value="">Todas las áreas</option>
+                                <option value="produccion">Producción</option>
+                                <option value="almacen">Almacén</option>
+                                <option value="calidad">Control de Calidad</option>
+                                <option value="mantenimiento">Mantenimiento</option>
+                                <option value="logistica">Logística</option>
                             </select>
                         </div>
                     </div>
@@ -1122,96 +1167,104 @@
     <script>
         // URL de tu Google Apps Script
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu3COfRM0E8f8vQlgXXzqTOXS_s8FZEWwt2JtCqBng5Y1sRACNfay60Mi158SJxlpx/exec";
-    
-        // Nuevas preguntas de auditoría según requerimiento
+        
+        // Nuevas preguntas de auditoría con categorías
         const preguntasAuditoria = [
-            {id: 1, texto: "Mantenimiento de edificios", categoria: "Construcción y distribución de instalaciones"},
-            {id: 2, texto: "Identificación de fuentes locales de contaminación", categoria: "Construcción y distribución de instalaciones"},
-            {id: 3, texto: "Efectividad de contramedidas de protección a contaminantes", categoria: "Construcción y distribución de instalaciones"},
-            {id: 4, texto: "Identificación y delimitación de áreas", categoria: "Construcción y distribución de instalaciones"},
-            {id: 5, texto: "Acceso controlado", categoria: "Construcción y distribución de instalaciones"},
-            {id: 6, texto: "Mantenimiento y conservación de áreas verdes", categoria: "Construcción y distribución de instalaciones"},
-            {id: 7, texto: "Estancamiento de aguas", categoria: "Construcción y distribución de instalaciones"},
-            {id: 8, texto: "Espacio adecuado y flujo lógico de materiales, productos y personas", categoria: "Distribución de la instalación y espacios de trabajo"},
-            {id: 9, texto: "Diseño higiénico de paredes, pisos y techos", categoria: "Distribución de la instalación y espacios de trabajo"},
-            {id: 10, texto: "Diseño y ubicación higiénico de los equipos", categoria: "Distribución de la instalación y espacios de trabajo"},
-            {id: 11, texto: "Control de instalaciones de laboratorio", categoria: "Distribución de la instalación y espacios de trabajo"},
-            {id: 12, texto: "Diseño y ubicación higiénico de las instalaciones temporales o móviles", categoria: "Distribución de la instalación y espacios de work"},
-            {id: 13, texto: "Control de máquinas expendedoras", categoria: "Distribución de la instalación y espacios de trabajo"},
-            {id: 14, texto: "Control de almacenamiento de envases e insumos de proceso", categoria: "Distribución de la instalación y espacios de trabajo"},
-            {id: 15, texto: "Abastecimiento de agua potable al proceso", categoria: "Servicios: aire, agua, energía"},
-            {id: 16, texto: "Control de temperatura en el agua, en procesos que aplique", categoria: "Servicios: aire, agua, energía"},
-            {id: 17, texto: "Almacenamiento y distribución de agua", categoria: "Servicios: aire, agua, energía"},
-            {id: 18, texto: "Separación del sistema de alimentación de agua", categoria: "Servicios: aire, agua, energía"},
-            {id: 19, texto: "Insumos de calderas grado alimenticio", categoria: "Servicios: aire, agua, energía"},
-            {id: 20, texto: "Control de almacenamiento de productos químicos de calderas", categoria: "Servicios: aire, agua, energía"},
-            {id: 21, texto: "Sistema de control y verificación de aire", categoria: "Servicios: aire, agua, energía"},
-            {id: 22, texto: "Control y monitoreo a sistemas de ventilación", categoria: "Servicios: aire, agua, energía"},
-            {id: 23, texto: "Aceite grado alimenticio en compresores de aire en contacto con el producto", categoria: "Servicios: aire, agua, energía"},
-            {id: 24, texto: "Intensidad de iluminación suficiente para operar de manera higiénica", categoria: "Servicios: aire, agua, energía"},
-            {id: 25, texto: "Lámparas protegidas en áreas de procesos", categoria: "Servicios: aire, agua, energía"},
-            {id: 26, texto: "Contenedores para desechos y sustancias peligrosas", categoria: "Disposición de residuos"},
-            {id: 27, texto: "Manejo y eliminación de residuos", categoria: "Disposición de residuos"},
-            {id: 28, texto: "Proveedores autorizados para la disposición de residuos peligrosos", categoria: "Disposición de residuos"},
-            {id: 29, texto: "Registros de disposición", categoria: "Disposición de residuos"},
-            {id: 30, texto: "Alcantarillado y drenaje", categoria: "Disposición de residuos"},
-            {id: 31, texto: "Diseño higiénico de equipos", categoria: "Diseño de equipos, limpieza y mantenimiento"},
-            {id: 32, texto: "Superficies impermeables y libres de óxido", categoria: "Diseño de equipos, limpieza y mantenimiento"},
-            {id: 33, texto: "Control de temperatura y verificación de equipos", categoria: "Diseño de equipos, limpieza y mantenimiento"},
-            {id: 34, texto: "Programas de limpieza a equipos", categoria: "Diseño de equipos, limpieza y mantenimiento"},
-            {id: 35, texto: "Programa de mantenimiento preventivo de equipos críticos para inocuidad", categoria: "Diseño de equipos, limpieza y mantenimiento"},
-            {id: 36, texto: "Mantenimiento correctivo sin riesgos de contaminación", categoria: "Diseño de equipos, limpieza y mantenimiento"},
-            {id: 37, texto: "Programa de reemplazo de reparaciones temporales a permanentes", categoria: "Diseño de equipos, limpieza y mantenimiento"},
-            {id: 38, texto: "Lubricantes grado alimenticio en equipos en contacto directo con el alimento", categoria: "Diseño de equipos, limpieza y mantenimiento"},
-            {id: 39, texto: "Entrega de equipos incluyendo limpieza y desinfección", categoria: "Diseño de equipos, limpieza y mantenimiento"},
-            {id: 40, texto: "Aplicación de PPR´s en mantenimiento a áreas de proceso", categoria: "Diseño de equipos, limpieza y mantenimiento"},
-            {id: 41, texto: "Procedimiento de selección y evaluación de proveedores", categoria: "Requisito de ingreso de materiales"},
-            {id: 42, texto: "Verificación de unidades de transporte de insumos previo a descarga", categoria: "Requisito de ingreso de materiales"},
-            {id: 43, texto: "Control y segregación de insumos no conformes y evitar uso", categoria: "Requisito de ingreso de materiales"},
-            {id: 44, texto: "Aprobación de insumos a granel previa descarga", categoria: "Requisito de ingreso de materiales"},
-            {id: 45, texto: "Controles para evitar la contaminación microbiológica", categoria: "Medidas para prevenir la contaminación cruzada"},
-            {id: 46, texto: "Administración de alérgenos en proceso", categoria: "Medidas para prevenir la contaminación cruzada"},
-            {id: 47, texto: "Control y monitoreo de vidrio y plástico quebradizo", categoria: "Medidas para prevenir la contaminación cruzada"},
-            {id: 48, texto: "Ausencia de materiales de madera, goma y materiales desprendibles", categoria: "Medidas para prevenir la contaminación cruzada"},
-            {id: 49, texto: "Identificación y almacenamiento de productos químicos de limpieza", categoria: "Limpieza y desinfección"},
-            {id: 50, texto: "Utensilios y herramientas de limpieza identificados y en condiciones", categoria: "Limpieza y desinfección"},
-            {id: 51, texto: "Programas de limpieza en áreas", categoria: "Limpieza y desinfección"},
-            {id: 52, texto: "Inspección de la sanitización efectiva", categoria: "Limpieza y desinfección"},
-            {id: 53, texto: "Programa de control de plagas y trampas plaga objetivo", categoria: "Control de plagas"},
-            {id: 54, texto: "Fichas técnicas y hojas de seguridad de químicos autorizados", categoria: "Control de plagas"},
-            {id: 55, texto: "Sellado de acceso potenciales de plagas", categoria: "Control de plagas"},
-            {id: 56, texto: "Control de materiales y productos dañados por plagas", categoria: "Control de plagas"},
-            {id: 57, texto: "Eliminación de potenciales anidamientos de plagas", categoria: "Control de plagas"},
-            {id: 58, texto: "Layout de detectores y trampas actualizado", categoria: "Control de plagas"},
-            {id: 59, texto: "Planes de acción de erradicación de plagas", categoria: "Control de plagas"},
-            {id: 60, texto: "Análisis de resultados y evaluación de tendencias", categoria: "Control de plagas"},
-            {id: 61, texto: "Instalaciones higiénicas del personal y sanitarios", categoria: "Higiene del personal e instalaciones para los empleados"},
-            {id: 62, texto: "Comedores del personal", categoria: "Higiene del personal e instalaciones para los empleados"},
-            {id: 63, texto: "Ropa de trabajo y de protección", categoria: "Higiene del personal e instalaciones para los empleados"},
-            {id: 64, texto: "Exámenes médicos planificados", categoria: "Higiene del personal e instalaciones para los empleados"},
-            {id: 65, texto: "Informe y seguimiento a enfermedades y lesiones", categoria: "Higiene del personal e instalaciones para los empleados"},
-            {id: 66, texto: "Lavado de manos", categoria: "Higiene del personal e instalaciones para los empleados"},
-            {id: 67, texto: "No escupir/toser sobre el producto e insumos", categoria: "Higiene del personal e instalaciones para los empleados"},
-            {id: 68, texto: "Uñas limpias y cortas", categoria: "Higiene del personal e instalaciones para los empleados"},
-            {id: 69, texto: "Política documentada del comportamiento del personal", categoria: "Higiene del personal e instalaciones para los empleados"},
-            {id: 70, texto: "Comportamiento del personal acorde a la política", categoria: "Higiene del personal e instalaciones para los empleados"},
-            {id: 71, texto: "Almacenamiento, identificación y trazabilidad del reproceso de PNC", categoria: "Reproceso"},
-            {id: 72, texto: "Cumplimiento del procedimiento para el tratamiento de PNC", categoria: "Reproceso"},
-            {id: 73, texto: "Cancelación de etiquetas y segregación de envases de desecho", categoria: "Reproceso"},
-            {id: 74, texto: "Lista de contactos clave", categoria: "Procedimiento de recuperación de productos (RECALL)"},
-            {id: 75, texto: "Simulacros de retiro de producto", categoria: "Procedimiento de recuperación de productos (RECALL)"},
-            {id: 76, texto: "Procedimiento documentado de retiro de producto", categoria: "Procedimiento de recuperación de productos (RECALL)"},
-            {id: 77, texto: "Espacios secos, limpios y bien ventilados", categoria: "Almacenamiento"},
-            {id: 78, texto: "Estibas protegidas", categoria: "Almacenamiento"},
-            {id: 79, texto: "Materiales de desecho y productos químicos almacenados por separado", categoria: "Almacenamiento"},
-            {id: 80, texto: "Área designada para almacenamiento de PNC y PNI", categoria: "Almacenamiento"}
+            {id: 1, texto: "Mantenimiento de edificios", categoria: "4 Construcción y distribución de instalaciones"},
+            {id: 2, texto: "Identificación de fuentes locales de contaminación", categoria: "4 Construcción y distribución de instalaciones"},
+            {id: 3, texto: "Efectividad de contramedidas de protección a contaminantes", categoria: "4 Construcción y distribución de instalaciones"},
+            {id: 4, texto: "Identificación y delimitación de áreas", categoria: "4 Construcción y distribución de instalaciones"},
+            {id: 5, texto: "Acceso controlado", categoria: "4 Construcción y distribución de instalaciones"},
+            {id: 6, texto: "Mantenimiento y conservación de áreas verdes", categoria: "4 Construcción y distribución de instalaciones"},
+            {id: 7, texto: "Estancamiento de aguas", categoria: "4 Construcción y distribución de instalaciones"},
+            {id: 8, texto: "Espacio adecuado y flujo lógico de materiales, productos y personas", categoria: "5 Distribución de la instalación y espacios de trabajo"},
+            {id: 9, texto: "Diseño higiénico de paredes, pisos y techos", categoria: "5 Distribución de la instalación y espacios de trabajo"},
+            {id: 10, texto: "Diseño y ubicación higiénico de los equipos", categoria: "5 Distribución de la instalación y espacios de trabajo"},
+            {id: 11, texto: "Control de instalaciones de laboratorio", categoria: "5 Distribución de la instalación y espacios de trabajo"},
+            {id: 12, texto: "Diseño y ubicación higiénico de las instalaciones temporales o móviles", categoria: "5 Distribución de la instalación y espacios de trabajo"},
+            {id: 13, texto: "Control de máquinas expendedoras", categoria: "5 Distribución de la instalación y espacios de trabajo"},
+            {id: 14, texto: "Control de almacenamiento de envases e insumos de proceso", categoria: "5 Distribución de la instalación y espacios de trabajo"},
+            {id: 15, texto: "Abastecimiento de agua potable al proceso", categoria: "6 Servicios: aire, agua, energía"},
+            {id: 16, texto: "Control de temperatura en el agua, en procesos que aplique", categoria: "6 Servicios: aire, agua, energía"},
+            {id: 17, texto: "Almacenamiento y distribución de agua", categoria: "6 Servicios: aire, agua, energía"},
+            {id: 18, texto: "Separación del sistema de alimentación de agua", categoria: "6 Servicios: aire, agua, energía"},
+            {id: 19, texto: "Insumos de calderas grado alimenticio", categoria: "6 Servicios: aire, agua, energía"},
+            {id: 20, texto: "Control de almacenamiento de productos químicos de calderas", categoria: "6 Servicios: aire, agua, energía"},
+            {id: 21, texto: "Sistema de control y verificación de aire", categoria: "6 Servicios: aire, agua, energía"},
+            {id: 22, texto: "Control y monitoreo a sistemas de ventilación", categoria: "6 Servicios: aire, agua, energía"},
+            {id: 23, texto: "Aceite grado alimenticio en compresores de aire en contacto con el producto", categoria: "6 Servicios: aire, agua, energía"},
+            {id: 24, texto: "Intensidad de iluminación suficiente para operar de manera higiénica", categoria: "6 Servicios: aire, agua, energía"},
+            {id: 25, texto: "Lámparas protegidas en áreas de procesos", categoria: "6 Servicios: aire, agua, energía"},
+            {id: 26, texto: "Contenedores para desechos y sustancias peligrosas", categoria: "7 Disposición de residuos"},
+            {id: 27, texto: "Manejo y eliminación de residuos", categoria: "7 Disposición de residuos"},
+            {id: 28, texto: "Proveedores autorizados para la disposición de residuos peligrosos", categoria: "7 Disposición de residuos"},
+            {id: 29, texto: "Registros de disposición", categoria: "7 Disposición de residuos"},
+            {id: 30, texto: "Alcantarillado y drenaje", categoria: "7 Disposición de residuos"},
+            {id: 31, texto: "Diseño higiénico de equipos", categoria: "8 Diseño de equipos, limpieza y mantenimiento"},
+            {id: 32, texto: "Superficies impermeables y libres de óxido", categoria: "8 Diseño de equipos, limpieza y mantenimiento"},
+            {id: 33, texto: "Control de temperatura y verificación de equipos", categoria: "8 Diseño de equipos, limpieza y mantenimiento"},
+            {id: 34, texto: "Programas de limpieza a equipos", categoria: "8 Diseño de equipos, limpieza y mantenimiento"},
+            {id: 35, texto: "Programa de mantenimiento preventivo de equipos críticos para inocuidad", categoria: "8 Diseño de equipos, limpieza y mantenimiento"},
+            {id: 36, texto: "Mantenimiento correctivo sin riesgos de contaminación", categoria: "8 Diseño de equipos, limpieza y mantenimiento"},
+            {id: 37, texto: "Programa de reemplazo de reparaciones temporales a permanentes", categoria: "8 Diseño de equipos, limpieza y mantenimiento"},
+            {id: 38, texto: "Lubricantes grado alimenticio en equipos en contacto directo con el alimento", categoria: "8 Diseño de equipos, limpieza y mantenimiento"},
+            {id: 39, texto: "Entrega de equipos incluyendo limpieza y desinfección", categoria: "8 Diseño de equipos, limpieza y mantenimiento"},
+            {id: 40, texto: "Aplicación de PPR´s en mantenimiento a áreas de proceso", categoria: "8 Diseño de equipos, limpieza y mantenimiento"},
+            {id: 41, texto: "Procedimiento de selección y evaluación de proveedores", categoria: "9 Requisito de ingreso de materiales"},
+            {id: 42, texto: "Verificación de unidades de transporte de insumos previo a descarga", categoria: "9 Requisito de ingreso de materiales"},
+            {id: 43, texto: "Control y segregación de insumos no conformes y evitar uso", categoria: "9 Requisito de ingreso de materiales"},
+            {id: 44, texto: "Aprobación de insumos a granel previa descarga", categoria: "9 Requisito de ingreso de materiales"},
+            {id: 45, texto: "Controles para evitar la contaminación microbiológica", categoria: "10 Medidas para prevenir la contaminación cruzada"},
+            {id: 46, texto: "Administración de alérgenos en proceso", categoria: "10 Medidas para prevenir la contaminación cruzada"},
+            {id: 47, texto: "Control y monitoreo de vidrio y plástico quebradizo", categoria: "10 Medidas para prevenir la contaminación cruzada"},
+            {id: 48, texto: "Ausencia de materiales de madera, goma y materiales desprendibles", categoria: "10 Medidas para prevenir la contaminación cruzada"},
+            {id: 49, texto: "Identificación y almacenamiento de productos químicos de limpieza", categoria: "11 Limpieza y desinfección"},
+            {id: 50, texto: "Utensilios y herramientas de limpieza identificados y en condiciones", categoria: "11 Limpieza y desinfección"},
+            {id: 51, texto: "Programas de limpieza en áreas", categoria: "11 Limpieza y desinfección"},
+            {id: 52, texto: "Inspección de la sanitización efectiva", categoria: "11 Limpieza y desinfección"},
+            {id: 53, texto: "Programa de control de plagas y trampas plaga objetivo", categoria: "12 Control de plagas"},
+            {id: 54, texto: "Fichas técnicas y hojas de seguridad de químicos autorizados", categoria: "12 Control de plagas"},
+            {id: 55, texto: "Sellado de acceso potenciales de plagas", categoria: "12 Control de plagas"},
+            {id: 56, texto: "Control de materiales y productos dañados por plagas", categoria: "12 Control de plagas"},
+            {id: 57, texto: "Eliminación de potenciales anidamientos de plagas", categoria: "12 Control de plagas"},
+            {id: 58, texto: "Layout de detectores y trampas actualizado", categoria: "12 Control de plagas"},
+            {id: 59, texto: "Planes de acción de erradicación de plagas", categoria: "12 Control de plagas"},
+            {id: 60, texto: "Análisis de resultados y evaluación de tendencias", categoria: "12 Control de plagas"},
+            {id: 61, texto: "Instalaciones higiénicas del personal y sanitarios", categoria: "13 Higiene del personal e instalaciones para los empleados"},
+            {id: 62, texto: "Comedores del personal", categoria: "13 Higiene del personal e instalaciones para los empleados"},
+            {id: 63, texto: "Ropa de trabajo y de protección", categoria: "13 Higiene del personal e instalaciones para los empleados"},
+            {id: 64, texto: "Exámenes médicos planificados", categoria: "13 Higiene del personal e instalaciones para los empleados"},
+            {id: 65, texto: "Informe y seguimiento a enfermedades y lesiones", categoria: "13 Higiene del personal e instalaciones para los empleados"},
+            {id: 66, texto: "Lavado de manos", categoria: "13 Higiene del personal e instalaciones para los empleados"},
+            {id: 67, texto: "No escupir/toser sobre el producto e insumos", categoria: "13 Higiene del personal e instalaciones para los empleados"},
+            {id: 68, texto: "Uñas limpias y cortas", categoria: "13 Higiene del personal e instalaciones para los empleados"},
+            {id: 69, texto: "Política documentada del comportamiento del personal", categoria: "13 Higiene del personal e instalaciones para los empleados"},
+            {id: 70, texto: "Comportamiento del personal acorde a la política", categoria: "13 Higiene del personal e instalaciones para los empleados"},
+            {id: 71, texto: "Almacenamiento, identificación y trazabilidad del reproceso de PNC", categoria: "14 Reproceso"},
+            {id: 72, texto: "Cumplimiento del procedimiento para el tratamiento de PNC", categoria: "14 Reproceso"},
+            {id: 73, texto: "Cancelación de etiquetas y segregación de envases de desecho", categoria: "14 Reproceso"},
+            {id: 74, texto: "Lista de contactos clave", categoria: "15 Procedimiento de recuperación de productos (RECALL)"},
+            {id: 75, texto: "Simulacros de retiro de producto", categoria: "15 Procedimiento de recuperación de productos (RECALL)"},
+            {id: 76, texto: "Procedimiento documentado de retiro de producto", categoria: "15 Procedimiento de recuperación de productos (RECALL)"},
+            {id: 77, texto: "Espacios secos, limpios y bien ventilados", categoria: "16 Almacenamiento"},
+            {id: 78, texto: "Estibas protegidas", categoria: "16 Almacenamiento"},
+            {id: 79, texto: "Materiales de desecho y productos químicos almacenados por separado", categoria: "16 Almacenamiento"},
+            {id: 80, texto: "Área designada para almacenamiento de PNC y PNI", categoria: "16 Almacenamiento"},
+            {id: 81, texto: "Primeras Entradas Primeras Salidas", categoria: "16 Almacenamiento"},
+            {id: 82, texto: "Montacargas eléctricos", categoria: "16 Almacenamiento"},
+            {id: 83, texto: "Unidades de transporte que garanticen la conservación del producto", categoria: "16 Almacenamiento"},
+            {id: 84, texto: "Cumplimiento normativo de etiquetado", categoria: "17 Información del producto al consumidor"},
+            {id: 85, texto: "Ficha técnica de producto", categoria: "17 Información del producto al consumidor"},
+            {id: 86, texto: "Comunicación de almacenamiento y conservación", categoria: "17 Información del producto al consumidor"},
+            {id: 87, texto: "Evaluación de riesgos de altos potenciales", categoria: "18 Defensa alimentaria, biovigilancia y bioterrorismo"},
+            {id: 88, texto: "Implementación de medidas de control", categoria: "18 Defensa alimentaria, biovigilancia y bioterrorismo"},
+            {id: 89, texto: "Control de acceso y videovigilancia", categoria: "18 Defensa alimentaria, biovigilancia y bioterrorismo"}
         ];
-
         
         // Variables globales
         let auditorData = {};
         let respuestas = {};
-        let chartDistribucion, chartUnidades;
+        let chartDistribucion, chartAreas;
         let currentUser = null;
         let reportesData = [];
         
@@ -1290,6 +1343,12 @@
             // Event listener para exportar datos
             document.getElementById('btn-exportar').addEventListener('click', exportarDatos);
             
+            // Event listener para ver PDF
+            document.getElementById('ver-pdf').addEventListener('click', function() {
+                const pdfUrl = document.getElementById('reporte-pdf-url').value;
+                mostrarPDF(pdfUrl);
+            });
+            
             // Inicializar gráficos vacíos
             inicializarGraficos();
         });
@@ -1320,7 +1379,7 @@
                 if (data.status === "success") {
                     currentUser = data.user;
                     document.getElementById('user-name').textContent = currentUser.name || currentUser.email;
-                    document.getElementById('nombre-auditor').value = currentUser.name; // Autorellenar nombre
+                    document.getElementById('nombre-auditor').value = currentUser.name;
                     document.getElementById('login').classList.remove('active');
                     document.getElementById('main-app').style.display = 'block';
                     showPage('inicio');
@@ -1438,13 +1497,13 @@
             
             // Actualizar información en la sección de auditoría
             document.getElementById('current-auditor').textContent = nombre;
-            document.getElementById('current-unidad').textContent = unidad;
+            document.getElementById('current-unidad').textContent = document.querySelector(`#unidad-negocio option[value="${unidad}"]`).textContent;
             document.getElementById('current-area').textContent = document.querySelector(`#area-auditada option[value="${area}"]`).textContent;
             document.getElementById('current-date').textContent = fecha;
             
             // Actualizar información en la sección de reportes
             document.getElementById('reporte-auditor').textContent = nombre;
-            document.getElementById('reporte-unidad').textContent = unidad;
+            document.getElementById('reporte-unidad').textContent = document.querySelector(`#unidad-negocio option[value="${unidad}"]`).textContent;
             document.getElementById('reporte-area').textContent = document.querySelector(`#area-auditada option[value="${area}"]`).textContent;
             document.getElementById('reporte-fecha').textContent = fecha;
             
@@ -1457,7 +1516,7 @@
             showPage('auditoria');
         }
         
-        // Generar preguntas de auditoría
+        // Generar preguntas de auditoría con opción "No Aplica"
         function generarPreguntas() {
             const container = document.getElementById('preguntas-container');
             container.innerHTML = '';
@@ -1467,6 +1526,7 @@
                 preguntaElement.className = 'pregunta-card';
                 preguntaElement.innerHTML = `
                     <div class="pregunta-text">${pregunta.id}. ${pregunta.texto}</div>
+                    <div class="pregunta-categoria">${pregunta.categoria}</div>
                     <div class="opciones">
                         <div class="opcion" data-value="cumple" data-pregunta="${pregunta.id}">
                             <input type="radio" name="pregunta-${pregunta.id}" value="cumple" id="p${pregunta.id}-cumple">
@@ -1522,6 +1582,11 @@
                         // Actualizar estilo de opciones
                         opciones.forEach(o => o.classList.remove('selected'));
                         this.classList.add('selected');
+                        
+                        // Estilo especial para "No aplica"
+                        if (value === 'no_aplica') {
+                            this.classList.add('info');
+                        }
                     });
                 });
                 
@@ -1584,44 +1649,42 @@
         
         // Finalizar auditoría
         async function finalizarAuditoria() {
-            // Calcular estadísticas (incluyendo no aplica)
+            // Validar que todas las preguntas tienen respuesta
+            const preguntasContestadas = Object.keys(respuestas).length;
+            if (preguntasContestadas < preguntasAuditoria.length) {
+                alert('Por favor responde todas las preguntas antes de finalizar la auditoría.');
+                return;
+            }
+            
+            // Calcular estadísticas (excluyendo "No aplica")
             const totalPreguntas = preguntasAuditoria.length;
-            let cumple = 0;
-            let parcial = 0;
-            let noCumple = 0;
-            let noAplica = 0;
+            const cumple = Object.values(respuestas).filter(r => r.estado === 'cumple').length;
+            const parcial = Object.values(respuestas).filter(r => r.estado === 'parcial').length;
+            const noCumple = Object.values(respuestas).filter(r => r.estado === 'no_cumple').length;
+            const noAplica = Object.values(respuestas).filter(r => r.estado === 'no_aplica').length;
             
-            preguntasAuditoria.forEach(pregunta => {
-                const respuesta = respuestas[pregunta.id];
-                if (!respuesta) {
-                    noAplica++;
-                } else {
-                    switch(respuesta.estado) {
-                        case 'cumple': cumple++; break;
-                        case 'parcial': parcial++; break;
-                        case 'no_cumple': noCumple++; break;
-                        case 'no_aplica': noAplica++; break;
-                        default: noAplica++;
-                    }
-                }
-            });
+            const preguntasAplicables = totalPreguntas - noAplica;
+            const porcCumple = preguntasAplicables > 0 ? Math.round((cumple / preguntasAplicables) * 100) : 0;
+            const porcParcial = preguntasAplicables > 0 ? Math.round((parcial / preguntasAplicables) * 100) : 0;
+            const porcNoCumple = preguntasAplicables > 0 ? Math.round((noCumple / preguntasAplicables) * 100) : 0;
+            const porcNoAplica = Math.round((noAplica / totalPreguntas) * 100);
             
-            // Actualizar reporte con estadísticas
-            document.getElementById('reporte-cumple').textContent = Math.round((cumple / totalPreguntas) * 100) + '%';
-            document.getElementById('reporte-parcial').textContent = Math.round((parcial / totalPreguntas) * 100) + '%';
-            document.getElementById('reporte-no-cumple').textContent = Math.round((noCumple / totalPreguntas) * 100) + '%';
-            document.getElementById('reporte-no-aplica').textContent = Math.round((noAplica / totalPreguntas) * 100) + '%';
+            // Actualizar reporte con estadísticas reales
+            document.getElementById('reporte-cumple').textContent = porcCumple + '%';
+            document.getElementById('reporte-parcial').textContent = porcParcial + '%';
+            document.getElementById('reporte-no-cumple').textContent = porcNoCumple + '%';
+            document.getElementById('reporte-no-aplica').textContent = porcNoAplica + '%';
             
             // Determinar resultado general
             let resultado = "Cumplimiento Total";
             let color = "var(--success)";
             
-            if (noCumple > 0 || parcial > totalPreguntas * 0.2) {
+            if (noCumple > 0 || parcial > preguntasAplicables * 0.2) {
                 resultado = "Cumplimiento Parcial";
                 color = "var(--warning)";
             }
             
-            if (noCumple > totalPreguntas * 0.1) {
+            if (noCumple > preguntasAplicables * 0.1) {
                 resultado = "No Cumple";
                 color = "var(--danger)";
             }
@@ -1632,9 +1695,8 @@
             // Preparar datos para enviar al backend
             const preguntasData = [];
             
-            preguntasAuditoria.forEach(pregunta => {
-                const respuesta = respuestas[pregunta.id] || { estado: "no_aplica" };
-                
+            for (const [id, respuesta] of Object.entries(respuestas)) {
+                const pregunta = preguntasAuditoria.find(p => p.id === parseInt(id));
                 preguntasData.push({
                     id: `p${pregunta.id}`,
                     texto: pregunta.texto,
@@ -1642,7 +1704,7 @@
                     evidenciaUrl: respuesta.evidenciaUrl || null,
                     observaciones: respuesta.observaciones || ""
                 });
-            });
+            }
             
             const payload = {
                 action: "submitAudit",
@@ -1665,23 +1727,19 @@
                     auditorData.auditId = data.auditId;
                     generarDetalleReporte();
                     
+                    // Mostrar PDF automáticamente
+                    mostrarPDF(data.pdfUrl);
+                    
                     // Mostrar sección de reportes
                     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
                     document.querySelector('.nav-link[data-page="reportes"]').classList.add('active');
                     showPage('reportes');
-                    
-                    // Mostrar PDF automáticamente
-                    setTimeout(() => {
-                        cargarReportes();
-                        setTimeout(() => {
-                            const reporteItem = document.querySelector(`.reporte-item[data-id="${auditorData.auditId}"]`);
-                            if (reporteItem) {
-                                reporteItem.click();
-                            }
-                        }, 1000);
-                    }, 500);
+                    document.getElementById('detalle-reporte').style.display = 'block';
                     
                     alert('¡Auditoría completada con éxito! Se ha generado el reporte ejecutivo.');
+                    
+                    // Recargar reportes
+                    cargarReportes();
                 } else {
                     throw new Error(data.message || "Error en el servidor");
                 }
@@ -1690,13 +1748,13 @@
             }
         }
         
-        // Generar detalle para el reporte PDF
+        // Generar detalle para el reporte PDF con estado "No aplica"
         function generarDetalleReporte() {
             const detalle = document.getElementById('reporte-detalle');
             detalle.innerHTML = '';
             
             preguntasAuditoria.forEach(pregunta => {
-                const respuesta = respuestas[pregunta.id] || { estado: "no_aplica" };
+                const respuesta = respuestas[pregunta.id];
                 let estadoText, estadoColor;
                 
                 switch(respuesta.estado) {
@@ -1714,7 +1772,7 @@
                         break;
                     case 'no_aplica':
                         estadoText = 'No Aplica';
-                        estadoColor = 'gray';
+                        estadoColor = '#9b59b6';
                         break;
                 }
                 
@@ -1729,10 +1787,10 @@
             });
         }
         
-        // Inicializar gráficos
+        // Inicializar gráficos con opción "No aplica"
         function inicializarGraficos() {
             const ctxDistribucion = document.getElementById('chart-distribucion').getContext('2d');
-            const ctxUnidades = document.getElementById('chart-unidades').getContext('2d');
+            const ctxAreas = document.getElementById('chart-areas').getContext('2d');
             
             // Gráfico de distribución
             chartDistribucion = new Chart(ctxDistribucion, {
@@ -1745,7 +1803,7 @@
                             'rgba(39, 174, 96, 0.8)',
                             'rgba(243, 156, 18, 0.8)',
                             'rgba(231, 76, 60, 0.8)',
-                            'rgba(149, 165, 166, 0.8)'
+                            'rgba(155, 89, 182, 0.8)'
                         ],
                         borderWidth: 1
                     }]
@@ -1761,14 +1819,14 @@
                 }
             });
             
-            // Gráfico por unidades
-            chartUnidades = new Chart(ctxUnidades, {
+            // Gráfico por áreas
+            chartAreas = new Chart(ctxAreas, {
                 type: 'bar',
                 data: {
-                    labels: [],
+                    labels: ['Producción', 'Almacén', 'Calidad', 'Mantenimiento', 'Logística'],
                     datasets: [{
                         label: 'Porcentaje de Cumplimiento',
-                        data: [],
+                        data: [0, 0, 0, 0, 0],
                         backgroundColor: 'rgba(52, 152, 219, 0.8)',
                         borderWidth: 1
                     }]
@@ -1797,6 +1855,7 @@
             const content = document.getElementById('dashboard-content');
             const fecha = document.getElementById('filtro-fecha').value;
             const unidad = document.getElementById('filtro-unidad').value;
+            const area = document.getElementById('filtro-area').value;
             
             // Mostrar loader y ocultar contenido
             loader.style.display = 'block';
@@ -1809,7 +1868,8 @@
                     body: JSON.stringify({
                         action: "getDashboardData",
                         fecha: fecha,
-                        unidad: unidad
+                        unidad: unidad,
+                        area: area
                     })
                 });
                 
@@ -1820,20 +1880,20 @@
                     document.getElementById('stat-cumple').textContent = data.porcCumple + '%';
                     document.getElementById('stat-parcial').textContent = data.porcParcial + '%';
                     document.getElementById('stat-no-cumple').textContent = data.porcNoCumple + '%';
+                    document.getElementById('stat-no-aplica').textContent = data.porcNoAplica + '%';
                     
                     // Actualizar gráfico de distribución
                     chartDistribucion.data.datasets[0].data = [
-                        data.porcCumple,
-                        data.porcParcial,
+                        data.porcCumple, 
+                        data.porcParcial, 
                         data.porcNoCumple,
                         data.porcNoAplica
                     ];
                     chartDistribucion.update();
                     
-                    // Actualizar gráfico por unidades
-                    chartUnidades.data.labels = data.unidades;
-                    chartUnidades.data.datasets[0].data = data.unidadesData;
-                    chartUnidades.update();
+                    // Actualizar gráfico por áreas
+                    chartAreas.data.datasets[0].data = data.areasData;
+                    chartAreas.update();
                 } else {
                     throw new Error(data.message || "Error al cargar datos");
                 }
@@ -1904,9 +1964,10 @@
                 item.className = 'reporte-item';
                 item.dataset.id = reporte.id;
                 item.innerHTML = `
-                    <p><strong>${reporte.auditor}</strong> - ${reporte.unidad}</p>
+                    <p><strong>${reporte.auditor}</strong></p>
+                    <p><strong>Unidad:</strong> ${reporte.unidad}</p>
+                    <p><strong>Área:</strong> ${reporte.area}</p>
                     <p><i class="fas fa-calendar"></i> ${reporte.fecha}</p>
-                    <p>${reporte.totalPreguntas} requisitos evaluados</p>
                 `;
                 
                 item.addEventListener('click', function() {
@@ -1994,7 +2055,7 @@
                                 break;
                             case 'no_aplica':
                                 estadoText = 'No Aplica';
-                                estadoColor = 'gray';
+                                estadoColor = '#9b59b6';
                                 break;
                         }
                         
@@ -2015,135 +2076,115 @@
                 }
             } catch (error) {
                 alert('Error al cargar detalles: ' + error.message);
+                document.getElementById('detalle-reporte').style.display = 'none';
             }
         }
         
-        // Función para generar PDF con jsPDF (MEJORADA)
+        // Generar PDF sin logos
         function generarPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const pageWidth = doc.internal.pageSize.getWidth();
-            const margin = 15;
-            let yPosition = margin;
             
             // Título
-            doc.setFontSize(18);
-            doc.setFont("helvetica", "bold");
-            doc.text("Reporte de Auditoría PPR TS FSSC 22002", pageWidth / 2, yPosition, { align: "center" });
-            yPosition += 10;
-            
-            // Línea divisoria
-            doc.setLineWidth(0.5);
-            doc.line(margin, yPosition, pageWidth - margin, yPosition);
-            yPosition += 15;
+            doc.setFontSize(20);
+            doc.text('Reporte de Auditoría PPR TS FSSC 22002', pageWidth / 2, 20, null, null, 'center');
             
             // Información de auditoría
             doc.setFontSize(12);
-            doc.setFont("helvetica", "normal");
-            doc.text(`Auditor: ${document.getElementById('reporte-auditor').textContent}`, margin, yPosition);
-            yPosition += 8;
-            doc.text(`Unidad de Negocio: ${document.getElementById('reporte-unidad').textContent}`, margin, yPosition);
-            yPosition += 8;
-            doc.text(`Área auditada: ${document.getElementById('reporte-area').textContent}`, margin, yPosition);
-            yPosition += 8;
-            doc.text(`Fecha: ${document.getElementById('reporte-fecha').textContent}`, margin, yPosition);
-            yPosition += 15;
+            doc.text(`Unidad de Negocio: ${document.getElementById('reporte-unidad').textContent}`, 20, 35);
+            doc.text(`Auditor: ${document.getElementById('reporte-auditor').textContent}`, 20, 45);
+            doc.text(`Área auditada: ${document.getElementById('reporte-area').textContent}`, 20, 55);
+            doc.text(`Fecha: ${document.getElementById('reporte-fecha').textContent}`, 20, 65);
             
             // Resumen de cumplimiento
             doc.setFontSize(14);
-            doc.setFont("helvetica", "bold");
-            doc.text("Resumen de Cumplimiento", margin, yPosition);
-            yPosition += 10;
+            doc.text('Resumen de Cumplimiento', 20, 80);
             
-            doc.setFontSize(12);
-            doc.setFont("helvetica", "normal");
-            doc.text(`Cumple: ${document.getElementById('reporte-cumple').textContent}`, margin, yPosition);
-            doc.text(`Cumple Parcial: ${document.getElementById('reporte-parcial').textContent}`, margin + 50, yPosition);
-            doc.text(`No Cumple: ${document.getElementById('reporte-no-cumple').textContent}`, margin + 110, yPosition);
-            doc.text(`No Aplica: ${document.getElementById('reporte-no-aplica').textContent}`, margin + 160, yPosition);
-            yPosition += 15;
+            // Cuadros de estadísticas
+            const stats = [
+                { value: document.getElementById('reporte-cumple').textContent, label: 'Cumple', color: [39, 174, 96] },
+                { value: document.getElementById('reporte-parcial').textContent, label: 'Parcial', color: [243, 156, 18] },
+                { value: document.getElementById('reporte-no-cumple').textContent, label: 'No Cumple', color: [231, 76, 60] },
+                { value: document.getElementById('reporte-no-aplica').textContent, label: 'No Aplica', color: [155, 89, 182] }
+            ];
+            
+            let x = 30;
+            stats.forEach(stat => {
+                doc.setFillColor(...stat.color);
+                doc.rect(x, 90, 30, 20, 'F');
+                doc.setTextColor(0, 0, 0);
+                doc.text(stat.value, x + 15, 105, null, null, 'center');
+                doc.text(stat.label, x + 15, 115, null, null, 'center');
+                x += 40;
+            });
             
             // Detalle de requisitos
             doc.setFontSize(14);
-            doc.setFont("helvetica", "bold");
-            doc.text("Detalle de Requisitos", margin, yPosition);
-            yPosition += 10;
+            doc.text('Detalle de Requisitos', 20, 130);
             
             doc.setFontSize(10);
+            let y = 140;
+            
             const detalle = document.querySelectorAll('#reporte-detalle tr');
-            
-            // Crear tabla
-            const headers = ["Requisito", "Estado", "Evidencia", "Observaciones"];
-            const rows = [];
-            
             detalle.forEach((fila, index) => {
+                if (y > 280) {
+                    doc.addPage();
+                    y = 20;
+                }
+                
                 const celdas = fila.querySelectorAll('td');
                 const pregunta = celdas[0].textContent;
                 const estado = celdas[1].textContent;
                 const evidencia = celdas[2].textContent;
                 const observaciones = celdas[3].textContent;
+                const estadoColor = celdas[1].style.color;
                 
-                rows.push([pregunta, estado, evidencia, observaciones]);
+                // Convertir color CSS a RGB
+                let rgbColor = [0, 0, 0];
+                if (estadoColor === 'green') rgbColor = [39, 174, 96];
+                if (estadoColor === 'orange') rgbColor = [243, 156, 18];
+                if (estadoColor === 'red') rgbColor = [231, 76, 60];
+                if (estadoColor === '#9b59b6') rgbColor = [155, 89, 182];
+                
+                doc.setTextColor(...rgbColor);
+                doc.text(estado, 180, y, null, null, 'right');
+                
+                doc.setTextColor(0, 0, 0);
+                doc.text(pregunta.substring(0, 100), 25, y);
+                
+                if (pregunta.length > 100) {
+                    doc.text(pregunta.substring(100, 200), 25, y + 5);
+                }
+                
+                doc.text(`Obs: ${observaciones || ''}`, 25, y + 10);
+                
+                y += 20;
             });
             
-            // Configuración de la tabla
-            const tableConfig = {
-                head: headers,
-                body: rows,
-                startY: yPosition,
-                margin: { left: margin, right: margin },
-                styles: { 
-                    fontSize: 8,
-                    cellPadding: 2,
-                    valign: 'middle'
-                },
-                headStyles: {
-                    fillColor: [241, 242, 246],
-                    textColor: [0, 0, 0],
-                    fontStyle: 'bold'
-                },
-                alternateRowStyles: {
-                    fillColor: [248, 249, 250]
-                },
-                columnStyles: {
-                    0: { cellWidth: 90 },
-                    1: { cellWidth: 25 },
-                    2: { cellWidth: 25 },
-                    3: { cellWidth: 50 }
-                }
-            };
-            
-            // Generar tabla
-            doc.autoTable(tableConfig);
-            
             // Guardar PDF
-            doc.save(`Reporte_Auditoria_${document.getElementById('reporte-fecha').textContent.replace(/\//g, '-')}.pdf`);
+            doc.save(`Reporte_Auditoria_${document.getElementById('reporte-fecha').textContent}.pdf`);
         }
-    
-    // Descargar usando el enlace directo
-    const link = document.createElement('a');
-    link.href = pdfUrl;
-    link.download = `Reporte_Auditoria_${new Date().toISOString().slice(0,10)}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
-// Función para mostrar PDF
-function mostrarPDF(url) {
-    const viewer = document.getElementById('pdf-viewer');
-    if (url) {
-        viewer.src = `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
-    } else {
-        viewer.src = '';
-    }
-}
+        
+        // Función para mostrar PDF
+        function mostrarPDF(url) {
+            const viewer = document.getElementById('pdf-viewer');
+            const container = document.getElementById('pdf-viewer-container');
+            
+            if (url) {
+                viewer.src = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`;
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        }
         
         // Función para exportar datos
         async function exportarDatos() {
             const fechaInicio = document.getElementById('fecha-inicio-exportar').value;
             const fechaFin = document.getElementById('fecha-fin-exportar').value;
             const unidad = document.getElementById('unidad-exportar').value;
+            const area = document.getElementById('area-exportar').value;
             
             try {
                 const response = await fetch(SCRIPT_URL, {
@@ -2152,7 +2193,8 @@ function mostrarPDF(url) {
                         action: "exportAudits",
                         fechaInicio: fechaInicio,
                         fechaFin: fechaFin,
-                        unidad: unidad
+                        unidad: unidad,
+                        area: area
                     })
                 });
                 
