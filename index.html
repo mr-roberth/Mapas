@@ -669,6 +669,20 @@
             font-size: 0.85rem;
             color: var(--secondary);
         }
+        /* Agrega esto en la sección de estilos */
+#pdf-viewer-container {
+  height: 80vh;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+#pdf-viewer {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
     </style>
 </head>
 <body>
@@ -1990,8 +2004,26 @@
             document.getElementById('reporte-no-aplica').textContent = reporte.porcNoAplica + '%';
             document.getElementById('reporte-pdf-url').value = reporte.pdfUrl;
             
-            // Mostrar PDF automáticamente
-            mostrarPDF(reporte.pdfUrl);
+            // Función mejorada para mostrar PDF
+function mostrarPDF(url) {
+  const viewer = document.getElementById('pdf-viewer');
+  const container = document.getElementById('pdf-viewer-container');
+  
+  if (url) {
+    // Usar visor nativo del navegador
+    viewer.src = url;
+    container.style.display = 'block';
+    
+    // Forzar recarga si es necesario
+    setTimeout(() => {
+      if (viewer.contentDocument?.title === "about:blank") {
+        viewer.src = url + "?t=" + new Date().getTime();
+      }
+    }, 1000);
+  } else {
+    container.style.display = 'none';
+  }
+}
             
             // Determinar resultado general
             let resultado = "Cumplimiento Total";
