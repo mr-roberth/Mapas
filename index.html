@@ -1123,59 +1123,93 @@
         // URL de tu Google Apps Script
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu3COfRM0E8f8vQlgXXzqTOXS_s8FZEWwt2JtCqBng5Y1sRACNfay60Mi158SJxlpx/exec";
         
-        // Datos de ejemplo para la aplicación
+       // URL de tu Google Apps Script
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu3COfRM0E8f8vQlgXXzqTOXS_s8FZEWwt2JtCqBng5Y1sRACNfay60Mi158SJxlpx/exec";
+        
+        // Nuevas preguntas de auditoría según requerimiento
         const preguntasAuditoria = [
-            {
-                id: 1,
-                texto: "¿Existe un programa documentado de limpieza y desinfección?",
-                categoria: "Limpieza y Desinfección"
-            },
-            {
-                id: 2,
-                texto: "¿Se realizan inspecciones periódicas a los equipos de protección personal?",
-                categoria: "Equipos de Protección"
-            },
-            {
-                id: 3,
-                texto: "¿Se cuenta con registros de capacitación en prácticas de higiene para el personal?",
-                categoria: "Capacitación"
-            },
-            {
-                id: 4,
-                texto: "¿Se verifica la eficacia de los procedimientos de limpieza y desinfección?",
-                categoria: "Verificación"
-            },
-            {
-                id: 5,
-                texto: "¿Se mantiene un control de plagas con registros de monitoreo y acciones tomadas?",
-                categoria: "Control de Plagas"
-            },
-            {
-                id: 6,
-                texto: "¿Existe un sistema de trazabilidad completo y actualizado?",
-                categoria: "Trazabilidad"
-            },
-            {
-                id: 7,
-                texto: "¿Se cuenta con procedimientos para el retiro de productos no conformes?",
-                categoria: "Productos No Conformes"
-            },
-            {
-                id: 8,
-                texto: "¿Se realizan auditorías internas según el cronograma establecido?",
-                categoria: "Auditorías Internas"
-            },
-            {
-                id: 9,
-                texto: "¿Se revisa la efectividad de las acciones correctivas implementadas?",
-                categoria: "Acciones Correctivas"
-            },
-            {
-                id: 10,
-                texto: "¿Existe un plan de mantenimiento preventivo para los equipos críticos?",
-                categoria: "Mantenimiento"
-            }
+            {id: 1, texto: "Mantenimiento de edificios", categoria: "Construcción y distribución de instalaciones"},
+            {id: 2, texto: "Identificación de fuentes locales de contaminación", categoria: "Construcción y distribución de instalaciones"},
+            {id: 3, texto: "Efectividad de contramedidas de protección a contaminantes", categoria: "Construcción y distribución de instalaciones"},
+            {id: 4, texto: "Identificación y delimitación de áreas", categoria: "Construcción y distribución de instalaciones"},
+            {id: 5, texto: "Acceso controlado", categoria: "Construcción y distribución de instalaciones"},
+            {id: 6, texto: "Mantenimiento y conservación de áreas verdes", categoria: "Construcción y distribución de instalaciones"},
+            {id: 7, texto: "Estancamiento de aguas", categoria: "Construcción y distribución de instalaciones"},
+            {id: 8, texto: "Espacio adecuado y flujo lógico de materiales, productos y personas", categoria: "Distribución de la instalación y espacios de trabajo"},
+            {id: 9, texto: "Diseño higiénico de paredes, pisos y techos", categoria: "Distribución de la instalación y espacios de trabajo"},
+            {id: 10, texto: "Diseño y ubicación higiénico de los equipos", categoria: "Distribución de la instalación y espacios de trabajo"},
+            {id: 11, texto: "Control de instalaciones de laboratorio", categoria: "Distribución de la instalación y espacios de trabajo"},
+            {id: 12, texto: "Diseño y ubicación higiénico de las instalaciones temporales o móviles", categoria: "Distribución de la instalación y espacios de work"},
+            {id: 13, texto: "Control de máquinas expendedoras", categoria: "Distribución de la instalación y espacios de trabajo"},
+            {id: 14, texto: "Control de almacenamiento de envases e insumos de proceso", categoria: "Distribución de la instalación y espacios de trabajo"},
+            {id: 15, texto: "Abastecimiento de agua potable al proceso", categoria: "Servicios: aire, agua, energía"},
+            {id: 16, texto: "Control de temperatura en el agua, en procesos que aplique", categoria: "Servicios: aire, agua, energía"},
+            {id: 17, texto: "Almacenamiento y distribución de agua", categoria: "Servicios: aire, agua, energía"},
+            {id: 18, texto: "Separación del sistema de alimentación de agua", categoria: "Servicios: aire, agua, energía"},
+            {id: 19, texto: "Insumos de calderas grado alimenticio", categoria: "Servicios: aire, agua, energía"},
+            {id: 20, texto: "Control de almacenamiento de productos químicos de calderas", categoria: "Servicios: aire, agua, energía"},
+            {id: 21, texto: "Sistema de control y verificación de aire", categoria: "Servicios: aire, agua, energía"},
+            {id: 22, texto: "Control y monitoreo a sistemas de ventilación", categoria: "Servicios: aire, agua, energía"},
+            {id: 23, texto: "Aceite grado alimenticio en compresores de aire en contacto con el producto", categoria: "Servicios: aire, agua, energía"},
+            {id: 24, texto: "Intensidad de iluminación suficiente para operar de manera higiénica", categoria: "Servicios: aire, agua, energía"},
+            {id: 25, texto: "Lámparas protegidas en áreas de procesos", categoria: "Servicios: aire, agua, energía"},
+            {id: 26, texto: "Contenedores para desechos y sustancias peligrosas", categoria: "Disposición de residuos"},
+            {id: 27, texto: "Manejo y eliminación de residuos", categoria: "Disposición de residuos"},
+            {id: 28, texto: "Proveedores autorizados para la disposición de residuos peligrosos", categoria: "Disposición de residuos"},
+            {id: 29, texto: "Registros de disposición", categoria: "Disposición de residuos"},
+            {id: 30, texto: "Alcantarillado y drenaje", categoria: "Disposición de residuos"},
+            {id: 31, texto: "Diseño higiénico de equipos", categoria: "Diseño de equipos, limpieza y mantenimiento"},
+            {id: 32, texto: "Superficies impermeables y libres de óxido", categoria: "Diseño de equipos, limpieza y mantenimiento"},
+            {id: 33, texto: "Control de temperatura y verificación de equipos", categoria: "Diseño de equipos, limpieza y mantenimiento"},
+            {id: 34, texto: "Programas de limpieza a equipos", categoria: "Diseño de equipos, limpieza y mantenimiento"},
+            {id: 35, texto: "Programa de mantenimiento preventivo de equipos críticos para inocuidad", categoria: "Diseño de equipos, limpieza y mantenimiento"},
+            {id: 36, texto: "Mantenimiento correctivo sin riesgos de contaminación", categoria: "Diseño de equipos, limpieza y mantenimiento"},
+            {id: 37, texto: "Programa de reemplazo de reparaciones temporales a permanentes", categoria: "Diseño de equipos, limpieza y mantenimiento"},
+            {id: 38, texto: "Lubricantes grado alimenticio en equipos en contacto directo con el alimento", categoria: "Diseño de equipos, limpieza y mantenimiento"},
+            {id: 39, texto: "Entrega de equipos incluyendo limpieza y desinfección", categoria: "Diseño de equipos, limpieza y mantenimiento"},
+            {id: 40, texto: "Aplicación de PPR´s en mantenimiento a áreas de proceso", categoria: "Diseño de equipos, limpieza y mantenimiento"},
+            {id: 41, texto: "Procedimiento de selección y evaluación de proveedores", categoria: "Requisito de ingreso de materiales"},
+            {id: 42, texto: "Verificación de unidades de transporte de insumos previo a descarga", categoria: "Requisito de ingreso de materiales"},
+            {id: 43, texto: "Control y segregación de insumos no conformes y evitar uso", categoria: "Requisito de ingreso de materiales"},
+            {id: 44, texto: "Aprobación de insumos a granel previa descarga", categoria: "Requisito de ingreso de materiales"},
+            {id: 45, texto: "Controles para evitar la contaminación microbiológica", categoria: "Medidas para prevenir la contaminación cruzada"},
+            {id: 46, texto: "Administración de alérgenos en proceso", categoria: "Medidas para prevenir la contaminación cruzada"},
+            {id: 47, texto: "Control y monitoreo de vidrio y plástico quebradizo", categoria: "Medidas para prevenir la contaminación cruzada"},
+            {id: 48, texto: "Ausencia de materiales de madera, goma y materiales desprendibles", categoria: "Medidas para prevenir la contaminación cruzada"},
+            {id: 49, texto: "Identificación y almacenamiento de productos químicos de limpieza", categoria: "Limpieza y desinfección"},
+            {id: 50, texto: "Utensilios y herramientas de limpieza identificados y en condiciones", categoria: "Limpieza y desinfección"},
+            {id: 51, texto: "Programas de limpieza en áreas", categoria: "Limpieza y desinfección"},
+            {id: 52, texto: "Inspección de la sanitización efectiva", categoria: "Limpieza y desinfección"},
+            {id: 53, texto: "Programa de control de plagas y trampas plaga objetivo", categoria: "Control de plagas"},
+            {id: 54, texto: "Fichas técnicas y hojas de seguridad de químicos autorizados", categoria: "Control de plagas"},
+            {id: 55, texto: "Sellado de acceso potenciales de plagas", categoria: "Control de plagas"},
+            {id: 56, texto: "Control de materiales y productos dañados por plagas", categoria: "Control de plagas"},
+            {id: 57, texto: "Eliminación de potenciales anidamientos de plagas", categoria: "Control de plagas"},
+            {id: 58, texto: "Layout de detectores y trampas actualizado", categoria: "Control de plagas"},
+            {id: 59, texto: "Planes de acción de erradicación de plagas", categoria: "Control de plagas"},
+            {id: 60, texto: "Análisis de resultados y evaluación de tendencias", categoria: "Control de plagas"},
+            {id: 61, texto: "Instalaciones higiénicas del personal y sanitarios", categoria: "Higiene del personal e instalaciones para los empleados"},
+            {id: 62, texto: "Comedores del personal", categoria: "Higiene del personal e instalaciones para los empleados"},
+            {id: 63, texto: "Ropa de trabajo y de protección", categoria: "Higiene del personal e instalaciones para los empleados"},
+            {id: 64, texto: "Exámenes médicos planificados", categoria: "Higiene del personal e instalaciones para los empleados"},
+            {id: 65, texto: "Informe y seguimiento a enfermedades y lesiones", categoria: "Higiene del personal e instalaciones para los empleados"},
+            {id: 66, texto: "Lavado de manos", categoria: "Higiene del personal e instalaciones para los empleados"},
+            {id: 67, texto: "No escupir/toser sobre el producto e insumos", categoria: "Higiene del personal e instalaciones para los empleados"},
+            {id: 68, texto: "Uñas limpias y cortas", categoria: "Higiene del personal e instalaciones para los empleados"},
+            {id: 69, texto: "Política documentada del comportamiento del personal", categoria: "Higiene del personal e instalaciones para los empleados"},
+            {id: 70, texto: "Comportamiento del personal acorde a la política", categoria: "Higiene del personal e instalaciones para los empleados"},
+            {id: 71, texto: "Almacenamiento, identificación y trazabilidad del reproceso de PNC", categoria: "Reproceso"},
+            {id: 72, texto: "Cumplimiento del procedimiento para el tratamiento de PNC", categoria: "Reproceso"},
+            {id: 73, texto: "Cancelación de etiquetas y segregación de envases de desecho", categoria: "Reproceso"},
+            {id: 74, texto: "Lista de contactos clave", categoria: "Procedimiento de recuperación de productos (RECALL)"},
+            {id: 75, texto: "Simulacros de retiro de producto", categoria: "Procedimiento de recuperación de productos (RECALL)"},
+            {id: 76, texto: "Procedimiento documentado de retiro de producto", categoria: "Procedimiento de recuperación de productos (RECALL)"},
+            {id: 77, texto: "Espacios secos, limpios y bien ventilados", categoria: "Almacenamiento"},
+            {id: 78, texto: "Estibas protegidas", categoria: "Almacenamiento"},
+            {id: 79, texto: "Materiales de desecho y productos químicos almacenados por separado", categoria: "Almacenamiento"},
+            {id: 80, texto: "Área designada para almacenamiento de PNC y PNI", categoria: "Almacenamiento"}
         ];
+
         
         // Variables globales
         let auditorData = {};
@@ -1987,13 +2021,107 @@
             }
         }
         
-        // Función para generar PDF
-function generarPDF() {
-    const pdfUrl = document.getElementById('reporte-pdf-url').value;
-    if (!pdfUrl) {
-        alert('No hay PDF disponible para descargar');
-        return;
-    }
+        // Función para generar PDF con jsPDF (MEJORADA)
+        function generarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 15;
+            let yPosition = margin;
+            
+            // Título
+            doc.setFontSize(18);
+            doc.setFont("helvetica", "bold");
+            doc.text("Reporte de Auditoría PPR TS FSSC 22002", pageWidth / 2, yPosition, { align: "center" });
+            yPosition += 10;
+            
+            // Línea divisoria
+            doc.setLineWidth(0.5);
+            doc.line(margin, yPosition, pageWidth - margin, yPosition);
+            yPosition += 15;
+            
+            // Información de auditoría
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Auditor: ${document.getElementById('reporte-auditor').textContent}`, margin, yPosition);
+            yPosition += 8;
+            doc.text(`Unidad de Negocio: ${document.getElementById('reporte-unidad').textContent}`, margin, yPosition);
+            yPosition += 8;
+            doc.text(`Área auditada: ${document.getElementById('reporte-area').textContent}`, margin, yPosition);
+            yPosition += 8;
+            doc.text(`Fecha: ${document.getElementById('reporte-fecha').textContent}`, margin, yPosition);
+            yPosition += 15;
+            
+            // Resumen de cumplimiento
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            doc.text("Resumen de Cumplimiento", margin, yPosition);
+            yPosition += 10;
+            
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Cumple: ${document.getElementById('reporte-cumple').textContent}`, margin, yPosition);
+            doc.text(`Cumple Parcial: ${document.getElementById('reporte-parcial').textContent}`, margin + 50, yPosition);
+            doc.text(`No Cumple: ${document.getElementById('reporte-no-cumple').textContent}`, margin + 110, yPosition);
+            doc.text(`No Aplica: ${document.getElementById('reporte-no-aplica').textContent}`, margin + 160, yPosition);
+            yPosition += 15;
+            
+            // Detalle de requisitos
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            doc.text("Detalle de Requisitos", margin, yPosition);
+            yPosition += 10;
+            
+            doc.setFontSize(10);
+            const detalle = document.querySelectorAll('#reporte-detalle tr');
+            
+            // Crear tabla
+            const headers = ["Requisito", "Estado", "Evidencia", "Observaciones"];
+            const rows = [];
+            
+            detalle.forEach((fila, index) => {
+                const celdas = fila.querySelectorAll('td');
+                const pregunta = celdas[0].textContent;
+                const estado = celdas[1].textContent;
+                const evidencia = celdas[2].textContent;
+                const observaciones = celdas[3].textContent;
+                
+                rows.push([pregunta, estado, evidencia, observaciones]);
+            });
+            
+            // Configuración de la tabla
+            const tableConfig = {
+                head: headers,
+                body: rows,
+                startY: yPosition,
+                margin: { left: margin, right: margin },
+                styles: { 
+                    fontSize: 8,
+                    cellPadding: 2,
+                    valign: 'middle'
+                },
+                headStyles: {
+                    fillColor: [241, 242, 246],
+                    textColor: [0, 0, 0],
+                    fontStyle: 'bold'
+                },
+                alternateRowStyles: {
+                    fillColor: [248, 249, 250]
+                },
+                columnStyles: {
+                    0: { cellWidth: 90 },
+                    1: { cellWidth: 25 },
+                    2: { cellWidth: 25 },
+                    3: { cellWidth: 50 }
+                }
+            };
+            
+            // Generar tabla
+            doc.autoTable(tableConfig);
+            
+            // Guardar PDF
+            doc.save(`Reporte_Auditoria_${document.getElementById('reporte-fecha').textContent.replace(/\//g, '-')}.pdf`);
+        }
     
     // Descargar usando el enlace directo
     const link = document.createElement('a');
