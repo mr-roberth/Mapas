@@ -1613,7 +1613,7 @@
             });
         }
         
-        // Finalizar auditoría
+        // Finalizar auditoría (MEJORADA)
         async function finalizarAuditoria() {
             // Validar que todas las preguntas tienen respuesta
             const preguntasContestadas = Object.keys(respuestas).length;
@@ -1704,7 +1704,8 @@
                 
                 const data = await response.json();
                 
-                if (data.status === "success") {
+                // MEJORA: Manejar "partial_success"
+                if (data.status === "success" || data.status === "partial_success") {
                     auditorData.auditId = data.auditId;
                     generarDetalleReporte();
                     
@@ -1713,13 +1714,18 @@
                     document.querySelector('.nav-link[data-page="reportes"]').classList.add('active');
                     showPage('reportes');
                     
-                    // Mostrar PDF automáticamente
+                    // Mostrar PDF solo si está disponible
                     if (data.pdfUrl) {
                         document.getElementById('reporte-pdf-url').value = data.pdfUrl;
                         mostrarPDF(data.pdfUrl);
                     }
                     
-                    alert('¡Auditoría completada con éxito! Se ha generado el reporte ejecutivo.');
+                    // Mensaje apropiado según el estado
+                    if (data.status === "success") {
+                        alert('¡Auditoría completada con éxito! Se ha generado el reporte ejecutivo.');
+                    } else {
+                        alert('¡Auditoría guardada! Pero hubo un problema generando el PDF. Puedes generarlo manualmente más tarde.');
+                    }
                     
                     // Recargar reportes
                     cargarReportes();
