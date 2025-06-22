@@ -1172,7 +1172,7 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>Auditoría PPR</h3>
-                    <p>Sistema para la gestión de auditorías de cumplimiento de PPR según la norma TS FSSC 22002.</p>
+                    <p>Sistema para la gestión de auditorías de cumplimiento de PPR según la norma TS FSSC 22002 (RD).</p>
                     <p>Toda la información se almacena de forma segura en Google Sheets para su posterior análisis.</p>
                 </div>
                 
@@ -1190,15 +1190,15 @@
                 <div class="footer-section">
                     <h3>Contacto</h3>
                     <ul class="footer-links">
-                        <li><a href="#"><i class="fas fa-envelope"></i> soporte@auditoriappr.com</a></li>
-                        <li><a href="#"><i class="fas fa-phone"></i> +1 (555) 123-4567</a></li>
+                        <li><a href="#"><i class="fas fa-envelope"></i> rhernandezg@gporres.com.mx</a></li>
+                        <li><a href="#"><i class="fas fa-phone"></i> +52 (284) 551-3009</a></li>
                         <li><a href="#"><i class="fab fa-whatsapp"></i> Enviar mensaje</a></li>
                     </ul>
                 </div>
             </div>
             
             <div class="copyright">
-                <p>&copy; 2023 Sistema de Auditoría PPR TS FSSC 22002. Todos los derechos reservados.</p>
+                <p>&copy; 2025 Sistema de Auditoría PPR TS FSSC 22002. Todos los derechos reservados (Revolución Digital).</p>
             </div>
         </footer>
     </div>
@@ -1704,28 +1704,32 @@
                 
                 const data = await response.json();
                 
-                // MEJORA: Manejar "partial_success"
-                if (data.status === "success" || data.status === "partial_success") {
+                if (data.status === "success") {
                     auditorData.auditId = data.auditId;
-                    generarDetalleReporte();
+                    
+                    // Generar PDF en el servidor
+                    const pdfResponse = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            action: "generatePDF",
+                            auditId: data.auditId
+                        })
+                    });
+                    
+                    const pdfData = await pdfResponse.json();
+                    
+                    if (pdfData.status === "success") {
+                        document.getElementById('reporte-pdf-url').value = pdfData.pdfUrl;
+                        mostrarPDF(pdfData.pdfUrl);
+                        alert('¡Auditoría completada con éxito! Se ha generado el reporte ejecutivo.');
+                    } else {
+                        throw new Error(pdfData.message || "Error generando PDF");
+                    }
                     
                     // Mostrar sección de reportes
                     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
                     document.querySelector('.nav-link[data-page="reportes"]').classList.add('active');
                     showPage('reportes');
-                    
-                    // Mostrar PDF solo si está disponible
-                    if (data.pdfUrl) {
-                        document.getElementById('reporte-pdf-url').value = data.pdfUrl;
-                        mostrarPDF(data.pdfUrl);
-                    }
-                    
-                    // Mensaje apropiado según el estado
-                    if (data.status === "success") {
-                        alert('¡Auditoría completada con éxito! Se ha generado el reporte ejecutivo.');
-                    } else {
-                        alert('¡Auditoría guardada! Pero hubo un problema generando el PDF. Puedes generarlo manualmente más tarde.');
-                    }
                     
                     // Recargar reportes
                     cargarReportes();
