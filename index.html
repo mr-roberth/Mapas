@@ -1704,41 +1704,46 @@
                 
                 const data = await response.json();
                 
-                if (data.status === "success") {
-                    auditorData.auditId = data.auditId;
-                    
-                    // Generar PDF en el servidor
-                    const pdfResponse = await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            action: "generatePDF",
-                            auditId: data.auditId
-                        })
-                    });
-                    
-                    const pdfData = await pdfResponse.json();
-                    
-                    if (pdfData.status === "success") {
-                        document.getElementById('reporte-pdf-url').value = pdfData.pdfUrl;
-                        mostrarPDF(pdfData.pdfUrl);
-                        alert('¡Auditoría completada con éxito! Se ha generado el reporte ejecutivo.');
-                    } else {
-                        throw new Error(pdfData.message || "Error generando PDF");
-                    }
-                    
-                    // Mostrar sección de reportes
-                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                    document.querySelector('.nav-link[data-page="reportes"]').classList.add('active');
-                    showPage('reportes');
-                    
-                    // Recargar reportes
-                    cargarReportes();
-                } else {
-                    throw new Error(data.message || "Error en el servidor");
-                }
-            } catch (error) {
-                alert('Error al enviar la auditoría: ' + error.message);
-            }
+               // Dentro de finalizarAuditoria, después de submitAudit:
+if (data.status === "success") {
+  auditorData.auditId = data.auditId;
+  
+  // Generar PDF en segundo plano
+  generarPDFEnSegundoPlano(data.auditId);
+  
+  // Mostrar mensaje inmediato
+  alert('¡Auditoría guardada con éxito! El PDF se está generando y estará disponible en unos momentos.');
+  
+  // Mostrar sección de reportes
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.querySelector('.nav-link[data-page="reportes"]').classList.add('active');
+  showPage('reportes');
+  
+  // Recargar reportes después de 5 segundos
+  setTimeout(() => {
+    cargarReportes();
+  }, 5000);
+} else {
+  throw new Error(data.message || "Error en el servidor");
+}
+
+// Nueva función para generar PDF en segundo plano
+async function generarPDFEnSegundoPlano(auditId) {
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: "generatePDF",
+        auditId: auditId
+      })
+    });
+    
+    // Recargar reportes cuando termine
+    cargarReportes();
+  } catch (error) {
+    console.error("Error en generación de PDF:", error);
+  }
+}
         }
         
         // Generar detalle para el reporte PDF
