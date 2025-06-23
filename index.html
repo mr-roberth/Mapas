@@ -72,9 +72,9 @@
             gap: 10px;
         }
         
-        .logo i {
-            font-size: 1.8rem;
-            color: var(--secondary);
+        .logo img {
+            height: 40px;
+            width: auto;
         }
         
         .logo h1 {
@@ -479,14 +479,10 @@
             margin-bottom: 30px;
         }
         
-        .login-logo i {
-            font-size: 3.5rem;
-            color: var(--secondary);
-        }
-        
-        .login-logo h1 {
-            margin-top: 15px;
-            color: var(--primary);
+        .login-logo img {
+            width: 150px;
+            height: auto;
+            margin-bottom: 15px;
         }
         
         .tabs {
@@ -669,44 +665,43 @@
             font-size: 0.85rem;
             color: var(--secondary);
         }
-        /* Agrega esto en la sección de estilos */
-#pdf-viewer-container {
-  height: 80vh;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  margin: 20px 0;
-}
+        
+        #pdf-viewer-container {
+          height: 80vh;
+          border: 1px solid var(--border);
+          border-radius: 12px;
+          overflow: hidden;
+          margin: 20px 0;
+        }
 
-#pdf-viewer {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
+        #pdf-viewer {
+          width: 100%;
+          height: 100%;
+          border: none;
+        }
 
-/* Mejoras dashboard */
-.stat-card .stat-label {
-  font-size: 0.9rem;
-  color: var(--text-light);
-}
+        .stat-card .stat-label {
+          font-size: 0.9rem;
+          color: var(--text-light);
+        }
 
-.progress-bar {
-  height: 8px;
-  background: #e0e0e0;
-  border-radius: 4px;
-  overflow: hidden;
-  margin-top: 10px;
-}
+        .progress-bar {
+          height: 8px;
+          background: #e0e0e0;
+          border-radius: 4px;
+          overflow: hidden;
+          margin-top: 10px;
+        }
 
-.progress-bar-fill {
-  height: 100%;
-  border-radius: 4px;
-}
+        .progress-bar-fill {
+          height: 100%;
+          border-radius: 4px;
+        }
 
-.progress-success { background: var(--success); }
-.progress-warning { background: var(--warning); }
-.progress-danger { background: var(--danger); }
-.progress-info { background: var(--info); }
+        .progress-success { background: var(--success); }
+        .progress-warning { background: var(--warning); }
+        .progress-danger { background: var(--danger); }
+        .progress-info { background: var(--info); }
     </style>
 </head>
 <body>
@@ -715,7 +710,7 @@
         <div class="login-container">
             <div class="login-card">
                 <div class="login-logo">
-                    <i class="fas fa-clipboard-check"></i>
+                    <img src="/logo.png" alt="Logo Auditoría PPR">
                     <h1>Auditoría PPR</h1>
                 </div>
                 
@@ -779,7 +774,7 @@
         <header>
             <div class="header-content">
                 <div class="logo">
-                    <i class="fas fa-clipboard-check"></i>
+                    <img src="/logo.png" alt="Logo Auditoría PPR" style="height: 40px;">
                     <h1>Auditoría PPR</h1>
                 </div>
                 <nav>
@@ -976,9 +971,9 @@
                         </div>
                         
                         <div class="chart-container">
-                            <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Cumplimiento por Área</h3>
+                            <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Cumplimiento por Pregunta</h3>
                             <div class="chart-wrapper">
-                                <canvas id="chart-areas"></canvas>
+                                <canvas id="chart-preguntas"></canvas>
                             </div>
                         </div>
                     </div>
@@ -1210,7 +1205,7 @@
         // Variables globales
         let auditorData = {};
         let respuestas = {};
-        let chartDistribucion, chartAreas;
+        let chartDistribucion, chartPreguntas;
         let currentUser = null;
         let reportesData = [];
         let preguntasPorArea = [];
@@ -1766,7 +1761,7 @@
                 row.innerHTML = `
                     <td style="padding: 10px;">${pregunta.texto}</td>
                     <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
-                    <td style="padding: 10px; text-align: center;">${respuesta.evidencia ? 'Sí' : 'No'}</td>
+                    <td style="padding: 10px; text-align: center;">${respuesta.evidenciaUrl ? 'Sí' : 'No'}</td>
                     <td style="padding: 10px;">${respuesta.observaciones || ''}</td>
                 `;
                 detalle.appendChild(row);
@@ -1776,7 +1771,7 @@
         // Inicializar gráficos
         function inicializarGraficos() {
             const ctxDistribucion = document.getElementById('chart-distribucion').getContext('2d');
-            const ctxAreas = document.getElementById('chart-areas').getContext('2d');
+            const ctxPreguntas = document.getElementById('chart-preguntas').getContext('2d');
             
             // Gráfico de distribución
             chartDistribucion = new Chart(ctxDistribucion, {
@@ -1805,14 +1800,14 @@
                 }
             });
             
-            // Gráfico por áreas
-            chartAreas = new Chart(ctxAreas, {
+            // Gráfico por preguntas
+            chartPreguntas = new Chart(ctxPreguntas, {
                 type: 'bar',
                 data: {
-                    labels: ['Batey', 'Molinos', 'Clarificación', 'Evaporación', 'Cristalización', 'Centrifugas', 'Secado', 'Envase', 'Calderas', 'Almacén PT'],
+                    labels: [],
                     datasets: [{
-                        label: 'Porcentaje de Cumplimiento',
-                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        label: '% Cumplimiento',
+                        data: [],
                         backgroundColor: 'rgba(52, 152, 219, 0.8)',
                         borderWidth: 1
                     }]
@@ -1881,9 +1876,10 @@
                     ];
                     chartDistribucion.update();
                     
-                    // Actualizar gráfico por áreas
-                    chartAreas.data.datasets[0].data = data.areasData;
-                    chartAreas.update();
+                    // Actualizar gráfico por preguntas
+                    chartPreguntas.data.labels = data.preguntasData.labels;
+                    chartPreguntas.data.datasets[0].data = data.preguntasData.values;
+                    chartPreguntas.update();
                 } else {
                     throw new Error(data.message || "Error al cargar datos");
                 }
