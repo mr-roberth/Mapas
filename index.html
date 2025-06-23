@@ -54,7 +54,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: var(--极速赛车开奖网官网);
+            box-shadow: var(--shadow);
         }
         
         .header-content {
@@ -105,7 +105,7 @@
         }
         
         .user-info {
-            display:极速赛车开奖网官网
+            display: flex;
             align-items: center;
             gap: 10px;
             color: white;
@@ -180,7 +180,7 @@
             padding: 14px 24px;
             border: none;
             border-radius: 12px;
-            font-size: 1极速赛车开奖网官网
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -461,7 +461,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20极速赛车开奖网官网
+            padding: 20px;
             background: var(--background);
         }
         
@@ -479,7 +479,7 @@
             margin-bottom: 30px;
         }
         
-        .login极速赛车开奖网官网 i {
+        .login-logo i {
             font-size: 3.5rem;
             color: var(--secondary);
         }
@@ -693,7 +693,7 @@
 .progress-bar {
   height: 8px;
   background: #e0e0e0;
-  border-radius: 4极速赛车开奖网官网
+  border-radius: 4px;
   overflow: hidden;
   margin-top: 10px;
 }
@@ -707,15 +707,6 @@
 .progress-warning { background: var(--warning); }
 .progress-danger { background: var(--danger); }
 .progress-info { background: var(--info); }
-
-/* Miniaturas PDF */
-.miniatura-evidencia {
-  max-width: 100px;
-  max-height: 100px;
-  margin: 5px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
     </style>
 </head>
 <body>
@@ -772,7 +763,7 @@
                     <div class="form-group">
                         <label for="register-confirm">Confirmar Contraseña</label>
                         <input type="password" id="register-confirm" placeholder="Repite tu contraseña">
-                    </极速赛车开奖网官网>
+                    </div>
                     
                     <button class="btn btn-success" id="btn-register">
                         <i class="fas fa-user-plus"></i> Crear Cuenta
@@ -908,20 +899,6 @@
                         </div>
                         
                         <div class="filtro-item">
-                            <label for="filtro-unidad">Filtrar por Unidad</label>
-                            <select id="filtro-unidad">
-                                <option value="">Todas las unidades</option>
-                                <option value="ingenio_huixtla">Ingenio Huixtla</option>
-                                <option value="ingenio_modelo">Ingenio Modelo</option>
-                                <option value="ingenio_san_pedro">Ingenio San Pedro</option>
-                                <option value="ingenio_santa_clara">Ingenio Santa Clara</option>
-                                <option value="dulcinea_chiapas">Dulcinea - Chiapas</option>
-                                <option value="dulcinea_michoacan">Dulcinea Michoacán</option>
-                                <option value="cafetalera_cordoba">Cafetalera - Cordoba</option>
-                            </select>
-                        </div>
-                        
-                        <div class="filtro-item">
                             <label for="filtro-area">Filtrar por Área</label>
                             <select id="filtro-area">
                                 <option value="">Todas las áreas</option>
@@ -999,9 +976,9 @@
                         </div>
                         
                         <div class="chart-container">
-                            <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Cumplimiento por Pregunta</h3>
+                            <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Cumplimiento por Área</h3>
                             <div class="chart-wrapper">
-                                <canvas id="chart-preguntas"></canvas>
+                                <canvas id="chart-areas"></canvas>
                             </div>
                         </div>
                     </div>
@@ -1095,12 +1072,12 @@
                                     <div>No Cumple</div>
                                 </div>
                                 <div style="text-align: center; flex: 1; min-width: 100px;">
-                                    <div style="font-size: 1.8rem; color: var(--info); font-weight: bold;" id="reporte-no-aplica">0%</极速赛车开奖网官网>
+                                    <div style="font-size: 1.8rem; color: var(--info); font-weight: bold;" id="reporte-no-aplica">0%</div>
                                     <div>No Aplica</div>
                                 </div>
                             </div>
                             
-                            <h4 style="color: var(--dark); border-bottom: 1极速赛车开奖网官网 solid #eee; padding-bottom: 8px; margin-bottom: 15px;">Detalle de Requisitos</h4>
+                            <h4 style="color: var(--dark); border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 15px;">Detalle de Requisitos</h4>
                             <div style="overflow-x: auto;">
                                 <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
                                     <thead>
@@ -1161,20 +1138,6 @@
                         <div class="form-group">
                             <label for="fecha-fin-exportar">Fecha Fin</label>
                             <input type="date" id="fecha-fin-exportar">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="unidad-exportar">Unidad de Negocio</label>
-                            <select id="unidad-exportar">
-                                <option value="">Todas las unidades</option>
-                                <option value="ingenio_huixtla">Ingenio Huixtla</option>
-                                <option value="ingenio_modelo">Ingenio Modelo</option>
-                                <option value="ingenio_san_pedro">Ingenio San Pedro</option>
-                                <option value="ingenio_santa_clara">Ingenio Santa Clara</option>
-                                <option value="dulcinea_chiapas">Dulcinea - Chiapas</option>
-                                <option value="dulcinea_michoacan">Dulcinea Michoacán</option>
-                                <option value="cafetalera_cordoba">Cafetalera - Cordoba</option>
-                            </select>
                         </div>
                         
                         <div class="form-group">
@@ -1247,7 +1210,7 @@
         // Variables globales
         let auditorData = {};
         let respuestas = {};
-        let chartDistribucion, chartPreguntas;
+        let chartDistribucion, chartAreas;
         let currentUser = null;
         let reportesData = [];
         let preguntasPorArea = [];
@@ -1504,7 +1467,7 @@
             // Actualizar información en la sección de auditoría
             document.getElementById('current-auditor').textContent = nombre;
             document.getElementById('current-unidad').textContent = document.querySelector(`#unidad-negocio option[value="${unidad}"]`).textContent;
-            document.getElementById('current-area').text极速赛车开奖网官网 = document.querySelector(`#area-auditada option[value="${area}"]`).textContent;
+            document.getElementById('current-area').textContent = document.querySelector(`#area-auditada option[value="${area}"]`).textContent;
             document.getElementById('current-date').textContent = fecha;
             
             // Actualizar información en la sección de reportes
@@ -1545,7 +1508,7 @@
                             <label for="p${pregunta.id}-parcial">Cumple Parcial</label>
                         </div>
                         <div class="opcion" data-value="no_cumple" data-pregunta="${pregunta.id}">
-                            <input type="radio" name="pregunta-${pregunta.id}" value="no_cumple" id="p${pregunta.id}-no_c极速赛车开奖网官网">
+                            <input type="radio" name="pregunta-${pregunta.id}" value="no_cumple" id="p${pregunta.id}-no_cumple">
                             <label for="p${pregunta.id}-no_cumple">No Cumple</label>
                         </div>
                         <div class="opcion" data-value="no_aplica" data-pregunta="${pregunta.id}">
@@ -1741,28 +1704,20 @@
                 
                 const data = await response.json();
                 
-                // MEJORA: Manejar "partial_success"
-                if (data.status === "success" || data.status === "partial_success") {
+                if (data.status === "success") {
                     auditorData.auditId = data.auditId;
                     generarDetalleReporte();
                     
-                    // Mostrar sección de reportes
+                    // Mostrar sección de reportes y PDF
                     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
                     document.querySelector('.nav-link[data-page="reportes"]').classList.add('active');
                     showPage('reportes');
                     
-                    // Mostrar PDF solo si está disponible
-                    if (data.pdfUrl) {
-                        document.getElementById('reporte-pdf-url').value = data.pdfUrl;
-                        mostrarPDF(data.pdfUrl);
-                    }
+                    // Mostrar el PDF generado
+                    mostrarPDF(data.pdfUrl);
+                    document.getElementById('reporte-pdf-url').value = data.pdfUrl;
                     
-                    // Mensaje apropiado según el estado
-                    if (data.status === "success") {
-                        alert('¡Auditoría completada con éxito! Se ha generado el reporte ejecutivo.');
-                    } else {
-                        alert('¡Auditoría guardada! Pero hubo un problema generando el PDF. Puedes generarlo manualmente más tarde.');
-                    }
+                    alert('¡Auditoría completada con éxito! Se ha generado el reporte ejecutivo.');
                     
                     // Recargar reportes
                     cargarReportes();
@@ -1807,15 +1762,11 @@
                         estadoColor = 'gray';
                 }
                 
-                const evidenciaHTML = respuesta.evidenciaUrl 
-                    ? `<a href="${respuesta.evidenciaUrl}" target="_blank">Ver evidencia</a>` 
-                    : 'No';
-                
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td style="padding: 10px;">${pregunta.texto}</td>
                     <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
-                    <td style="padding: 10px; text-align: center;">${evidenciaHTML}</td>
+                    <td style="padding: 10px; text-align: center;">${respuesta.evidencia ? 'Sí' : 'No'}</td>
                     <td style="padding: 10px;">${respuesta.observaciones || ''}</td>
                 `;
                 detalle.appendChild(row);
@@ -1825,7 +1776,7 @@
         // Inicializar gráficos
         function inicializarGraficos() {
             const ctxDistribucion = document.getElementById('chart-distribucion').getContext('2d');
-            const ctxPreguntas = document.getElementById('chart-preguntas').getContext('2d');
+            const ctxAreas = document.getElementById('chart-areas').getContext('2d');
             
             // Gráfico de distribución
             chartDistribucion = new Chart(ctxDistribucion, {
@@ -1854,24 +1805,23 @@
                 }
             });
             
-            // Gráfico por preguntas
-            chartPreguntas = new Chart(ctxPreguntas, {
+            // Gráfico por áreas
+            chartAreas = new Chart(ctxAreas, {
                 type: 'bar',
                 data: {
-                    labels: [],
+                    labels: ['Batey', 'Molinos', 'Clarificación', 'Evaporación', 'Cristalización', 'Centrifugas', 'Secado', 'Envase', 'Calderas', 'Almacén PT'],
                     datasets: [{
                         label: 'Porcentaje de Cumplimiento',
-                        data: [],
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                         backgroundColor: 'rgba(52, 152, 219, 0.8)',
                         borderWidth: 1
                     }]
                 },
                 options: {
-                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        x: {
+                        y: {
                             beginAtZero: true,
                             max: 100,
                             ticks: {
@@ -1890,7 +1840,6 @@
             const loader = document.getElementById('dashboard-loader');
             const content = document.getElementById('dashboard-content');
             const fecha = document.getElementById('filtro-fecha').value;
-            const unidad = document.getElementById('filtro-unidad').value;
             const area = document.getElementById('filtro-area').value;
             
             // Mostrar loader y ocultar contenido
@@ -1904,7 +1853,6 @@
                     body: JSON.stringify({
                         action: "getDashboardData",
                         fecha: fecha,
-                        unidad: unidad,
                         area: area
                     })
                 });
@@ -1933,10 +1881,9 @@
                     ];
                     chartDistribucion.update();
                     
-                    // Actualizar gráfico por preguntas
-                    chartPreguntas.data.labels = data.preguntasData.map(p => `P${p.id}`);
-                    chartPreguntas.data.datasets[0].data = data.preguntasData.map(p => p.porcCumplimiento);
-                    chartPreguntas.update();
+                    // Actualizar gráfico por áreas
+                    chartAreas.data.datasets[0].data = data.areasData;
+                    chartAreas.update();
                 } else {
                     throw new Error(data.message || "Error al cargar datos");
                 }
