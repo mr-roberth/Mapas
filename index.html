@@ -8,7 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <style>
-        /* Estilos optimizados */
+        /* Estilos mejorados */
         :root {
             --primary: #2c3e50;
             --secondary: #3498db;
@@ -46,6 +46,7 @@
             padding: 0 15px;
         }
         
+        /* Header */
         header {
             background-color: var(--primary);
             color: white;
@@ -120,6 +121,7 @@
             font-size: 0.9rem;
         }
         
+        /* Formularios */
         .form-section {
             background: var(--card-bg);
             border-radius: 16px;
@@ -225,6 +227,7 @@
             transform: translateY(-2px);
         }
         
+        /* Preguntas */
         .pregunta-card {
             background: var(--card-bg);
             border-radius: 16px;
@@ -318,6 +321,7 @@
             margin-top: 15px;
         }
         
+        /* Dashboard */
         .filtros-dashboard {
             display: flex;
             flex-direction: column;
@@ -393,6 +397,7 @@
             position: relative;
         }
         
+        /* Footer */
         footer {
             background: var(--dark);
             color: white;
@@ -450,6 +455,7 @@
             font-size: 0.9rem;
         }
         
+        /* Login */
         .login-container {
             display: flex;
             justify-content: center;
@@ -503,6 +509,7 @@
             font-weight: 600;
         }
         
+        /* Responsive */
         @media (min-width: 768px) {
             .container {
                 max-width: 1200px;
@@ -539,6 +546,7 @@
             }
         }
         
+        /* Ocultar secciones */
         .page-section {
             display: none;
         }
@@ -636,7 +644,6 @@
         }
         
         #pdf-viewer-container {
-            height: 80vh;
             border: 1px solid var(--border);
             border-radius: 12px;
             overflow: hidden;
@@ -645,32 +652,61 @@
         
         #pdf-viewer {
             width: 100%;
-            height: 100%;
-            border: none;
+            height: 600px;
         }
         
-        .stat-card .stat-label {
-            font-size: 0.9rem;
-            color: var(--text-light);
+        .pregunta-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
         }
         
-        .progress-bar {
-            height: 8px;
-            background: #e0e0e0;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 10px;
+        .categoria-pregunta {
+            background: #e3f2fd;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: var(--secondary);
         }
-        
-        .progress-bar-fill {
-            height: 100%;
-            border-radius: 4px;
-        }
-        
-        .progress-success { background: var(--success); }
-        .progress-warning { background: var(--warning); }
-        .progress-danger { background: var(--danger); }
-        .progress-info { background: var(--info); }
+        /* Agrega esto en la sección de estilos */
+#pdf-viewer-container {
+  height: 80vh;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+#pdf-viewer {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Mejoras dashboard */
+.stat-card .stat-label {
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.progress-bar {
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+}
+
+.progress-success { background: var(--success); }
+.progress-warning { background: var(--warning); }
+.progress-danger { background: var(--danger); }
+.progress-info { background: var(--info); }
     </style>
 </head>
 <body>
@@ -1265,70 +1301,47 @@
         });
         
         // Login
-async function login() {
-    const email = document.getElementById('login-email').value.trim();
-    const password = document.getElementById('login-password').value;
-    const messageContainer = document.getElementById('login-message');
-    
-    if (!email || !password) {
-        showMessage('Por favor completa todos los campos', 'error');
-        return;
-    }
-    
-    try {
-        // Intenta con ambos métodos de envío
-        let response = await fetch(SCRIPT_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                action: "login",
-                email: email,
-                password: password
-            })
-        }).catch(async (error) => {
-            // Fallback para navegadores antiguos
-            console.log("Intento 1 falló, intentando método alternativo");
-            return await fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: new URLSearchParams({
-                    'action': "login",
-                    'email': email,
-                    'password': password
-                })
-            });
-        });
-        
-        // Verificar si la respuesta es JSON válido
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-            const data = await response.json();
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const messageContainer = document.getElementById('login-message');
             
-            if (data.status === "success") {
-                currentUser = data.user;
-                document.getElementById('user-name').textContent = currentUser.name || currentUser.email;
-                document.getElementById('nombre-auditor').value = currentUser.name;
-                document.getElementById('login').classList.remove('active');
-                document.getElementById('main-app').style.display = 'block';
-                showPage('inicio');
-            } else {
-                showMessage(data.message || "Credenciales incorrectas", 'error');
+            if (!email || !password) {
+                showMessage('Por favor completa todos los campos', 'error');
+                return;
             }
-        } else {
-            // Respuesta no es JSON, mostrar error genérico
-            throw new Error("El servidor respondió con un formato inválido");
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "login",
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    currentUser = data.user;
+                    document.getElementById('user-name').textContent = currentUser.name || currentUser.email;
+                    document.getElementById('nombre-auditor').value = currentUser.name; // Autorellenar nombre
+                    document.getElementById('login').classList.remove('active');
+                    document.getElementById('main-app').style.display = 'block';
+                    showPage('inicio');
+                } else {
+                    showMessage(data.message || "Credenciales incorrectas", 'error');
+                }
+            } catch (error) {
+                showMessage('Error de conexión: ' + error.message, 'error');
+            }
         }
-    } catch (error) {
-        console.error("Error completo:", error);
-        showMessage('Error de conexión: ' + error.message, 'error');
-    }
-}
         
         // Registro
         async function register() {
-            const name = document.getElementById('register-name').value.trim();
-            const email = document.getElementById('register-email').value.trim();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
             const confirm = document.getElementById('register-confirm').value;
             
@@ -1345,9 +1358,6 @@ async function login() {
             try {
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
                     body: JSON.stringify({
                         action: "register",
                         name: name,
@@ -1428,9 +1438,6 @@ async function login() {
             try {
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
                     body: JSON.stringify({
                         action: "getPreguntasPorArea",
                         area: area
@@ -1569,12 +1576,9 @@ async function login() {
                             try {
                                 const response = await fetch(SCRIPT_URL, {
                                     method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
                                     body: JSON.stringify({
                                         action: "uploadImage",
-                                        image: event.target.result.split(',')[1] // Solo la parte base64
+                                        image: event.target.result
                                     })
                                 });
                                 
@@ -1583,6 +1587,7 @@ async function login() {
                                 if (data.status === "success") {
                                     // Guardar evidencia
                                     if (!respuestas[pregunta.id]) respuestas[pregunta.id] = {};
+                                    respuestas[pregunta.id].evidencia = file;
                                     respuestas[pregunta.id].evidenciaUrl = data.url;
                                 } else {
                                     throw new Error(data.message || "Error al subir imagen");
@@ -1608,7 +1613,7 @@ async function login() {
             });
         }
         
-        // Finalizar auditoría
+        // Finalizar auditoría (MEJORADA)
         async function finalizarAuditoria() {
             // Validar que todas las preguntas tienen respuesta
             const preguntasContestadas = Object.keys(respuestas).length;
@@ -1694,59 +1699,51 @@ async function login() {
             try {
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
                     body: JSON.stringify(payload)
                 });
                 
                 const data = await response.json();
                 
-                if (data.status === "success") {
-                    auditorData.auditId = data.auditId;
-                    
-                    // Generar PDF en segundo plano
-                    generarPDFEnSegundoPlano(data.auditId);
-                    
-                    // Mostrar mensaje inmediato
-                    alert('¡Auditoría guardada con éxito! El PDF se está generando y estará disponible en unos momentos.');
-                    
-                    // Mostrar sección de reportes
-                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                    document.querySelector('.nav-link[data-page="reportes"]').classList.add('active');
-                    showPage('reportes');
-                    
-                    // Recargar reportes después de 5 segundos
-                    setTimeout(() => {
-                        cargarReportes();
-                    }, 5000);
-                } else {
-                    throw new Error(data.message || "Error en el servidor");
-                }
-            } catch (error) {
-                alert('Error al guardar auditoría: ' + error.message);
-            }
-        }
-        
-        // Generar PDF en segundo plano
-        async function generarPDFEnSegundoPlano(auditId) {
-            try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        action: "generatePDF",
-                        auditId: auditId
-                    })
-                });
-                
-                // Recargar reportes cuando termine
-                cargarReportes();
-            } catch (error) {
-                console.error("Error en generación de PDF:", error);
-            }
+               // Dentro de finalizarAuditoria, después de submitAudit:
+if (data.status === "success") {
+  auditorData.auditId = data.auditId;
+  
+  // Generar PDF en segundo plano
+  generarPDFEnSegundoPlano(data.auditId);
+  
+  // Mostrar mensaje inmediato
+  alert('¡Auditoría guardada con éxito! El PDF se está generando y estará disponible en unos momentos.');
+  
+  // Mostrar sección de reportes
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.querySelector('.nav-link[data-page="reportes"]').classList.add('active');
+  showPage('reportes');
+  
+  // Recargar reportes después de 5 segundos
+  setTimeout(() => {
+    cargarReportes();
+  }, 5000);
+} else {
+  throw new Error(data.message || "Error en el servidor");
+}
+
+// Nueva función para generar PDF en segundo plano
+async function generarPDFEnSegundoPlano(auditId) {
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: "generatePDF",
+        auditId: auditId
+      })
+    });
+    
+    // Recargar reportes cuando termine
+    cargarReportes();
+  } catch (error) {
+    console.error("Error en generación de PDF:", error);
+  }
+}
         }
         
         // Generar detalle para el reporte PDF
@@ -1870,9 +1867,6 @@ async function login() {
                 // Obtener datos reales del backend
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
                     body: JSON.stringify({
                         action: "getDashboardData",
                         fecha: fecha,
@@ -1935,9 +1929,6 @@ async function login() {
                 // Obtener datos reales del backend
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
                     body: JSON.stringify({
                         action: "getAuditsForReport",
                         fecha: fecha,
@@ -2038,9 +2029,6 @@ async function login() {
             try {
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
                     body: JSON.stringify({
                         action: "getAuditDetails",
                         auditId: reporteId
@@ -2122,46 +2110,43 @@ async function login() {
             }
         }
         
-        // Función para exportar datos
-        async function exportarDatos() {
-            const fechaInicio = document.getElementById('fecha-inicio-exportar').value;
-            const fechaFin = document.getElementById('fecha-fin-exportar').value;
-            const area = document.getElementById('area-exportar').value;
-            
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        action: "exportAudits",
-                        fechaInicio: fechaInicio,
-                        fechaFin: fechaFin,
-                        area: area
-                    })
-                });
-                
-                if (response.ok) {
-                    const blob = await response.blob();
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = `auditorias_${new Date().toISOString().slice(0,10)}.csv`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                } else {
-                    throw new Error('Error en la respuesta del servidor');
-                }
-            } catch (error) {
-                document.getElementById('exportar-resultado').innerHTML = `
-                    <div class="alert alert-error">
-                        <i class="fas fa-exclamation-circle"></i> Error al exportar: ${error.message}
-                    </div>
-                `;
-            }
-        }
+        // Función para exportar datos (CORREGIDA)
+async function exportarDatos() {
+  const fechaInicio = document.getElementById('fecha-inicio-exportar').value;
+  const fechaFin = document.getElementById('fecha-fin-exportar').value;
+  const area = document.getElementById('area-exportar').value;
+  
+  try {
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: "exportAudits",
+        fechaInicio: fechaInicio,
+        fechaFin: fechaFin,
+        area: area
+      })
+    });
+    
+    if (response.ok) {
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `auditorias_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      throw new Error('Error en la respuesta del servidor');
+    }
+  } catch (error) {
+    document.getElementById('exportar-resultado').innerHTML = `
+      <div class="alert alert-error">
+        <i class="fas fa-exclamation-circle"></i> Error al exportar: ${error.message}
+      </div>
+    `;
+  }
+}
     </script>
 </body>
 </html>
