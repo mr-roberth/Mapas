@@ -747,7 +747,7 @@
         <header>
             <div class="header-content">
                 <div class="logo">
-                    <img src="https://via.placeholder.com/40" alt="Logo Auditoría PPR" style="height: 40px;">
+                    <img src="logo.png" alt="Logo Auditoría PPR" style="height: 40px;">
                     <h1>Auditoría PPR</h1>
                 </div>
                 <nav>
@@ -1158,15 +1158,15 @@
                 <div class="footer-section">
                     <h3>Contacto</h3>
                     <ul class="footer-links">
-                        <li><a href="#"><i class="fas fa-envelope"></i> soporte@auditoriappr.com</a></li>
-                        <li><a href="#"><i class="fas fa-phone"></i> +1 (555) 123-4567</a></li>
+                        <li><a href="#"><i class="fas fa-envelope"></i> rhernandezg@gporres.com.mx</a></li>
+                        <li><a href="#"><i class="fas fa-phone"></i> +52 (284) 551-3009</a></li>
                         <li><a href="#"><i class="fab fa-whatsapp"></i> Enviar mensaje</a></li>
                     </ul>
                 </div>
             </div>
             
             <div class="copyright">
-                <p>&copy; 2023 Sistema de Auditoría PPR TS FSSC 22002. Todos los derechos reservados.</p>
+                <p>&copy; 2025 Sistema de Auditoría PPR TS FSSC 22002. Todos los derechos reservados (Revolución Digital).</p>
             </div>
         </footer>
     </div>
@@ -1699,51 +1699,51 @@
         }
         
         // Generar detalle para el reporte PDF
-        function generarDetalleReporte() {
-            const detalle = document.getElementById('reporte-detalle');
-            detalle.innerHTML = '';
-            
-            // Recorremos todas las preguntas
-            preguntasPorArea.forEach(pregunta => {
-                const respuesta = respuestas[pregunta.id] || {};
+            function generarDetalleReporte() {
+                const detalle = document.getElementById('reporte-detalle');
+                detalle.innerHTML = '';
                 
-                let estadoText, estadoColor;
-                
-                switch(respuesta.estado) {
-                    case 'cumple':
-                        estadoText = 'Cumple';
-                        estadoColor = 'green';
-                        break;
-                    case 'parcial':
-                        estadoText = 'Cumple Parcial';
-                        estadoColor = 'orange';
-                        break;
-                    case 'no_cumple':
-                        estadoText = 'No Cumple';
-                        estadoColor = 'red';
-                        break;
-                    case 'no_aplica':
-                        estadoText = 'No Aplica';
-                        estadoColor = '#9b59b6';
-                        break;
-                    default:
-                        estadoText = 'No respondida';
-                        estadoColor = 'gray';
-                }
-                
-                // Verificar si hay URL de evidencia
-                const tieneEvidencia = respuesta.evidenciaUrl ? 'Sí' : 'No';
-                
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td style="padding: 10px;">${pregunta.texto}</td>
-                    <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
-                    <td style="padding: 10px; text-align: center;">${tieneEvidencia}</td>
-                    <td style="padding: 10px;">${respuesta.observaciones || ''}</td>
-                `;
-                detalle.appendChild(row);
-            });
-        }
+                // Recorremos todas las preguntas
+                preguntasPorArea.forEach(pregunta => {
+                    const respuesta = respuestas[pregunta.id] || {};
+                    
+                    let estadoText, estadoColor;
+                    
+                    switch(respuesta.estado) {
+                        case 'cumple':
+                            estadoText = 'Cumple';
+                            estadoColor = 'green';
+                            break;
+                        case 'parcial':
+                            estadoText = 'Cumple Parcial';
+                            estadoColor = 'orange';
+                            break;
+                        case 'no_cumple':
+                            estadoText = 'No Cumple';
+                            estadoColor = 'red';
+                            break;
+                        case 'no_aplica':
+                            estadoText = 'No Aplica';
+                            estadoColor = '#9b59b6';
+                            break;
+                        default:
+                            estadoText = 'No respondida';
+                            estadoColor = 'gray';
+                    }
+                    
+                    // CAMBIO 3: Verificar evidencia correctamente
+                    const tieneEvidencia = respuesta.evidenciaUrl ? 'Sí' : 'No';
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td style="padding: 10px;">${pregunta.texto}</td>
+                        <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
+                        <td style="padding: 10px; text-align: center;">${tieneEvidencia}</td>
+                        <td style="padding: 10px;">${respuesta.observaciones || ''}</td>
+                    `;
+                    detalle.appendChild(row);
+                });
+            }
         
         // Inicializar gráficos
         function inicializarGraficos() {
