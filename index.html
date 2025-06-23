@@ -1666,17 +1666,18 @@
             // Preparar datos para enviar al backend
             const preguntasData = [];
             
-            for (const [id, respuesta] of Object.entries(respuestas)) {
-                const pregunta = preguntasPorArea.find(p => p.id === parseInt(id));
+            // Usar preguntasPorArea en lugar de Object.entries(respuestas)
+            preguntasPorArea.forEach(pregunta => {
+                const respuesta = respuestas[pregunta.id] || {};
                 preguntasData.push({
                     id: pregunta.id,
                     texto: pregunta.texto,
                     categoria: pregunta.categoria,
-                    estado: respuesta.estado,
+                    estado: respuesta.estado || "no_respondida",
                     evidenciaUrl: respuesta.evidenciaUrl || null,
                     observaciones: respuesta.observaciones || ""
                 });
-            }
+            });
             
             const payload = {
                 action: "submitAudit",
@@ -1729,9 +1730,9 @@
             const detalle = document.getElementById('reporte-detalle');
             detalle.innerHTML = '';
             
-            Object.values(respuestas).forEach((respuesta, index) => {
-                const pregunta = preguntasPorArea.find(p => p.id === parseInt(respuesta.id));
-                if (!pregunta) return;
+            // Recorremos todas las preguntas
+            preguntasPorArea.forEach(pregunta => {
+                const respuesta = respuestas[pregunta.id] || {};
                 
                 let estadoText, estadoColor;
                 
@@ -1757,11 +1758,14 @@
                         estadoColor = 'gray';
                 }
                 
+                // Verificar si hay URL de evidencia
+                const tieneEvidencia = respuesta.evidenciaUrl ? 'Sí' : 'No';
+                
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td style="padding: 10px;">${pregunta.texto}</td>
                     <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
-                    <td style="padding: 10px; text-align: center;">${respuesta.evidenciaUrl ? 'Sí' : 'No'}</td>
+                    <td style="padding: 10px; text-align: center;">${tieneEvidencia}</td>
                     <td style="padding: 10px;">${respuesta.observaciones || ''}</td>
                 `;
                 detalle.appendChild(row);
@@ -2039,11 +2043,13 @@
                                 break;
                         }
                         
+                        const tieneEvidencia = pregunta.evidenciaUrl ? 'Sí' : 'No';
+                        
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td style="padding: 10px;">${pregunta.texto}</td>
                             <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
-                            <td style="padding: 10px; text-align: center;">${pregunta.evidenciaUrl ? 'Sí' : 'No'}</td>
+                            <td style="padding: 10px; text-align: center;">${tieneEvidencia}</td>
                             <td style="padding: 10px;">${pregunta.observaciones || ''}</td>
                         `;
                         detalle.appendChild(row);
