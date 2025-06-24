@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Estilos mejorados */
         :root {
@@ -676,130 +675,6 @@
         .progress-warning { background: var(--warning); }
         .progress-danger { background: var(--danger); }
         .progress-info { background: var(--info); }
-        
-        /* Nuevos estilos para reportes */
-        .reporte-detalle-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            padding: 25px;
-            margin: 20px 0;
-        }
-        
-        .reporte-header {
-            text-align: center;
-            margin-bottom: 25px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        
-        .reporte-metadata {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-        
-        .reporte-summary {
-            background: #f9fafb;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .summary-stats {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            margin-top: 15px;
-        }
-        
-        .stat-box {
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .stat-cumple { color: #10b981; }
-        .stat-parcial { color: #f59e0b; }
-        .stat-no-cumple { color: #ef4444; }
-        .stat-no-aplica { color: #6b7280; }
-        
-        .hallazgo-item {
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-        
-        .hallazgo-header {
-            padding: 15px;
-            background-color: #f9fafb;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        
-        .hallazgo-content {
-            padding: 20px;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-        
-        @media (min-width: 768px) {
-            .hallazgo-content {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-        
-        .estado-badge {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        
-        .badge-cumple { background-color: #dcfce7; color: #166534; }
-        .badge-parcial { background-color: #fef9c3; color: #854d0e; }
-        .badge-no-cumple { background-color: #fee2e2; color: #991b1b; }
-        .badge-no-aplica { background-color: #e5e7eb; color: #4b5563; }
-        
-        .evidencia-img {
-            border-radius: 6px;
-            max-width: 100%;
-            height: auto;
-            cursor: pointer;
-            transition: opacity 0.3s;
-        }
-        
-        .evidencia-img:hover {
-            opacity: 0.9;
-        }
-        
-        .print-btn {
-            display: block;
-            margin: 20px auto;
-            background: var(--secondary);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .print-btn:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-        }
     </style>
 </head>
 <body>
@@ -1134,63 +1009,63 @@
                     </div>
                     
                     <div id="detalle-reporte" style="display: none;">
-                        <div class="reporte-detalle-container">
-                            <!-- Encabezado del reporte -->
-                            <div class="reporte-header">
-                                <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Sistema Operativo Azucar</h1>
-                                <h2 class="text-md md:text-lg font-semibold text-gray-600 mt-1">Auditoría de cumplimiento de PPR de acuerdo a norma TS FSSC 22002</h2>
-                            </div>
+                        <div id="reporte-preview" style="background: white; padding: 20px; border: 1px solid #ddd; border-radius: 12px; margin: 20px 0;">
+                            <h3 style="text-align: center; color: var(--primary); margin-bottom: 20px;">Reporte de Auditoría PPR</h3>
                             
-                            <!-- Metadatos de auditoría -->
-                            <div class="reporte-metadata">
-                                <div><strong class="font-semibold text-gray-700">Auditor:</strong> <span id="reporte-auditor" class="font-normal text-gray-600">-</span></div>
-                                <div><strong class="font-semibold text-gray-700">Unidad:</strong> <span id="reporte-unidad" class="font-normal text-gray-600">-</span></div>
-                                <div><strong class="font-semibold text-gray-700">Área:</strong> <span id="reporte-area" class="font-normal text-gray-600">-</span></div>
-                                <div><strong class="font-semibold text-gray-700">Fecha:</strong> <span id="reporte-fecha" class="font-normal text-gray-600">-</span></div>
-                                <div><strong class="font-semibold text-gray-700">ID Auditoría:</strong> <span id="reporte-id" class="font-normal text-gray-600">-</span></div>
-                            </div>
-                            
-                            <!-- Resumen de cumplimiento -->
-                            <div class="reporte-summary">
-                                <h3 class="text-lg font-semibold text-gray-800 mb-4">Resumen de Cumplimiento</h3>
-                                <div class="summary-stats">
-                                    <div class="stat-box">
-                                        <div class="stat-value stat-cumple" id="reporte-cumple">0%</div>
-                                        <div class="text-sm font-medium text-gray-500">Cumple</div>
-                                    </div>
-                                    <div class="stat-box">
-                                        <div class="stat-value stat-no-cumple" id="reporte-no-cumple">0%</div>
-                                        <div class="text-sm font-medium text-gray-500">No Cumple</div>
-                                    </div>
-                                    <div class="stat-box">
-                                        <div class="stat-value stat-parcial" id="reporte-parcial">0%</div>
-                                        <div class="text-sm font-medium text-gray-500">Cumple Parcial</div>
-                                    </div>
-                                    <div class="stat-box">
-                                        <div class="stat-value stat-no-aplica" id="reporte-no-aplica">0%</div>
-                                        <div class="text-sm font-medium text-gray-500">No Aplica</div>
-                                    </div>
+                            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                                <div>
+                                    <p><strong>Auditor:</strong> <span id="reporte-auditor">-</span></p>
+                                    <p><strong>Unidad:</strong> <span id="reporte-unidad">-</span></p>
+                                    <p><strong>Área auditada:</strong> <span id="reporte-area">-</span></p>
+                                    <p><strong>Fecha:</strong> <span id="reporte-fecha">-</span></p>
+                                </div>
+                                <div>
+                                    <p><strong>Estado:</strong> <span style="color: var(--success);">Completado</span></p>
+                                    <p><strong>Resultado:</strong> <span id="reporte-resultado" style="color: var(--warning);">-</span></p>
                                 </div>
                             </div>
                             
-                            <!-- Detalle de hallazgos -->
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-800 mb-4">Detalle de Hallazgos</h3>
-                                <div class="space-y-6" id="reporte-detalle-content">
-                                    <!-- Contenido generado dinámicamente -->
+                            <h4 style="color: var(--dark); border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 15px;">Resumen de Cumplimiento</h4>
+                            <div style="display: flex; justify-content: space-around; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                                <div style="text-align: center; flex: 1; min-width: 100px;">
+                                    <div style="font-size: 1.8rem; color: var(--success); font-weight: bold;" id="reporte-cumple">0%</div>
+                                    <div>Cumple</div>
+                                </div>
+                                <div style="text-align: center; flex: 1; min-width: 100px;">
+                                    <div style="font-size: 1.8rem; color: var(--warning); font-weight: bold;" id="reporte-parcial">0%</div>
+                                    <div>Cumple Parcial</div>
+                                </div>
+                                <div style="text-align: center; flex: 1; min-width: 100px;">
+                                    <div style="font-size: 1.8rem; color: var(--danger); font-weight: bold;" id="reporte-no-cumple">0%</div>
+                                    <div>No Cumple</div>
+                                </div>
+                                <div style="text-align: center; flex: 1; min-width: 100px;">
+                                    <div style="font-size: 1.8rem; color: var(--info); font-weight: bold;" id="reporte-no-aplica">0%</div>
+                                    <div>No Aplica</div>
                                 </div>
                             </div>
                             
-                            <!-- Pie de página -->
-                            <footer class="text-center mt-12 pt-6 border-t border-gray-200">
-                                <p class="text-xs text-gray-500">Reporte generado automáticamente por el sistema de evaluación de PPR (RD)</p>
-                            </footer>
+                            <h4 style="color: var(--dark); border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 15px;">Detalle de Requisitos</h4>
+                            <div style="overflow-x: auto;">
+                                <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+                                    <thead>
+                                        <tr style="background: #f1f2f6;">
+                                            <th style="padding: 10px; text-align: left;">Requisito</th>
+                                            <th style="padding: 10px; text-align: center; width: 120px;">Estado</th>
+                                            <th style="padding: 10px; text-align: center; width: 120px;">Evidencia</th>
+                                            <th style="padding: 10px; text-align: left;">Observaciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="reporte-detalle">
+                                        <!-- Detalle se generará con JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div style="margin-top: 30px; font-style: italic; text-align: center;">
+                                <p>Este reporte fue generado automáticamente por el Sistema de Auditoría PPR TS FSSC 22002</p>
+                            </div>
                         </div>
-                        
-                        <!-- Botón para imprimir/descargar -->
-                        <button class="print-btn" id="btn-print-report">
-                            <i class="fas fa-print mr-2"></i> Imprimir o Guardar como PDF
-                        </button>
                         
                         <!-- Visor de PDF -->
                         <div id="pdf-viewer-container" style="display: none;">
@@ -1387,11 +1262,6 @@
             document.getElementById('ver-pdf').addEventListener('click', function() {
                 const pdfUrl = document.getElementById('reporte-pdf-url').value;
                 mostrarPDF(pdfUrl);
-            });
-            
-            // Event listener para imprimir reporte
-            document.getElementById('btn-print-report').addEventListener('click', function() {
-                window.print();
             });
             
             // Inicializar gráficos vacíos
@@ -1837,58 +1707,46 @@
         
         // Generar detalle para el reporte PDF
         function generarDetalleReporte() {
-            const detalle = document.getElementById('reporte-detalle-content');
+            const detalle = document.getElementById('reporte-detalle');
             detalle.innerHTML = '';
             
             preguntasPorArea.forEach(pregunta => {
                 const respuesta = respuestas[pregunta.id] || {};
                 
-                let estadoClass, estadoText;
+                let estadoText, estadoColor;
                 
                 switch(respuesta.estado) {
                     case 'cumple':
-                        estadoClass = 'badge-cumple';
                         estadoText = 'Cumple';
+                        estadoColor = 'green';
                         break;
                     case 'parcial':
-                        estadoClass = 'badge-parcial';
                         estadoText = 'Cumple Parcial';
+                        estadoColor = 'orange';
                         break;
                     case 'no_cumple':
-                        estadoClass = 'badge-no-cumple';
                         estadoText = 'No Cumple';
+                        estadoColor = 'red';
                         break;
                     case 'no_aplica':
-                        estadoClass = 'badge-no-aplica';
                         estadoText = 'No Aplica';
+                        estadoColor = '#9b59b6';
                         break;
+                    default:
+                        estadoText = 'No respondida';
+                        estadoColor = 'gray';
                 }
                 
-                const card = document.createElement('div');
-                card.className = 'hallazgo-item';
-                card.innerHTML = `
-                    <div class="hallazgo-header">
-                        <p class="font-semibold text-gray-700">${pregunta.id}. ${pregunta.texto}</p>
-                    </div>
-                    <div class="hallazgo-content">
-                        <div>
-                            <span class="estado-badge ${estadoClass}">${estadoText}</span>
-                        </div>
-                        <div>
-                            <p class="text-gray-600"><strong class="text-gray-700">Observaciones:</strong> ${respuesta.observaciones || 'Ninguna'}</p>
-                        </div>
-                        <div>
-                            ${respuesta.evidenciaUrl ? `
-                            <strong class="text-gray-700">Evidencia:</strong>
-                            <img src="${respuesta.evidenciaUrl}" 
-                                 alt="Evidencia fotográfica" 
-                                 class="evidencia-img"
-                                 onerror="this.onerror=null;this.src='https://placehold.co/400x300/fecaca/991b1b?text=Error+al+cargar+imagen';">
-                            ` : ''}
-                        </div>
-                    </div>
+                const tieneEvidencia = respuesta.evidenciaUrl ? 'Sí' : 'No';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="padding: 10px;">${pregunta.texto}</td>
+                    <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
+                    <td style="padding: 10px; text-align: center;">${tieneEvidencia}</td>
+                    <td style="padding: 10px;">${respuesta.observaciones || ''}</td>
                 `;
-                detalle.appendChild(card);
+                detalle.appendChild(row);
             });
         }
         
@@ -2101,7 +1959,6 @@
             document.getElementById('reporte-unidad').textContent = reporte.unidad;
             document.getElementById('reporte-area').textContent = reporte.area;
             document.getElementById('reporte-fecha').textContent = reporte.fecha;
-            document.getElementById('reporte-id').textContent = reporte.id;
             document.getElementById('reporte-cumple').textContent = reporte.porcCumple + '%';
             document.getElementById('reporte-parcial').textContent = reporte.porcParcial + '%';
             document.getElementById('reporte-no-cumple').textContent = reporte.porcNoCumple + '%';
@@ -2122,6 +1979,13 @@
                 color = "var(--danger)";
             }
             
+            document.getElementById('reporte-resultado').textContent = resultado;
+            document.getElementById('reporte-resultado').style.color = color;
+            
+            // Generar detalle de requisitos
+            const detalle = document.getElementById('reporte-detalle');
+            detalle.innerHTML = '';
+            
             // Obtener detalles completos del reporte
             try {
                 const response = await fetch(SCRIPT_URL, {
@@ -2135,56 +1999,38 @@
                 const data = await response.json();
                 
                 if (data.status === "success") {
-                    const detalle = document.getElementById('reporte-detalle-content');
-                    detalle.innerHTML = '';
-                    
                     data.preguntas.forEach(pregunta => {
-                        let estadoClass, estadoText;
+                        let estadoText, estadoColor;
                         
                         switch(pregunta.estado) {
                             case 'cumple':
-                                estadoClass = 'badge-cumple';
                                 estadoText = 'Cumple';
+                                estadoColor = 'green';
                                 break;
                             case 'parcial':
-                                estadoClass = 'badge-parcial';
                                 estadoText = 'Cumple Parcial';
+                                estadoColor = 'orange';
                                 break;
                             case 'no_cumple':
-                                estadoClass = 'badge-no-cumple';
                                 estadoText = 'No Cumple';
+                                estadoColor = 'red';
                                 break;
                             case 'no_aplica':
-                                estadoClass = 'badge-no-aplica';
                                 estadoText = 'No Aplica';
+                                estadoColor = '#9b59b6';
                                 break;
                         }
                         
-                        const card = document.createElement('div');
-                        card.className = 'hallazgo-item';
-                        card.innerHTML = `
-                            <div class="hallazgo-header">
-                                <p class="font-semibold text-gray-700">${pregunta.id}. ${pregunta.texto}</p>
-                            </div>
-                            <div class="hallazgo-content">
-                                <div>
-                                    <span class="estado-badge ${estadoClass}">${estadoText}</span>
-                                </div>
-                                <div>
-                                    <p class="text-gray-600"><strong class="text-gray-700">Observaciones:</strong> ${pregunta.observaciones || 'Ninguna'}</p>
-                                </div>
-                                <div>
-                                    ${pregunta.evidenciaUrl ? `
-                                    <strong class="text-gray-700">Evidencia:</strong>
-                                    <img src="${pregunta.evidenciaUrl}" 
-                                         alt="Evidencia fotográfica" 
-                                         class="evidencia-img"
-                                         onerror="this.onerror=null;this.src='https://placehold.co/400x300/fecaca/991b1b?text=Error+al+cargar+imagen';">
-                                    ` : ''}
-                                </div>
-                            </div>
+                        const tieneEvidencia = pregunta.evidenciaUrl ? 'Sí' : 'No';
+                        
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td style="padding: 10px;">${pregunta.texto}</td>
+                            <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
+                            <td style="padding: 10px; text-align: center;">${tieneEvidencia}</td>
+                            <td style="padding: 10px;">${pregunta.observaciones || ''}</td>
                         `;
-                        detalle.appendChild(card);
+                        detalle.appendChild(row);
                     });
                     
                     // Mostrar detalle del reporte
