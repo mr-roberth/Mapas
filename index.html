@@ -1555,7 +1555,6 @@
                                 if (data.status === "success") {
                                     // Guardar evidencia
                                     if (!respuestas[pregunta.id]) respuestas[pregunta.id] = {};
-                                    respuestas[pregunta.id].evidencia = file;
                                     respuestas[pregunta.id].evidenciaUrl = data.url;
                                 } else {
                                     throw new Error(data.message || "Error al subir imagen");
@@ -1588,6 +1587,15 @@
             if (preguntasContestadas < preguntasPorArea.length) {
                 alert('Por favor responde todas las preguntas antes de finalizar la auditoría.');
                 return;
+            }
+            
+            // Verificar que todas las evidencias requeridas estén presentes
+            for (const pregunta of preguntasPorArea) {
+                const respuesta = respuestas[pregunta.id] || {};
+                if ((respuesta.estado === 'parcial' || respuesta.estado === 'no_cumple') && !respuesta.evidenciaUrl) {
+                    alert(`Por favor, adjunta evidencia fotográfica para la pregunta ${pregunta.id}`);
+                    return;
+                }
             }
             
             // Calcular estadísticas
@@ -1639,7 +1647,6 @@
             // Preparar datos para enviar al backend
             const preguntasData = [];
             
-            // Usar preguntasPorArea en lugar de Object.entries(respuestas)
             preguntasPorArea.forEach(pregunta => {
                 const respuesta = respuestas[pregunta.id] || {};
                 preguntasData.push({
@@ -1699,51 +1706,49 @@
         }
         
         // Generar detalle para el reporte PDF
-            function generarDetalleReporte() {
-                const detalle = document.getElementById('reporte-detalle');
-                detalle.innerHTML = '';
+        function generarDetalleReporte() {
+            const detalle = document.getElementById('reporte-detalle');
+            detalle.innerHTML = '';
+            
+            preguntasPorArea.forEach(pregunta => {
+                const respuesta = respuestas[pregunta.id] || {};
                 
-                // Recorremos todas las preguntas
-                preguntasPorArea.forEach(pregunta => {
-                    const respuesta = respuestas[pregunta.id] || {};
-                    
-                    let estadoText, estadoColor;
-                    
-                    switch(respuesta.estado) {
-                        case 'cumple':
-                            estadoText = 'Cumple';
-                            estadoColor = 'green';
-                            break;
-                        case 'parcial':
-                            estadoText = 'Cumple Parcial';
-                            estadoColor = 'orange';
-                            break;
-                        case 'no_cumple':
-                            estadoText = 'No Cumple';
-                            estadoColor = 'red';
-                            break;
-                        case 'no_aplica':
-                            estadoText = 'No Aplica';
-                            estadoColor = '#9b59b6';
-                            break;
-                        default:
-                            estadoText = 'No respondida';
-                            estadoColor = 'gray';
-                    }
-                    
-                    // CAMBIO 3: Verificar evidencia correctamente
-                    const tieneEvidencia = respuesta.evidenciaUrl ? 'Sí' : 'No';
-                    
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td style="padding: 10px;">${pregunta.texto}</td>
-                        <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
-                        <td style="padding: 10px; text-align: center;">${tieneEvidencia}</td>
-                        <td style="padding: 10px;">${respuesta.observaciones || ''}</td>
-                    `;
-                    detalle.appendChild(row);
-                });
-            }
+                let estadoText, estadoColor;
+                
+                switch(respuesta.estado) {
+                    case 'cumple':
+                        estadoText = 'Cumple';
+                        estadoColor = 'green';
+                        break;
+                    case 'parcial':
+                        estadoText = 'Cumple Parcial';
+                        estadoColor = 'orange';
+                        break;
+                    case 'no_cumple':
+                        estadoText = 'No Cumple';
+                        estadoColor = 'red';
+                        break;
+                    case 'no_aplica':
+                        estadoText = 'No Aplica';
+                        estadoColor = '#9b59b6';
+                        break;
+                    default:
+                        estadoText = 'No respondida';
+                        estadoColor = 'gray';
+                }
+                
+                const tieneEvidencia = respuesta.evidenciaUrl ? 'Sí' : 'No';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="padding: 10px;">${pregunta.texto}</td>
+                    <td style="padding: 10px; text-align: center; color: ${estadoColor};">${estadoText}</td>
+                    <td style="padding: 10px; text-align: center;">${tieneEvidencia}</td>
+                    <td style="padding: 10px;">${respuesta.observaciones || ''}</td>
+                `;
+                detalle.appendChild(row);
+            });
+        }
         
         // Inicializar gráficos
         function inicializarGraficos() {
