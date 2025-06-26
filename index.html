@@ -2320,32 +2320,43 @@
             }
         }
         
-        // Generar PDF
-        function generarPDF() {
-            const pdfUrl = document.getElementById('reporte-pdf-url').value;
-            if (pdfUrl) {
-                // Descargar el PDF
-                const link = document.createElement('a');
-                link.href = pdfUrl;
-                link.download = `Reporte_Auditoria_${document.getElementById('reporte-fecha').textContent}.pdf`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            } else {
-                alert('El PDF aún no está disponible. Por favor intente nuevamente en unos momentos.');
-            }
-        }
-        
         // Función para mostrar PDF
         function mostrarPDF(url) {
             const viewer = document.getElementById('pdf-viewer');
             const container = document.getElementById('pdf-viewer-container');
             
             if (url) {
-                viewer.src = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`;
+                // Extraer el ID del archivo de la URL
+                const match = url.match(/\/d\/([^\/]+)/);
+                if (match && match[1]) {
+                    const fileId = match[1];
+                    viewer.src = `https://drive.google.com/file/d/${fileId}/preview`;
+                } else {
+                    // Si no se puede extraer, intentar usar la URL directamente
+                    viewer.src = url;
+                }
                 container.style.display = 'block';
             } else {
                 container.style.display = 'none';
+            }
+        }
+        
+        // Función para generar PDF
+        function generarPDF() {
+            const pdfUrl = document.getElementById('reporte-pdf-url').value;
+            if (pdfUrl) {
+                // Extraer el ID del archivo de la URL
+                const match = pdfUrl.match(/\/d\/([^\/]+)/);
+                if (match && match[1]) {
+                    const fileId = match[1];
+                    // Abrir en una nueva pestaña para descargar
+                    window.open(`https://drive.google.com/uc?id=${fileId}&export=download`, '_blank');
+                } else {
+                    // Si no se puede extraer, abrir la URL directamente
+                    window.open(pdfUrl, '_blank');
+                }
+            } else {
+                alert('El PDF aún no está disponible. Por favor intente nuevamente en unos momentos.');
             }
         }
         
