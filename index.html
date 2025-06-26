@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
     <title>Auditoría PPR ISO/TS 22002-1-2009</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -1824,7 +1825,7 @@
             });
         }
         
-        // Finalizar auditoría (MEJORADA)
+        // Finalizar auditoría
         async function finalizarAuditoria() {
             // Validar que todas las preguntas tienen respuesta
             const preguntasContestadas = Object.keys(respuestas).length;
@@ -1859,7 +1860,7 @@
             const totalPorc = porcCumple + porcParcial + porcNoCumple;
             if (totalPorc > 100) {
                 porcCumple = Math.round((porcCumple / totalPorc) * 100);
-                porcParcial = Math.round((porcParcial / totalPorc) * 100);
+                porcParcial = Math.round((parcParcial / totalPorc) * 100);
                 porcNoCumple = 100 - porcCumple - porcParcial;
             }
             
@@ -2083,20 +2084,20 @@
                 if (data.status === "success") {
                     // Actualizar estadísticas
                     document.getElementById('stat-cumple').textContent = data.porcCumple + '%';
-                    document.getElementById('stat-parcial').textContent = data.porcParcial + '%';
+                    document.getElementById('stat-parcial').textContent = data.parcParcial + '%';
                     document.getElementById('stat-no-cumple').textContent = data.porcNoCumple + '%';
                     document.getElementById('stat-no-aplica').textContent = data.porcNoAplica + '%';
                     
                     // Actualizar barras de progreso
                     document.getElementById('progress-cumple').style.width = data.porcCumple + '%';
-                    document.getElementById('progress-parcial').style.width = data.porcParcial + '%';
+                    document.getElementById('progress-parcial').style.width = data.parcParcial + '%';
                     document.getElementById('progress-no-cumple').style.width = data.porcNoCumple + '%';
                     document.getElementById('progress-no-aplica').style.width = data.porcNoAplica + '%';
                     
                     // Actualizar gráfico de distribución
                     chartDistribucion.data.datasets[0].data = [
                         data.porcCumple, 
-                        data.porcParcial, 
+                        data.parcParcial, 
                         data.porcNoCumple,
                         data.porcNoAplica
                     ];
@@ -2288,32 +2289,43 @@
             }
         }
         
-        // Generar PDF
-        function generarPDF() {
-            const pdfUrl = document.getElementById('reporte-pdf-url').value;
-            if (pdfUrl) {
-                // Descargar el PDF
-                const link = document.createElement('a');
-                link.href = pdfUrl;
-                link.download = `Reporte_Auditoria_${document.getElementById('reporte-fecha').textContent}.pdf`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            } else {
-                alert('El PDF aún no está disponible. Por favor intente nuevamente en unos momentos.');
-            }
-        }
-        
-        // Función para mostrar PDF
+        // Función para mostrar PDF (CORREGIDA)
         function mostrarPDF(url) {
             const viewer = document.getElementById('pdf-viewer');
             const container = document.getElementById('pdf-viewer-container');
             
             if (url) {
-                viewer.src = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`;
+                // Extraer el ID del archivo de la URL
+                const match = url.match(/\/d\/([^\/]+)/);
+                if (match && match[1]) {
+                    const fileId = match[1];
+                    viewer.src = `https://drive.google.com/file/d/${fileId}/preview`;
+                } else {
+                    // Si no se puede extraer, intentar usar la URL directamente
+                    viewer.src = url;
+                }
                 container.style.display = 'block';
             } else {
                 container.style.display = 'none';
+            }
+        }
+        
+        // Función para generar PDF (CORREGIDA)
+        function generarPDF() {
+            const pdfUrl = document.getElementById('reporte-pdf-url').value;
+            if (pdfUrl) {
+                // Extraer el ID del archivo de la URL
+                const match = pdfUrl.match(/\/d\/([^\/]+)/);
+                if (match && match[1]) {
+                    const fileId = match[1];
+                    // Abrir en una nueva pestaña para descargar
+                    window.open(`https://drive.google.com/uc?id=${fileId}&export=download`, '_blank');
+                } else {
+                    // Si no se puede extraer, abrir la URL directamente
+                    window.open(pdfUrl, '_blank');
+                }
+            } else {
+                alert('El PDF aún no está disponible. Por favor intente nuevamente en unos momentos.');
             }
         }
         
@@ -2357,6 +2369,35 @@
                 `;
             }
         }
+        
+        // Event listener para compartir por WhatsApp (MEJORADO)
+        document.getElementById('compartir-whatsapp').addEventListener('click', function() {
+            const pdfUrl = document.getElementById('reporte-pdf-url').value;
+            // Extraer el ID del archivo de la URL
+            const match = pdfUrl.match(/\/d\/([^\/]+)/);
+            let shareUrl = pdfUrl;
+            if (match && match[1]) {
+                const fileId = match[1];
+                shareUrl = `https://drive.google.com/file/d/${fileId}/view`;
+            }
+            const msg = encodeURIComponent(`Te comparto el reporte de auditoría: ${shareUrl}`);
+            window.open(`https://wa.me/?text=${msg}`, '_blank');
+        });
+        
+        // Event listener para compartir por correo (MEJORADO)
+        document.getElementById('compartir-email').addEventListener('click', function() {
+            const pdfUrl = document.getElementById('reporte-pdf-url').value;
+            // Extraer el ID del archivo de la URL
+            const match = pdfUrl.match(/\/d\/([^\/]+)/);
+            let shareUrl = pdfUrl;
+            if (match && match[1]) {
+                const fileId = match[1];
+                shareUrl = `https://drive.google.com/file/d/${fileId}/view`;
+            }
+            const subject = encodeURIComponent('Reporte de Auditoría PPR');
+            const body = encodeURIComponent(`Te comparto el reporte de auditoría:\n${shareUrl}`);
+            window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
+        });
     </script>
 </body>
 </html>
