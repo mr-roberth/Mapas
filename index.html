@@ -1647,7 +1647,7 @@
                 const noAplica = Object.values(respuestas).filter(r => r.estado === 'no_aplica').length;
                 
                 // Calcular solo sobre las que aplican
-                const totalAplica = totalPreguntas - noAplica;
+                const totalAplica = totalPreguntas;
                 
                 let porcCumple = totalAplica > 0 ? Math.round((cumple / totalAplica) * 100) : 0;
                 let porcParcial = totalAplica > 0 ? Math.round((parcial / totalAplica) * 100) : 0;
