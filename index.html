@@ -726,6 +726,7 @@
           overflow: hidden;
           margin: 25px 0;
           box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+          display: none;
         }
 
         #pdf-viewer {
@@ -1328,7 +1329,7 @@
                         </div>
                         
                         <!-- Visor de PDF -->
-                        <div id="pdf-viewer-container" style="display: none;">
+                        <div id="pdf-viewer-container">
                             <iframe id="pdf-viewer" src=""></iframe>
                         </div>
                         
@@ -1477,12 +1478,6 @@
             // Event listener para finalizar auditoría
             document.getElementById('finalizar-auditoria').addEventListener('click', finalizarAuditoria);
             
-            // Event listener para generar PDF
-            document.getElementById('generar-pdf').addEventListener('click', generarPDF);
-            
-            // Event listener para aplicar filtros
-            document.getElementById('aplicar-filtros').addEventListener('click', cargarDashboard);
-            
             // Event listener para login
             document.getElementById('btn-login').addEventListener('click', login);
             
@@ -1524,9 +1519,182 @@
                 mostrarPDF(pdfUrl);
             });
             
+            // Event listener para generar PDF
+            document.getElementById('generar-pdf').addEventListener('click', generarPDF);
+            
             // Inicializar gráficos vacíos
             inicializarGraficos();
         });
+        
+        // ===================================================================
+        // FUNCIÓN MEJORADA PARA VISUALIZAR PDF
+        // ===================================================================
+        function mostrarPDF(url) {
+            const viewer = document.getElementById('pdf-viewer');
+            const container = document.getElementById('pdf-viewer-container');
+            
+            if (url) {
+                // Usar directamente la URL de previsualización
+                viewer.src = url;
+                container.style.display = 'block';
+                
+                // Ajustes de estilo para mejor visualización
+                viewer.style.width = '100%';
+                viewer.style.height = '100%';
+                viewer.style.border = 'none';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        // ===================================================================
+        // FUNCIÓN MEJORADA PARA DESCARGAR PDF
+        // ===================================================================
+        function generarPDF() {
+            const pdfUrl = document.getElementById('reporte-pdf-url').value;
+            if (pdfUrl) {
+                // Convertir URL de previsualización a URL de descarga
+                const downloadUrl = pdfUrl.replace('/preview', '?export=download');
+                window.open(downloadUrl, '_blank');
+            } else {
+                alert('El PDF aún no está disponible. Por favor intente nuevamente en unos momentos.');
+            }
+        }
+
+        // ===================================================================
+        // FUNCIÓN FINALIZAR AUDITORÍA (CON MANEJO MEJORADO DE PDF)
+        // ===================================================================
+        async function finalizarAuditoria() {
+            const btn = document.getElementById('finalizar-auditoria');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+            
+            try {
+                // Validar que todas las preguntas tienen respuesta
+                const preguntasContestadas = Object.keys(respuestas).length;
+                if (preguntasContestadas < preguntasPorArea.length) {
+                    alert('Por favor responde todas las preguntas antes de finalizar la auditoría.');
+                    return;
+                }
+                
+                // Verificar que todas las evidencias requeridas estén presentes
+                for (const pregunta of preguntasPorArea) {
+                    const respuesta = respuestas[pregunta.id] || {};
+                    if ((respuesta.estado === 'parcial' || respuesta.estado === 'no_cumple') && !respuesta.evidenciaUrl) {
+                        alert(`Por favor, adjunta evidencia fotográfica para la pregunta ${pregunta.id}`);
+                        return;
+                    }
+                }
+                
+                // Calcular estadísticas
+                const totalPreguntas = preguntasPorArea.length;
+                const cumple = Object.values(respuestas).filter(r => r.estado === 'cumple').length;
+                const parcial = Object.values(respuestas).filter(r => r.estado === 'parcial').length;
+                const noCumple = Object.values(respuestas).filter(r => r.estado === 'no_cumple').length;
+                const noAplica = Object.values(respuestas).filter(r => r.estado === 'no_aplica').length;
+                const aplica = totalPreguntas;
+                
+                // Asegurar que los porcentajes no sumen más de 100%
+                let porcCumple = aplica > 0 ? Math.round((cumple / aplica) * 100) : 0;
+                let porcParcial = aplica > 0 ? Math.round((parcial / aplica) * 100) : 0;
+                let porcNoCumple = aplica > 0 ? Math.round((noCumple / aplica) * 100) : 0;
+                
+                // Normalizar porcentajes si suman más de 100%
+                const totalPorc = porcCumple + porcParcial + porcNoCumple;
+                if (totalPorc > 100) {
+                    porcCumple = Math.round((porcCumple / totalPorc) * 100);
+                    porcParcial = Math.round((porcParcial / totalPorc) * 100);
+                    porcNoCumple = 100 - porcCumple - porcParcial;
+                }
+                
+                const porcNoAplica = Math.round((noAplica / totalPreguntas) * 100);
+                
+                // Actualizar reporte con estadísticas reales
+                document.getElementById('reporte-cumple').textContent = porcCumple + '%';
+                document.getElementById('reporte-parcial').textContent = porcParcial + '%';
+                document.getElementById('reporte-no-cumple').textContent = porcNoCumple + '%';
+                document.getElementById('reporte-no-aplica').textContent = porcNoAplica + '%';
+                
+                // Determinar resultado general
+                let resultado = "Cumplimiento Total";
+                let color = "var(--success)";
+                
+                if (noCumple > 0 || parcial > aplica * 0.2) {
+                    resultado = "Cumplimiento Parcial";
+                    color = "var(--warning)";
+                }
+                
+                if (noCumple > aplica * 0.1) {
+                    resultado = "No Cumple";
+                    color = "var(--danger)";
+                }
+                
+                document.getElementById('reporte-resultado').textContent = resultado;
+                document.getElementById('reporte-resultado').style.color = color;
+                
+                // Preparar datos para enviar al backend
+                const preguntasData = [];
+                
+                preguntasPorArea.forEach(pregunta => {
+                    const respuesta = respuestas[pregunta.id] || {};
+                    preguntasData.push({
+                        id: pregunta.id,
+                        texto: pregunta.texto,
+                        categoria: pregunta.categoria,
+                        estado: respuesta.estado || "no_respondida",
+                        evidenciaUrl: respuesta.evidenciaUrl || null,
+                        observaciones: respuesta.observaciones || ""
+                    });
+                });
+                
+                const payload = {
+                    action: "submitAudit",
+                    auditor: auditorData.nombre,
+                    unidad: auditorData.unidad,
+                    area: auditorData.area,
+                    fecha: auditorData.fecha,
+                    preguntas: preguntasData,
+                    porcCumple: porcCumple,
+                    porcParcial: porcParcial,
+                    porcNoCumple: porcNoCumple,
+                    porcNoAplica: porcNoAplica
+                };
+                
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    auditorData.auditId = data.auditId;
+                    
+                    // MEJORA: Manejo directo de la URL del PDF
+                    if (data.pdfUrl) {
+                        document.getElementById('reporte-pdf-url').value = data.pdfUrl;
+                        mostrarPDF(data.pdfUrl);  // Mostrar inmediatamente
+                    }
+                    
+                    generarDetalleReporte();
+                    
+                    // Mostrar sección de reportes
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    document.querySelector('.nav-link[data-page="reportes"]').classList.add('active');
+                    showPage('reportes');
+                    
+                    // Recargar reportes
+                    cargarReportes();
+                } else {
+                    throw new Error(data.message || "Error en el servidor");
+                }
+            } catch (error) {
+                alert('Error al enviar la auditoría: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Finalizar Auditoría';
+            }
+        }
         
         // Login
         async function login() {
@@ -1838,145 +2006,6 @@
                     respuestas[pregunta.id].observaciones = e.target.value;
                 });
             });
-        }
-        
-        // Finalizar auditoría
-        async function finalizarAuditoria() {
-            const btn = document.getElementById('finalizar-auditoria');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
-            
-            try {
-                // Validar que todas las preguntas tienen respuesta
-                const preguntasContestadas = Object.keys(respuestas).length;
-                if (preguntasContestadas < preguntasPorArea.length) {
-                    alert('Por favor responde todas las preguntas antes de finalizar la auditoría.');
-                    return;
-                }
-                
-                // Verificar que todas las evidencias requeridas estén presentes
-                for (const pregunta of preguntasPorArea) {
-                    const respuesta = respuestas[pregunta.id] || {};
-                    if ((respuesta.estado === 'parcial' || respuesta.estado === 'no_cumple') && !respuesta.evidenciaUrl) {
-                        alert(`Por favor, adjunta evidencia fotográfica para la pregunta ${pregunta.id}`);
-                        return;
-                    }
-                }
-                
-                // Calcular estadísticas
-                const totalPreguntas = preguntasPorArea.length;
-                const cumple = Object.values(respuestas).filter(r => r.estado === 'cumple').length;
-                const parcial = Object.values(respuestas).filter(r => r.estado === 'parcial').length;
-                const noCumple = Object.values(respuestas).filter(r => r.estado === 'no_cumple').length;
-                const noAplica = Object.values(respuestas).filter(r => r.estado === 'no_aplica').length;
-                const aplica = totalPreguntas;
-                
-                // Asegurar que los porcentajes no sumen más de 100%
-                let porcCumple = aplica > 0 ? Math.round((cumple / aplica) * 100) : 0;
-                let porcParcial = aplica > 0 ? Math.round((parcial / aplica) * 100) : 0;
-                let porcNoCumple = aplica > 0 ? Math.round((noCumple / aplica) * 100) : 0;
-                
-                // Normalizar porcentajes si suman más de 100%
-                const totalPorc = porcCumple + porcParcial + porcNoCumple;
-                if (totalPorc > 100) {
-                    porcCumple = Math.round((porcCumple / totalPorc) * 100);
-                    porcParcial = Math.round((porcParcial / totalPorc) * 100);
-                    porcNoCumple = 100 - porcCumple - porcParcial;
-                }
-                
-                const porcNoAplica = Math.round((noAplica / totalPreguntas) * 100);
-                
-                // Actualizar reporte con estadísticas reales
-                document.getElementById('reporte-cumple').textContent = porcCumple + '%';
-                document.getElementById('reporte-parcial').textContent = porcParcial + '%';
-                document.getElementById('reporte-no-cumple').textContent = porcNoCumple + '%';
-                document.getElementById('reporte-no-aplica').textContent = porcNoAplica + '%';
-                
-                // Determinar resultado general
-                let resultado = "Cumplimiento Total";
-                let color = "var(--success)";
-                
-                if (noCumple > 0 || parcial > aplica * 0.2) {
-                    resultado = "Cumplimiento Parcial";
-                    color = "var(--warning)";
-                }
-                
-                if (noCumple > aplica * 0.1) {
-                    resultado = "No Cumple";
-                    color = "var(--danger)";
-                }
-                
-                document.getElementById('reporte-resultado').textContent = resultado;
-                document.getElementById('reporte-resultado').style.color = color;
-                
-                // Preparar datos para enviar al backend
-                const preguntasData = [];
-                
-                preguntasPorArea.forEach(pregunta => {
-                    const respuesta = respuestas[pregunta.id] || {};
-                    preguntasData.push({
-                        id: pregunta.id,
-                        texto: pregunta.texto,
-                        categoria: pregunta.categoria,
-                        estado: respuesta.estado || "no_respondida",
-                        evidenciaUrl: respuesta.evidenciaUrl || null,
-                        observaciones: respuesta.observaciones || ""
-                    });
-                });
-                
-                const payload = {
-                    action: "submitAudit",
-                    auditor: auditorData.nombre,
-                    unidad: auditorData.unidad,
-                    area: auditorData.area,
-                    fecha: auditorData.fecha,
-                    preguntas: preguntasData,
-                    porcCumple: porcCumple,
-                    porcParcial: porcParcial,
-                    porcNoCumple: porcNoCumple,
-                    porcNoAplica: porcNoAplica
-                };
-                
-                try {
-                    const response = await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        body: JSON.stringify(payload)
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.status === "success") {
-                        auditorData.auditId = data.auditId;
-                        generarDetalleReporte();
-                        
-                        // Mostrar sección de reportes y PDF
-                        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                        document.querySelector('.nav-link[data-page="reportes"]').classList.add('active');
-                        showPage('reportes');
-                        
-                        // Mostrar el PDF generado (si ya está disponible, sino se mostrará cuando esté)
-                        if (data.pdfUrl) {
-                            mostrarPDF(data.pdfUrl);
-                            document.getElementById('reporte-pdf-url').value = data.pdfUrl;
-                        } else {
-                            // Mostrar mensaje de que se está generando
-                            alert('¡Auditoría completada con éxito! El reporte PDF se está generando y estará disponible en unos momentos.');
-                        }
-                        
-                        // Recargar reportes
-                        cargarReportes();
-                    } else {
-                        throw new Error(data.message || "Error en el servidor");
-                    }
-                } catch (error) {
-                    alert('Error al enviar la auditoría: ' + error.message);
-                }
-            } catch (error) {
-                alert(error.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-check-circle"></i> Finalizar Auditoría';
-            }
         }
         
         // Generar detalle para el reporte PDF
@@ -2320,46 +2349,6 @@
             }
         }
         
-        // Función para mostrar PDF
-        function mostrarPDF(url) {
-            const viewer = document.getElementById('pdf-viewer');
-            const container = document.getElementById('pdf-viewer-container');
-            
-            if (url) {
-                // Extraer el ID del archivo de la URL
-                const match = url.match(/\/d\/([^\/]+)/);
-                if (match && match[1]) {
-                    const fileId = match[1];
-                    viewer.src = `https://drive.google.com/file/d/${fileId}/preview`;
-                } else {
-                    // Si no se puede extraer, intentar usar la URL directamente
-                    viewer.src = url;
-                }
-                container.style.display = 'block';
-            } else {
-                container.style.display = 'none';
-            }
-        }
-        
-        // Función para generar PDF
-        function generarPDF() {
-            const pdfUrl = document.getElementById('reporte-pdf-url').value;
-            if (pdfUrl) {
-                // Extraer el ID del archivo de la URL
-                const match = pdfUrl.match(/\/d\/([^\/]+)/);
-                if (match && match[1]) {
-                    const fileId = match[1];
-                    // Abrir en una nueva pestaña para descargar
-                    window.open(`https://drive.google.com/uc?id=${fileId}&export=download`, '_blank');
-                } else {
-                    // Si no se puede extraer, abrir la URL directamente
-                    window.open(pdfUrl, '_blank');
-                }
-            } else {
-                alert('El PDF aún no está disponible. Por favor intente nuevamente en unos momentos.');
-            }
-        }
-        
         // Función para exportar datos
         async function exportarDatos() {
             const fechaInicio = document.getElementById('fecha-inicio-exportar').value;
@@ -2404,29 +2393,15 @@
         // Event listener para compartir por WhatsApp
         document.getElementById('compartir-whatsapp').addEventListener('click', function() {
             const pdfUrl = document.getElementById('reporte-pdf-url').value;
-            // Extraer el ID del archivo de la URL
-            const match = pdfUrl.match(/\/d\/([^\/]+)/);
-            let shareUrl = pdfUrl;
-            if (match && match[1]) {
-                const fileId = match[1];
-                shareUrl = `https://drive.google.com/file/d/${fileId}/view`;
-            }
-            const msg = encodeURIComponent(`Te comparto el reporte de auditoría: ${shareUrl}`);
+            const msg = encodeURIComponent(`Te comparto el reporte de auditoría: ${pdfUrl}`);
             window.open(`https://wa.me/?text=${msg}`, '_blank');
         });
         
         // Event listener para compartir por correo
         document.getElementById('compartir-email').addEventListener('click', function() {
             const pdfUrl = document.getElementById('reporte-pdf-url').value;
-            // Extraer el ID del archivo de la URL
-            const match = pdfUrl.match(/\/d\/([^\/]+)/);
-            let shareUrl = pdfUrl;
-            if (match && match[1]) {
-                const fileId = match[1];
-                shareUrl = `https://drive.google.com/file/d/${fileId}/view`;
-            }
             const subject = encodeURIComponent('Reporte de Auditoría PPR');
-            const body = encodeURIComponent(`Te comparto el reporte de auditoría:\n${shareUrl}`);
+            const body = encodeURIComponent(`Te comparto el reporte de auditoría:\n${pdfUrl}`);
             window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
         });
     </script>
