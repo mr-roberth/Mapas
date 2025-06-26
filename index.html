@@ -1849,7 +1849,7 @@
             const parcial = Object.values(respuestas).filter(r => r.estado === 'parcial').length;
             const noCumple = Object.values(respuestas).filter(r => r.estado === 'no_cumple').length;
             const noAplica = Object.values(respuestas).filter(r => r.estado === 'no_aplica').length;
-            const aplica = totalPreguntas - noAplica;
+            const aplica = totalPreguntas;
             
             // Asegurar que los porcentajes no sumen más de 100%
             let porcCumple = aplica > 0 ? Math.round((cumple / aplica) * 100) : 0;
