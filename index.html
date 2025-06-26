@@ -1328,9 +1328,9 @@
                             </div>
                         </div>
                         
-                        <!-- Visor de PDF -->
+                        <!-- Visor de PDF mejorado -->
                         <div id="pdf-viewer-container">
-                            <iframe id="pdf-viewer" src=""></iframe>
+                            <div id="pdf-viewer"></div>
                         </div>
                         
                         <input type="hidden" id="reporte-pdf-url">
@@ -1522,26 +1522,32 @@
             // Event listener para generar PDF
             document.getElementById('generar-pdf').addEventListener('click', generarPDF);
             
+            // Event listener para filtros dashboard (SOLUCIÓN 2)
+            document.getElementById('aplicar-filtros').addEventListener('click', cargarDashboard);
+            
             // Inicializar gráficos vacíos
             inicializarGraficos();
         });
         
         // ===================================================================
-        // FUNCIÓN MEJORADA PARA VISUALIZAR PDF
+        // 3. SOLUCIÓN MEJORADA PARA VISUALIZAR PDF (REPORTES)
         // ===================================================================
         function mostrarPDF(url) {
             const viewer = document.getElementById('pdf-viewer');
             const container = document.getElementById('pdf-viewer-container');
             
             if (url) {
-                // Usar directamente la URL de previsualización
-                viewer.src = url;
+                // Usar embed para mejor compatibilidad
+                viewer.innerHTML = `
+                    <embed src="${url}" type="application/pdf" width="100%" height="100%">
+                    <div style="text-align:center;padding:20px;">
+                        <p>Si no puedes ver el PDF, 
+                        <a href="${url}" target="_blank" style="color: var(--primary);font-weight:bold;">
+                            haz clic aquí para abrirlo en una nueva pestaña
+                        </a></p>
+                    </div>
+                `;
                 container.style.display = 'block';
-                
-                // Ajustes de estilo para mejor visualización
-                viewer.style.width = '100%';
-                viewer.style.height = '100%';
-                viewer.style.border = 'none';
             } else {
                 container.style.display = 'none';
             }
@@ -1558,6 +1564,72 @@
                 window.open(downloadUrl, '_blank');
             } else {
                 alert('El PDF aún no está disponible. Por favor intente nuevamente en unos momentos.');
+            }
+        }
+
+        // ===================================================================
+        // FUNCIÓN CARGAR DASHBOARD (CON FILTROS)
+        // ===================================================================
+        async function cargarDashboard() {
+            const loader = document.getElementById('dashboard-loader');
+            const content = document.getElementById('dashboard-content');
+            const fecha = document.getElementById('filtro-fecha').value;
+            const area = document.getElementById('filtro-area').value;
+            const unidad = document.getElementById('filtro-unidad').value; // Nuevo filtro
+            
+            // Mostrar loader y ocultar contenido
+            loader.style.display = 'block';
+            content.style.opacity = '0.3';
+            
+            try {
+                // Obtener datos reales del backend (con unidad)
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "getDashboardData",
+                        fecha: fecha,
+                        area: area,
+                        unidad: unidad
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    // Actualizar estadísticas
+                    document.getElementById('stat-cumple').textContent = data.porcCumple + '%';
+                    document.getElementById('stat-parcial').textContent = data.porcParcial + '%';
+                    document.getElementById('stat-no-cumple').textContent = data.porcNoCumple + '%';
+                    document.getElementById('stat-no-aplica').textContent = data.porcNoAplica + '%';
+                    
+                    // Actualizar barras de progreso
+                    document.getElementById('progress-cumple').style.width = data.porcCumple + '%';
+                    document.getElementById('progress-parcial').style.width = data.porcParcial + '%';
+                    document.getElementById('progress-no-cumple').style.width = data.porcNoCumple + '%';
+                    document.getElementById('progress-no-aplica').style.width = data.porcNoAplica + '%';
+                    
+                    // Actualizar gráfico de distribución
+                    chartDistribucion.data.datasets[0].data = [
+                        data.porcCumple, 
+                        data.porcParcial,
+                        data.porcNoCumple,
+                        data.porcNoAplica
+                    ];
+                    chartDistribucion.update();
+                    
+                    // Actualizar gráfico por preguntas
+                    chartPreguntas.data.labels = data.preguntasData.labels;
+                    chartPreguntas.data.datasets[0].data = data.preguntasData.values;
+                    chartPreguntas.update();
+                } else {
+                    throw new Error(data.message || "Error al cargar datos");
+                }
+            } catch (error) {
+                alert('Error al cargar datos del dashboard: ' + error.message);
+            } finally {
+                // Ocultar loader y mostrar contenido
+                loader.style.display = 'none';
+                content.style.opacity = '1';
             }
         }
 
@@ -1592,22 +1664,21 @@
                 const parcial = Object.values(respuestas).filter(r => r.estado === 'parcial').length;
                 const noCumple = Object.values(respuestas).filter(r => r.estado === 'no_cumple').length;
                 const noAplica = Object.values(respuestas).filter(r => r.estado === 'no_aplica').length;
-                const aplica = totalPreguntas;
+                const aplica = totalPreguntas - noAplica;
                 
-                // Asegurar que los porcentajes no sumen más de 100%
+                // Calcular porcentajes
                 let porcCumple = aplica > 0 ? Math.round((cumple / aplica) * 100) : 0;
                 let porcParcial = aplica > 0 ? Math.round((parcial / aplica) * 100) : 0;
                 let porcNoCumple = aplica > 0 ? Math.round((noCumple / aplica) * 100) : 0;
+                let porcNoAplica = Math.round((noAplica / totalPreguntas) * 100);
                 
-                // Normalizar porcentajes si suman más de 100%
+                // Ajustar para que sumen 100% (SOLUCIÓN 1)
                 const totalPorc = porcCumple + porcParcial + porcNoCumple;
-                if (totalPorc > 100) {
-                    porcCumple = Math.round((porcCumple / totalPorc) * 100);
-                    porcParcial = Math.round((porcParcial / totalPorc) * 100);
-                    porcNoCumple = 100 - porcCumple - porcParcial;
-                }
+                const diff = 100 - totalPorc;
                 
-                const porcNoAplica = Math.round((noAplica / totalPreguntas) * 100);
+                if (diff !== 0) {
+                    porcCumple += diff;
+                }
                 
                 // Actualizar reporte con estadísticas reales
                 document.getElementById('reporte-cumple').textContent = porcCumple + '%';
@@ -1670,7 +1741,7 @@
                 if (data.status === "success") {
                     auditorData.auditId = data.auditId;
                     
-                    // MEJORA: Manejo directo de la URL del PDF
+                    // Manejo directo de la URL del PDF
                     if (data.pdfUrl) {
                         document.getElementById('reporte-pdf-url').value = data.pdfUrl;
                         mostrarPDF(data.pdfUrl);  // Mostrar inmediatamente
@@ -2113,70 +2184,6 @@
                     }
                 }
             });
-        }
-        
-        // Cargar datos para el dashboard
-        async function cargarDashboard() {
-            const loader = document.getElementById('dashboard-loader');
-            const content = document.getElementById('dashboard-content');
-            const fecha = document.getElementById('filtro-fecha').value;
-            const area = document.getElementById('filtro-area').value;
-            const unidad = document.getElementById('filtro-unidad').value; // Nuevo filtro
-            
-            // Mostrar loader y ocultar contenido
-            loader.style.display = 'block';
-            content.style.opacity = '0.3';
-            
-            try {
-                // Obtener datos reales del backend (con unidad)
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: "getDashboardData",
-                        fecha: fecha,
-                        area: area,
-                        unidad: unidad
-                    })
-                });
-                
-                const data = await response.json();
-                
-                if (data.status === "success") {
-                    // Actualizar estadísticas (corregido para parcial)
-                    document.getElementById('stat-cumple').textContent = data.porcCumple + '%';
-                    document.getElementById('stat-parcial').textContent = data.porcParcial + '%';
-                    document.getElementById('stat-no-cumple').textContent = data.porcNoCumple + '%';
-                    document.getElementById('stat-no-aplica').textContent = data.porcNoAplica + '%';
-                    
-                    // Actualizar barras de progreso (corregido para parcial)
-                    document.getElementById('progress-cumple').style.width = data.porcCumple + '%';
-                    document.getElementById('progress-parcial').style.width = data.porcParcial + '%';
-                    document.getElementById('progress-no-cumple').style.width = data.porcNoCumple + '%';
-                    document.getElementById('progress-no-aplica').style.width = data.porcNoAplica + '%';
-                    
-                    // Actualizar gráfico de distribución
-                    chartDistribucion.data.datasets[0].data = [
-                        data.porcCumple, 
-                        data.porcParcial,
-                        data.porcNoCumple,
-                        data.porcNoAplica
-                    ];
-                    chartDistribucion.update();
-                    
-                    // Actualizar gráfico por preguntas
-                    chartPreguntas.data.labels = data.preguntasData.labels;
-                    chartPreguntas.data.datasets[0].data = data.preguntasData.values;
-                    chartPreguntas.update();
-                } else {
-                    throw new Error(data.message || "Error al cargar datos");
-                }
-            } catch (error) {
-                alert('Error al cargar datos del dashboard: ' + error.message);
-            } finally {
-                // Ocultar loader y mostrar contenido
-                loader.style.display = 'none';
-                content.style.opacity = '1';
-            }
         }
         
         // Cargar reportes
