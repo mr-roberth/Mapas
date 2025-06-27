@@ -1185,6 +1185,16 @@
                                     <div class="progress-bar-fill progress-danger" id="progress-no-cumple" style="width: 0%"></div>
                                 </div>
                             </div>
+                            
+                            <div class="stat-card stat-info">
+                                <i class="fas fa-ban"></i>
+                                <h3>No Aplica</h3>
+                                <div class="stat-value" id="stat-no-aplica">0%</div>
+                                <div class="stat-label">Requisitos no aplicables</div>
+                                <div class="progress-bar">
+                                    <div class="progress-bar-fill progress-info" id="progress-no-aplica" style="width: 0%"></div>
+                                </div>
+                            </div>
                         </div>
                         
                         <div class="chart-container">
@@ -1289,6 +1299,10 @@
                                 <div style="text-align: center; flex: 1; min-width: 100px;">
                                     <div style="font-size: 1.8rem; color: var(--danger); font-weight: bold;" id="reporte-no-cumple">0%</div>
                                     <div>No Cumple</div>
+                                </div>
+                                <div style="text-align: center; flex: 1; min-width: 100px;">
+                                    <div style="font-size: 1.8rem; color: var(--info); font-weight: bold;" id="reporte-no-aplica">0%</div>
+                                    <div>No Aplica</div>
                                 </div>
                             </div>
                             
@@ -1575,15 +1589,18 @@
                     document.getElementById('stat-cumple').textContent = data.porcCumple + '%';
                     document.getElementById('stat-parcial').textContent = data.porcParcial + '%';
                     document.getElementById('stat-no-cumple').textContent = data.porcNoCumple + '%';
+                    document.getElementById('stat-no-aplica').textContent = data.porcNoAplica + '%';
                     
                     document.getElementById('progress-cumple').style.width = data.porcCumple + '%';
                     document.getElementById('progress-parcial').style.width = data.porcParcial + '%';
                     document.getElementById('progress-no-cumple').style.width = data.porcNoCumple + '%';
+                    document.getElementById('progress-no-aplica').style.width = data.porcNoAplica + '%';
                     
                     chartDistribucion.data.datasets[0].data = [
                         data.porcCumple, 
                         data.porcParcial,
-                        data.porcNoCumple
+                        data.porcNoCumple,
+                        data.porcNoAplica
                     ];
                     chartDistribucion.update();
                     
@@ -1622,35 +1639,33 @@
                     }
                 }
                 
-                // CÁLCULO CORREGIDO DE PORCENTAJES
+                // CÁLCULO CORREGIDO DE PORCENTAJES (sobre el total de preguntas)
                 const totalPreguntas = preguntasPorArea.length;
                 const cumple = Object.values(respuestas).filter(r => r.estado === 'cumple').length;
                 const parcial = Object.values(respuestas).filter(r => r.estado === 'parcial').length;
                 const noCumple = Object.values(respuestas).filter(r => r.estado === 'no_cumple').length;
                 const noAplica = Object.values(respuestas).filter(r => r.estado === 'no_aplica').length;
                 
-                // Calcular solo sobre preguntas que aplican
-                const totalAplica = totalPreguntas - noAplica;
-                
-                let porcCumple = totalAplica > 0 ? Math.round((cumple / totalAplica) * 100) : 0;
-                let porcParcial = totalAplica > 0 ? Math.round((parcial / totalAplica) * 100) : 0;
-                let porcNoCumple = totalAplica > 0 ? Math.round((noCumple / totalAplica) * 100) : 0;
+                let porcCumple = Math.round((cumple / totalPreguntas) * 100);
+                let porcParcial = Math.round((parcial / totalPreguntas) * 100);
+                let porcNoCumple = Math.round((noCumple / totalPreguntas) * 100);
                 let porcNoAplica = Math.round((noAplica / totalPreguntas) * 100);
                 
                 // Ajustar redondeo para que sume 100%
-                if (totalAplica > 0) {
-                    const totalPorc = porcCumple + porcParcial + porcNoCumple;
-                    const diff = 100 - totalPorc;
-                    
-                    if (diff !== 0) {
-                        porcCumple += Math.round(diff * (porcCumple / totalPorc));
-                        porcParcial += Math.round(diff * (porcParcial / totalPorc));
-                        porcNoCumple += Math.round(diff * (porcNoCumple / totalPorc));
-                        
-                        const newTotal = porcCumple + porcParcial + porcNoCumple;
-                        if (newTotal !== 100) {
-                            porcCumple += (100 - newTotal);
-                        }
+                const total = porcCumple + porcParcial + porcNoCumple + porcNoAplica;
+                const diff = 100 - total;
+                
+                if (diff !== 0) {
+                    // Ajustar el porcentaje más grande
+                    const maxValue = Math.max(porcCumple, porcParcial, porcNoCumple, porcNoAplica);
+                    if (porcCumple === maxValue) {
+                        porcCumple += diff;
+                    } else if (porcParcial === maxValue) {
+                        porcParcial += diff;
+                    } else if (porcNoCumple === maxValue) {
+                        porcNoCumple += diff;
+                    } else {
+                        porcNoAplica += diff;
                     }
                 }
 
@@ -1663,7 +1678,7 @@
                     color = "var(--warning)";
                 }
                 
-                if (noCumple > totalAplica * 0.1) {
+                if (noCumple > totalPreguntas * 0.1) {
                     resultado = "No Cumple";
                     color = "var(--danger)";
                 }
@@ -1671,6 +1686,7 @@
                 document.getElementById('reporte-cumple').textContent = porcCumple + '%';
                 document.getElementById('reporte-parcial').textContent = porcParcial + '%';
                 document.getElementById('reporte-no-cumple').textContent = porcNoCumple + '%';
+                document.getElementById('reporte-no-aplica').textContent = porcNoAplica + '%';
                 document.getElementById('reporte-resultado').textContent = resultado;
                 document.getElementById('reporte-resultado').style.color = color;
                 
@@ -1697,7 +1713,8 @@
                     preguntas: preguntasData,
                     porcCumple: porcCumple,
                     porcParcial: porcParcial,
-                    porcNoCumple: porcNoCumple
+                    porcNoCumple: porcNoCumple,
+                    porcNoAplica: porcNoAplica
                 };
                 
                 const response = await fetch(SCRIPT_URL, {
@@ -2082,13 +2099,14 @@
             chartDistribucion = new Chart(ctxDistribucion, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Cumple', 'Cumple Parcial', 'No Cumple'],
+                    labels: ['Cumple', 'Cumple Parcial', 'No Cumple', 'No Aplica'],
                     datasets: [{
-                        data: [0, 0, 0],
+                        data: [0, 0, 0, 0],
                         backgroundColor: [
                             'rgba(39, 174, 96, 0.8)',
                             'rgba(243, 156, 18, 0.8)',
-                            'rgba(231, 76, 60, 0.8)'
+                            'rgba(231, 76, 60, 0.8)',
+                            'rgba(155, 89, 182, 0.8)'
                         ],
                         borderWidth: 1
                     }]
@@ -2216,6 +2234,7 @@
             document.getElementById('reporte-cumple').textContent = reporte.porcCumple + '%';
             document.getElementById('reporte-parcial').textContent = reporte.porcParcial + '%';
             document.getElementById('reporte-no-cumple').textContent = reporte.porcNoCumple + '%';
+            document.getElementById('reporte-no-aplica').textContent = reporte.porcNoAplica + '%';
             document.getElementById('reporte-pdf-url').value = reporte.pdfUrl;
             
             let resultado = "Cumplimiento Total";
