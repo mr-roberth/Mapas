@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,24 +10,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <style>
-        /* Variables de colores modernas */
+        /* Nuevo esquema de colores: negro, blanco y amarillo */
         :root {
-            --primary: #4e54c8;
-            --primary-dark: #363a9e;
-            --secondary: #a55eea;
+            --primary: #000000;          /* Negro */
+            --primary-dark: #333333;     /* Negro oscuro */
+            --secondary: #FFD700;        /* Amarillo dorado */
+            --secondary-dark: #FFB800;   /* Amarillo oscuro */
             --success: #27ae60;
             --warning: #f39c12;
             --danger: #e74c3c;
             --info: #3498db;
-            --light: #f8f9fa;
+            --light: #f8f9fa;            /* Blanco suave */
             --dark: #2c3e50;
             --darker: #1a202c;
             --gray: #95a5a6;
-            --background: #f0f2f5;
-            --card-bg: #ffffff;
-            --text: #2d3748;
-            --text-light: #718096;
-            --border: #e2e8f0;
+            --background: #FFFFFF;       /* Blanco */
+            --card-bg: #FFFFFF;          /* Blanco */
+            --text: #000000;             /* Negro */
+            --text-light: #666666;       /* Gris oscuro */
+            --border: #e0e0e0;           /* Gris claro */
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             --transition: all 0.3s ease;
         }
@@ -39,7 +41,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, var(--background) 0%, #e6e9f0 100%);
+            background: var(--background);
             color: var(--text);
             line-height: 1.6;
             font-size: 16px;
@@ -54,7 +56,7 @@
         
         /* Header moderno */
         header {
-            background: linear-gradient(to right, var(--darker) 0%, #000000 100%);
+            background: linear-gradient(to right, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             padding: 0;
             position: sticky;
@@ -88,7 +90,7 @@
             font-size: 1.4rem;
             font-weight: 700;
             letter-spacing: -0.5px;
-            background: linear-gradient(to right, #ffffff, #e0e0e0);
+            background: linear-gradient(to right, var(--secondary), var(--secondary-dark));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -178,7 +180,7 @@
             margin: 25px 0;
             box-shadow: var(--shadow);
             max-width: 100%;
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
             transition: var(--transition);
         }
         
@@ -190,7 +192,7 @@
             color: var(--primary);
             margin-bottom: 25px;
             padding-bottom: 15px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 2px solid var(--secondary);
             display: flex;
             align-items: center;
             gap: 12px;
@@ -199,9 +201,7 @@
         }
         
         .form-title i {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--secondary);
         }
         
         .form-group {
@@ -212,7 +212,7 @@
             display: block;
             margin-bottom: 10px;
             font-weight: 600;
-            color: var(--dark);
+            color: var(--text);
             font-size: 0.97rem;
         }
         
@@ -235,8 +235,8 @@
         
         input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(78, 84, 200, 0.2);
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
         }
         
         .btn {
@@ -265,7 +265,7 @@
         
         .btn-primary {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
+            color: var(--secondary);
         }
         
         .btn-success {
@@ -283,11 +283,6 @@
             color: white;
         }
         
-        .btn-secondary {
-            background: linear-gradient(135deg, var(--secondary) 0%, #8e44ad 100%);
-            color: white;
-        }
-        
         /* Preguntas modernas */
         .pregunta-card {
             background: var(--card-bg);
@@ -295,7 +290,7 @@
             padding: 24px;
             margin-bottom: 18px;
             box-shadow: var(--shadow);
-            border-left: 5px solid var(--primary);
+            border-left: 5px solid var(--secondary);
             transition: var(--transition);
         }
         
@@ -308,19 +303,20 @@
             font-size: 1.15rem;
             font-weight: 600;
             margin-bottom: 18px;
-            color: var(--dark);
+            color: var(--text);
             line-height: 1.5;
         }
         
         .categoria-pregunta {
             display: inline-block;
-            background: rgba(78, 84, 200, 0.1);
-            color: var(--primary);
+            background: rgba(0, 0, 0, 0.1);
+            color: var(--text);
             padding: 5px 12px;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 600;
             margin-top: 8px;
+            border: 1px solid var(--secondary);
         }
         
         .opciones {
@@ -347,14 +343,14 @@
         }
         
         .opcion:hover {
-            background: #edf0ff;
+            background: #fff9e6;
             transform: translateX(5px);
         }
         
         .opcion.selected {
-            background: linear-gradient(to right, rgba(78, 84, 200, 0.1), rgba(165, 94, 234, 0.1));
-            color: var(--primary);
-            border-color: rgba(78, 84, 200, 0.3);
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.05), rgba(255, 215, 0, 0.1));
+            color: var(--text);
+            border-color: rgba(0, 0, 0, 0.3);
         }
         
         .evidencia-section {
@@ -381,8 +377,8 @@
         }
         
         .camera-preview:hover {
-            border-color: var(--primary);
-            background: #eef1ff;
+            border-color: var(--secondary);
+            background: #fff9e6;
         }
         
         .camera-preview img {
@@ -436,6 +432,7 @@
             transition: var(--transition);
             position: relative;
             overflow: hidden;
+            border: 1px solid var(--border);
         }
         
         .stat-card::before {
@@ -486,6 +483,7 @@
             margin-bottom: 25px;
             box-shadow: var(--shadow);
             transition: var(--transition);
+            border: 1px solid var(--border);
         }
         
         .chart-container:hover {
@@ -495,12 +493,14 @@
         
         .chart-title {
             margin-bottom: 20px;
-            color: var(--dark);
+            color: var(--text);
             display: flex;
             align-items: center;
             gap: 12px;
             font-size: 1.2rem;
             font-weight: 700;
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 10px;
         }
         
         .chart-wrapper {
@@ -511,7 +511,7 @@
         
         /* Footer moderno */
         footer {
-            background: linear-gradient(to right, var(--darker) 0%, #000000 100%);
+            background: linear-gradient(to right, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             padding: 40px 0 0;
             margin-top: 40px;
@@ -536,6 +536,7 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             font-size: 1.3rem;
             font-weight: 700;
+            color: var(--secondary);
         }
         
         .footer-links {
@@ -557,7 +558,7 @@
         }
         
         .footer-links a:hover {
-            color: white;
+            color: var(--secondary);
             transform: translateX(5px);
         }
         
@@ -577,7 +578,7 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%234e54c8" opacity="0.05"/><path d="M0 0 L100 100 M100 0 L0 100" stroke="%234e54c8" stroke-width="1" stroke-opacity="0.1"/></svg>');
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23000000" opacity="0.05"/><path d="M0 0 L100 100 M100 0 L0 100" stroke="%23000000" stroke-width="1" stroke-opacity="0.1"/></svg>');
             background-size: 200px;
         }
         
@@ -649,7 +650,7 @@
             left: 0;
             width: 100%;
             height: 3px;
-            background: var(--primary);
+            background: var(--secondary);
             border-radius: 3px 3px 0 0;
         }
         
@@ -689,6 +690,7 @@
             padding: 24px;
             box-shadow: var(--shadow);
             height: fit-content;
+            border: 1px solid var(--border);
         }
         
         .lista-reportes {
@@ -698,6 +700,7 @@
             box-shadow: var(--shadow);
             max-height: 600px;
             overflow-y: auto;
+            border: 1px solid var(--border);
         }
         
         .reporte-item {
@@ -709,14 +712,14 @@
         }
         
         .reporte-item:hover {
-            background: #f8f9ff;
+            background: #fff9e6;
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
         
         .reporte-item.active {
-            background: rgba(78, 84, 200, 0.08);
-            border-left: 5px solid var(--primary);
+            background: rgba(0, 0, 0, 0.05);
+            border-left: 5px solid var(--secondary);
         }
         
         #pdf-viewer-container {
@@ -809,11 +812,11 @@
         
         /* Estilos para elementos específicos */
         #auditor-info {
-            background: linear-gradient(to right, rgba(78, 84, 200, 0.05), rgba(165, 94, 234, 0.05));
+            background: rgba(0, 0, 0, 0.03);
             padding: 20px;
             border-radius: 16px;
             margin-bottom: 25px;
-            border: 1px solid rgba(78, 84, 200, 0.15);
+            border: 1px solid var(--border);
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
@@ -840,7 +843,7 @@
         
         .loader {
             border: 5px solid #f3f3f3;
-            border-top: 5px solid var(--primary);
+            border-top: 5px solid var(--secondary);
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -920,6 +923,68 @@
         .logo:hover::after {
             transform: scaleX(1);
             transform-origin: left;
+        }
+        
+        /* Nuevos estilos para la sección de cuenta */
+        .profile-picture {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--secondary);
+            margin: 0 auto 20px;
+            display: block;
+        }
+        
+        .profile-section {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .password-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+        }
+        
+        #user-photo {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+            border: 2px solid var(--secondary);
+        }
+
+        /* Nuevo estilo para gráficos barras horizontales */
+        .horizontal-bars {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        .bar-chart-container {
+            flex: 1;
+            min-width: 300px;
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+        
+        /* Nuevos estilos para gráfico de Pareto */
+        .pareto-bar {
+            background-color: var(--primary);
+            border-radius: 3px;
+        }
+        
+        .pareto-line {
+            border-color: var(--secondary);
+            background: rgba(255, 215, 0, 0.1);
         }
     </style>
 </head>
@@ -1003,9 +1068,12 @@
                         <li><a href="#" class="nav-link" data-page="dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
                         <li><a href="#" class="nav-link" data-page="reportes"><i class="fas fa-file-pdf"></i> Reportes</a></li>
                         <li><a href="#" class="nav-link" data-page="exportar"><i class="fas fa-file-export"></i> Exportar</a></li>
+                        <!-- Nuevo enlace a Cuenta -->
+                        <li><a href="#" class="nav-link" data-page="cuenta"><i class="fas fa-user"></i> Cuenta</a></li>
                     </ul>
                 </nav>
                 <div class="user-info">
+                    <img id="user-photo" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Foto perfil">
                     <span id="user-name">Usuario</span>
                     <button id="btn-logout"><i class="fas fa-sign-out-alt"></i> Salir</button>
                 </div>
@@ -1038,16 +1106,7 @@
                         <label for="area-auditada">Área a Auditar</label>
                         <select id="area-auditada">
                             <option value="">Selecciona un área</option>
-                            <option value="batey">Batey</option>
-                            <option value="molinos">Molinos</option>
-                            <option value="clarificacion">Clarificación</option>
-                            <option value="evaporacion">Evaporación</option>
-                            <option value="cristalizacion">Cristalización</option>
-                            <option value="centrifugas">Centrifugas</option>
-                            <option value="secado">Secado</option>
-                            <option value="envase">Envase</option>
-                            <option value="calderas">Calderas</option>
-                            <option value="almacen_pt">Almacén de producto terminado</option>
+                            <!-- Las áreas se cargarán dinámicamente -->
                         </select>
                     </div>
                     <div class="form-group">
@@ -1078,7 +1137,7 @@
             <section id="auditoria" class="page-section">
                 <div class="form-section">
                     <h2 class="form-title"><i class="fas fa-file-alt"></i> Cuestionario de Auditoría</h2>
-                    <div id="auditor-info" style="background: #e3f2fd; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                    <div id="auditor-info" style="background: #fff9e6; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
                         <p><strong>Auditor:</strong> <span id="current-auditor">-</span></p>
                         <p><strong>Unidad:</strong> <span id="current-unidad">-</span></p>
                         <p><strong>Área:</strong> <span id="current-area">-</span></p>
@@ -1113,24 +1172,6 @@
                         </div>
                         
                         <div class="filtro-item">
-                            <label for="filtro-area">Filtrar por Área</label>
-                            <select id="filtro-area">
-                                <option value="">Todas las áreas</option>
-                                <option value="batey">Batey</option>
-                                <option value="molinos">Molinos</option>
-                                <option value="clarificacion">Clarificación</option>
-                                <option value="evaporacion">Evaporación</option>
-                                <option value="cristalizacion">Cristalización</option>
-                                <option value="centrifugas">Centrifugas</option>
-                                <option value="secado">Secado</option>
-                                <option value="envase">Envase</option>
-                                <option value="calderas">Calderas</option>
-                                <option value="almacen_pt">Almacén PT</option>
-                            </select>
-                        </div>
-                        
-                        <!-- Nuevo filtro por unidad -->
-                        <div class="filtro-item">
                             <label for="filtro-unidad">Filtrar por Unidad</label>
                             <select id="filtro-unidad">
                                 <option value="">Todas las unidades</option>
@@ -1141,6 +1182,14 @@
                                 <option value="dulcinea_chiapas">Dulcinea - Chiapas</option>
                                 <option value="dulcinea_michoacan">Dulcinea Michoacán</option>
                                 <option value="cafetalera_cordoba">Cafetalera - Cordoba</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filtro-item">
+                            <label for="filtro-area">Filtrar por Área</label>
+                            <select id="filtro-area">
+                                <option value="">Todas las áreas</option>
+                                <!-- Las áreas se cargarán dinámicamente -->
                             </select>
                         </div>
                         
@@ -1210,6 +1259,14 @@
                                 <canvas id="chart-preguntas"></canvas>
                             </div>
                         </div>
+
+                        <!-- Nuevo gráfico de Pareto para categorías -->
+                        <div class="chart-container">
+                            <h3 class="chart-title"><i class="fas fa-chart-line"></i> Pareto por Categoría</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="chart-pareto"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1223,25 +1280,22 @@
                         <div class="filtros-reportes">
                             <h3><i class="fas fa-filter"></i> Filtros</h3>
                             
+                            <!-- Filtros de fecha mejorados -->
                             <div class="form-group">
-                                <label for="filtro-fecha-reporte">Fecha de Auditoría</label>
-                                <input type="date" id="filtro-fecha-reporte">
+                                <label for="filtro-fecha-inicio-reporte">Fecha Inicio</label>
+                                <input type="date" id="filtro-fecha-inicio-reporte">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="filtro-fecha-fin-reporte">Fecha Fin</label>
+                                <input type="date" id="filtro-fecha-fin-reporte">
                             </div>
                             
                             <div class="form-group">
                                 <label for="filtro-area-reporte">Área Auditada</label>
                                 <select id="filtro-area-reporte">
                                     <option value="">Todas las áreas</option>
-                                    <option value="batey">Batey</option>
-                                    <option value="molinos">Molinos</option>
-                                    <option value="clarificacion">Clarificación</option>
-                                    <option value="evaporacion">Evaporación</option>
-                                    <option value="cristalizacion">Cristalización</option>
-                                    <option value="centrifugas">Centrifugas</option>
-                                    <option value="secado">Secado</option>
-                                    <option value="envase">Envase</option>
-                                    <option value="calderas">Calderas</option>
-                                    <option value="almacen_pt">Almacén PT</option>
+                                    <!-- Áreas se cargarán dinámicamente -->
                                 </select>
                             </div>
                             
@@ -1249,6 +1303,7 @@
                                 <label for="filtro-auditor-reporte">Auditor</label>
                                 <select id="filtro-auditor-reporte">
                                     <option value="">Todos los auditores</option>
+                                    <!-- Auditores se cargarán dinámicamente -->
                                 </select>
                             </div>
                             
@@ -1277,8 +1332,9 @@
                                 <div>
                                     <p><strong>Auditor:</strong> <span id="reporte-auditor">-</span></p>
                                     <p><strong>Unidad:</strong> <span id="reporte-unidad">-</span></p>
-                                    <p><strong>Área auditada:</strong> <span id="reporte-area">-</span></p>
+                                    <p><strong>Área:</strong> <span id="reporte-area">-</span></p>
                                     <p><strong>Fecha:</strong> <span id="reporte-fecha">-</span></p>
+                                    <p><strong>Hora:</strong> <span id="reporte-hora">-</span></p>
                                 </div>
                                 <div>
                                     <p><strong>Estado:</strong> <span style="color: var(--success);">Completado</span></p>
@@ -1330,7 +1386,7 @@
                         
                         <!-- Visor de PDF mejorado -->
                         <div id="pdf-viewer-container">
-                            <div id="pdf-viewer"></div>
+                            <iframe id="pdf-viewer" src="" frameborder="0"></iframe>
                         </div>
                         
                         <input type="hidden" id="reporte-pdf-url">
@@ -1373,16 +1429,7 @@
                             <label for="area-exportar">Área</label>
                             <select id="area-exportar">
                                 <option value="">Todas las áreas</option>
-                                <option value="batey">Batey</option>
-                                <option value="molinos">Molinos</option>
-                                <option value="clarificacion">Clarificación</option>
-                                <option value="evaporacion">Evaporación</option>
-                                <option value="cristalizacion">Cristalización</option>
-                                <option value="centrifugas">Centrifugas</option>
-                                <option value="secado">Secado</option>
-                                <option value="envase">Envase</option>
-                                <option value="calderas">Calderas</option>
-                                <option value="almacen_pt">Almacén PT</option>
+                                <!-- Áreas se cargarán dinámicamente -->
                             </select>
                         </div>
                     </div>
@@ -1392,6 +1439,72 @@
                     </button>
                     
                     <div id="exportar-resultado" style="margin-top: 20px;"></div>
+                </div>
+            </section>
+            
+            <!-- Nueva Sección Cuenta -->
+            <section id="cuenta" class="page-section">
+                <div class="form-section">
+                    <h2 class="form-title"><i class="fas fa-user-circle"></i> Gestión de Cuenta</h2>
+                    
+                    <div id="profile-message"></div>
+                    
+                    <div class="profile-section">
+                        <img id="profile-picture" class="profile-picture" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Foto de perfil">
+                        <h3 id="profile-name"></h3>
+                        <p id="profile-email"></p>
+                    </div>
+                    
+                    <h3><i class="fas fa-edit"></i> Editar Perfil</h3>
+                    <div class="form-group">
+                        <label for="edit-name">Nombre Completo</label>
+                        <input type="text" id="edit-name" placeholder="Tu nombre completo">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profile-unidad">Unidad de Negocio</label>
+                        <select id="profile-unidad">
+                            <option value="">Selecciona una unidad</option>
+                            <option value="ingenio_huixtla">Ingenio Huixtla</option>
+                            <option value="ingenio_modelo">Ingenio Modelo</option>
+                            <option value="ingenio_san_pedro">Ingenio San Pedro</option>
+                            <option value="ingenio_santa_clara">Ingenio Santa Clara</option>
+                            <option value="dulcinea_chiapas">Dulcinea - Chiapas</option>
+                            <option value="dulcinea_michoacan">Dulcinea Michoacán</option>
+                            <option value="cafetalera_cordoba">Cafetalera - Cordoba</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profile-photo">Foto de Perfil</label>
+                        <input type="file" id="profile-photo" accept="image/*">
+                    </div>
+                    
+                    <button class="btn btn-primary" id="save-profile">
+                        <i class="fas fa-save"></i> Guardar Cambios
+                    </button>
+                    
+                    <div class="password-section">
+                        <h3><i class="fas fa-lock"></i> Cambiar Contraseña</h3>
+                        <div class="form-group">
+                            <label for="current-password">Contraseña Actual</label>
+                            <input type="password" id="current-password" placeholder="Tu contraseña actual">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="new-password">Nueva Contraseña</label>
+                            <input type="password" id="new-password" placeholder="Nueva contraseña">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirm-password">Confirmar Nueva Contraseña</label>
+                            <input type="password" id="confirm-password" placeholder="Repite la nueva contraseña">
+                        </div>
+                        
+                        <button class="btn btn-primary" id="change-password">
+                            <i class="fas fa-key"></i> Cambiar Contraseña
+                        </button>
+                    </div>
                 </div>
             </section>
         </div>
@@ -1439,16 +1552,21 @@
         // Variables globales
         let auditorData = {};
         let respuestas = {};
-        let chartDistribucion, chartPreguntas;
+        let chartDistribucion, chartPreguntas, chartPareto;
         let currentUser = null;
         let reportesData = [];
         let preguntasPorArea = [];
+        let areasCache = {};
+        let allAreas = [];
+        let auditores = [];
         
         // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
             // Configurar fecha actual
             const today = new Date();
             document.getElementById('fecha-auditoria').valueAsDate = today;
+            document.getElementById('filtro-fecha-inicio-reporte').valueAsDate = new Date(today.getFullYear(), today.getMonth(), 1);
+            document.getElementById('filtro-fecha-fin-reporte').valueAsDate = today;
             document.getElementById('fecha-inicio-exportar').valueAsDate = new Date(today.getFullYear(), today.getMonth(), 1);
             document.getElementById('fecha-fin-exportar').valueAsDate = today;
             
@@ -1467,7 +1585,13 @@
                     if (page === 'dashboard') {
                         cargarDashboard();
                     } else if (page === 'reportes') {
+                        cargarTodasLasAreas();
+                        cargarAuditores();
                         cargarReportes();
+                    } else if (page === 'exportar') {
+                        cargarTodasLasAreas();
+                    } else if (page === 'cuenta') {
+                        loadProfile();
                     }
                 });
             });
@@ -1525,8 +1649,18 @@
             // Event listener para filtros dashboard
             document.getElementById('aplicar-filtros').addEventListener('click', cargarDashboard);
             
+            // Event listener para cambio de unidad (carga áreas)
+            document.getElementById('unidad-negocio').addEventListener('change', cargarAreasPorUnidad);
+            document.getElementById('filtro-unidad').addEventListener('change', function() {
+                cargarAreasPorUnidadDashboard(this.value);
+            });
+            
             // Inicializar gráficos vacíos
             inicializarGraficos();
+            
+            // Cargar todas las áreas al iniciar
+            cargarTodasLasAreas();
+            cargarAuditores();
         });
         
         // Función para visualizar PDF
@@ -1535,15 +1669,7 @@
             const container = document.getElementById('pdf-viewer-container');
             
             if (url) {
-                viewer.innerHTML = `
-                    <embed src="${url}" type="application/pdf" width="100%" height="100%">
-                    <div style="text-align:center;padding:20px;">
-                        <p>Si no puedes ver el PDF, 
-                        <a href="${url}" target="_blank" style="color: var(--primary);font-weight:bold;">
-                            haz clic aquí para abrirlo en una nueva pestaña
-                        </a></p>
-                    </div>
-                `;
+                viewer.src = url;
                 container.style.display = 'block';
             } else {
                 container.style.display = 'none';
@@ -1561,13 +1687,15 @@
             }
         }
 
-        // Cargar dashboard con filtros
+        // Función para cargar dashboard con manejo de errores mejorado
         async function cargarDashboard() {
             const loader = document.getElementById('dashboard-loader');
             const content = document.getElementById('dashboard-content');
             const fecha = document.getElementById('filtro-fecha').value;
             const area = document.getElementById('filtro-area').value;
-            const unidad = document.getElementById('filtro-unidad').value;
+            const unidadSelect = document.getElementById('filtro-unidad');
+            const unidad = unidadSelect.value;
+            const unidadText = unidad ? unidadSelect.options[unidadSelect.selectedIndex].text : '';
             
             loader.style.display = 'block';
             content.style.opacity = '0.3';
@@ -1579,7 +1707,7 @@
                         action: "getDashboardData",
                         fecha: fecha,
                         area: area,
-                        unidad: unidad
+                        unidad: unidadText
                     })
                 });
                 
@@ -1604,20 +1732,123 @@
                     ];
                     chartDistribucion.update();
                     
-                    chartPreguntas.data.labels = data.preguntasData.labels;
-                    chartPreguntas.data.datasets[0].data = data.preguntasData.values;
-                    chartPreguntas.update();
+                    // Actualizar gráfico de preguntas
+                    if (chartPreguntas) chartPreguntas.destroy();
+                    const ctxPreguntas = document.getElementById('chart-preguntas').getContext('2d');
+                    chartPreguntas = new Chart(ctxPreguntas, {
+                        type: 'bar',
+                        data: {
+                            labels: data.preguntasData.labels,
+                            datasets: [{
+                                label: '% Cumplimiento',
+                                data: data.preguntasData.values,
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    ticks: {
+                                        autoSkip: false,
+                                        maxRotation: 45,
+                                        minRotation: 45,
+                                        font: {
+                                            size: 10
+                                        }
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: true,
+                                    max: 100,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return value + '%';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    
+                    // Actualizar gráfico de Pareto
+                    if (chartPareto) chartPareto.destroy();
+                    if (data.paretoData && data.paretoData.labels.length > 0) {
+                        const ctxPareto = document.getElementById('chart-pareto').getContext('2d');
+                        chartPareto = new Chart(ctxPareto, {
+                            type: 'bar',
+                            data: {
+                                labels: data.paretoData.labels,
+                                datasets: [{
+                                    label: 'Incumplimientos',
+                                    data: data.paretoData.values,
+                                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                    borderWidth: 1,
+                                    order: 2
+                                }, {
+                                    label: 'Porcentaje Acumulado',
+                                    data: data.paretoData.accumulated,
+                                    type: 'line',
+                                    borderColor: '#FFD700',
+                                    backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                                    borderWidth: 3,
+                                    pointBackgroundColor: '#FFD700',
+                                    pointBorderColor: '#000',
+                                    pointRadius: 5,
+                                    fill: false,
+                                    yAxisID: 'y1',
+                                    order: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Cantidad de Incumplimientos'
+                                        }
+                                    },
+                                    y1: {
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'right',
+                                        beginAtZero: true,
+                                        max: 100,
+                                        title: {
+                                            display: true,
+                                            text: 'Porcentaje Acumulado'
+                                        },
+                                        grid: {
+                                            drawOnChartArea: false,
+                                        },
+                                        ticks: {
+                                            callback: function(value) {
+                                                return value + '%';
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    
                 } else {
                     throw new Error(data.message || "Error al cargar datos");
                 }
             } catch (error) {
-                alert('Error al cargar datos del dashboard: ' + error.message);
+                console.error("Error en dashboard:", error);
+                alert('Error al cargar datos: ' + error.message);
             } finally {
                 loader.style.display = 'none';
                 content.style.opacity = '1';
             }
         }
-
+        
         // Función para finalizar auditoría con cálculo corregido de porcentajes
         async function finalizarAuditoria() {
             const btn = document.getElementById('finalizar-auditoria');
@@ -1775,7 +2006,8 @@
                 
                 if (data.status === "success") {
                     currentUser = data.user;
-                    document.getElementById('user-name').textContent = currentUser.name || currentUser.email;
+                    updateUserBar();
+                    document.getElementById('user-name').textContent = currentUser.name;
                     document.getElementById('nombre-auditor').value = currentUser.name;
                     document.getElementById('login').classList.remove('active');
                     document.getElementById('main-app').style.display = 'block';
@@ -1883,20 +2115,29 @@
             }
             
             try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: "getPreguntasPorArea",
-                        area: area
-                    })
-                });
+                // Verificar caché primero
+                const cacheKey = `preguntas-${area}`;
+                const cachedPreguntas = localStorage.getItem(cacheKey);
                 
-                const data = await response.json();
-                
-                if (data.status === "success") {
-                    preguntasPorArea = data.preguntas;
+                if (cachedPreguntas) {
+                    preguntasPorArea = JSON.parse(cachedPreguntas);
                 } else {
-                    throw new Error(data.message || "Error al cargar preguntas");
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            action: "getPreguntasPorArea",
+                            area: area
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.status === "success") {
+                        preguntasPorArea = data.preguntas;
+                        localStorage.setItem(cacheKey, JSON.stringify(preguntasPorArea));
+                    } else {
+                        throw new Error(data.message || "Error al cargar preguntas");
+                    }
                 }
             } catch (error) {
                 alert('Error al cargar preguntas: ' + error.message);
@@ -2001,28 +2242,34 @@
                     cameraInput.click();
                 });
                 
+                // Capturamos el id de la pregunta en una variable local
+                const currentPreguntaId = pregunta.id;
+                
                 cameraInput.addEventListener('change', async function(e) {
                     if (e.target.files && e.target.files[0]) {
                         const file = e.target.files[0];
                         const reader = new FileReader();
                         
                         reader.onload = async function(event) {
-                            cameraPreview.innerHTML = `<img src="${event.target.result}" alt="Evidencia fotográfica">`;
+                            // Comprimir imagen antes de subir
+                            const compressedImg = await compressImage(file);
+                            
+                            cameraPreview.innerHTML = `<img src="${compressedImg}" alt="Evidencia fotográfica">`;
                             
                             try {
                                 const response = await fetch(SCRIPT_URL, {
                                     method: 'POST',
                                     body: JSON.stringify({
                                         action: "uploadImage",
-                                        image: event.target.result
+                                        image: compressedImg.split(',')[1] // Solo la parte base64
                                     })
                                 });
                                 
                                 const data = await response.json();
                                 
                                 if (data.status === "success") {
-                                    if (!respuestas[pregunta.id]) respuestas[pregunta.id] = {};
-                                    respuestas[pregunta.id].evidenciaUrl = data.url;
+                                    if (!respuestas[currentPreguntaId]) respuestas[currentPreguntaId] = {};
+                                    respuestas[currentPreguntaId].evidenciaUrl = data.url;
                                 } else {
                                     throw new Error(data.message || "Error al subir imagen");
                                 }
@@ -2043,6 +2290,46 @@
                     if (!respuestas[pregunta.id]) respuestas[pregunta.id] = {};
                     respuestas[pregunta.id].observaciones = e.target.value;
                 });
+            });
+        }
+        
+        // Función para comprimir imágenes
+        function compressImage(file, quality = 0.7) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        // Redimensionar si es muy grande
+                        const MAX_WIDTH = 1024;
+                        const MAX_HEIGHT = 1024;
+                        let width = img.width;
+                        let height = img.height;
+                        
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height *= MAX_WIDTH / width;
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width *= MAX_HEIGHT / height;
+                                height = MAX_HEIGHT;
+                            }
+                        }
+                        
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                        resolve(compressedDataUrl);
+                    };
+                };
+                reader.readAsDataURL(file);
             });
         }
         
@@ -2095,6 +2382,7 @@
         function inicializarGraficos() {
             const ctxDistribucion = document.getElementById('chart-distribucion').getContext('2d');
             const ctxPreguntas = document.getElementById('chart-preguntas').getContext('2d');
+            const ctxPareto = document.getElementById('chart-pareto').getContext('2d');
             
             chartDistribucion = new Chart(ctxDistribucion, {
                 type: 'doughnut',
@@ -2129,7 +2417,7 @@
                     datasets: [{
                         label: '% Cumplimiento',
                         data: [],
-                        backgroundColor: 'rgba(78, 84, 200, 0.8)',
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
                         borderWidth: 1
                     }]
                 },
@@ -2137,6 +2425,16 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
+                        x: {
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 45,
+                                minRotation: 45,
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        },
                         y: {
                             beginAtZero: true,
                             max: 100,
@@ -2149,13 +2447,27 @@
                     }
                 }
             });
+            
+            // Gráfico de Pareto vacío
+            chartPareto = new Chart(ctxPareto, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                }
+            });
         }
         
         // Cargar reportes
         async function cargarReportes() {
             const loader = document.getElementById('reportes-loader');
             const content = document.getElementById('lista-reportes-content');
-            const fecha = document.getElementById('filtro-fecha-reporte').value;
+            const fechaInicio = document.getElementById('filtro-fecha-inicio-reporte').value;
+            const fechaFin = document.getElementById('filtro-fecha-fin-reporte').value;
             const area = document.getElementById('filtro-area-reporte').value;
             const auditor = document.getElementById('filtro-auditor-reporte').value;
             
@@ -2167,7 +2479,8 @@
                     method: 'POST',
                     body: JSON.stringify({
                         action: "getAuditsForReport",
-                        fecha: fecha,
+                        fechaInicio: fechaInicio,
+                        fechaFin: fechaFin,
                         area: area,
                         auditor: auditor
                     })
@@ -2205,7 +2518,7 @@
                 item.dataset.id = reporte.id;
                 item.innerHTML = `
                     <p><strong>${reporte.auditor}</strong> - ${reporte.unidad}</p>
-                    <p>${reporte.area} - ${reporte.fecha}</p>
+                    <p>${reporte.area} - ${reporte.fecha} ${reporte.hora ? `- ${reporte.hora}` : ''}</p>
                     <p>Cumple: ${reporte.porcCumple}% | No Cumple: ${reporte.porcNoCumple}%</p>
                 `;
                 
@@ -2231,6 +2544,7 @@
             document.getElementById('reporte-unidad').textContent = reporte.unidad;
             document.getElementById('reporte-area').textContent = reporte.area;
             document.getElementById('reporte-fecha').textContent = reporte.fecha;
+            document.getElementById('reporte-hora').textContent = reporte.hora || '';
             document.getElementById('reporte-cumple').textContent = reporte.porcCumple + '%';
             document.getElementById('reporte-parcial').textContent = reporte.porcParcial + '%';
             document.getElementById('reporte-no-cumple').textContent = reporte.porcNoCumple + '%';
@@ -2367,6 +2681,404 @@
             const body = encodeURIComponent(`Te comparto el reporte de auditoría:\n${pdfUrl}`);
             window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
         });
+        
+        // Actualizar barra de usuario con foto
+        function updateUserBar() {
+            const userNameElement = document.getElementById('user-name');
+            const userPhoto = document.getElementById('user-photo');
+            
+            if (currentUser) {
+                userNameElement.textContent = currentUser.name;
+                
+                if (currentUser.fotoPerfil) {
+                    userPhoto.src = currentUser.fotoPerfil;
+                } else {
+                    userPhoto.src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
+                }
+            }
+        }
+
+        // Cargar datos del perfil
+        async function loadProfile() {
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "getUserProfile",
+                        email: currentUser.email
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    // Actualizar currentUser con los datos del perfil
+                    currentUser = { ...currentUser, ...data.user };
+                    
+                    // Actualizar UI
+                    document.getElementById('profile-name').textContent = data.user.name;
+                    document.getElementById('profile-email').textContent = data.user.email;
+                    document.getElementById('edit-name').value = data.user.name;
+                    document.getElementById('profile-unidad').value = data.user.unidad || '';
+                    
+                    if (data.user.fotoPerfil) {
+                        document.getElementById('profile-picture').src = data.user.fotoPerfil;
+                        document.getElementById('user-photo').src = data.user.fotoPerfil;
+                    } else {
+                        document.getElementById('profile-picture').src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
+                    }
+                    
+                    updateUserBar();
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                showProfileMessage('Error al cargar perfil: ' + error.message, 'error');
+            }
+        }
+
+        // Guardar cambios del perfil
+        document.getElementById('save-profile').addEventListener('click', async function() {
+            const btn = this;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+            btn.disabled = true;
+            
+            const name = document.getElementById('edit-name').value;
+            const unidad = document.getElementById('profile-unidad').value;
+            const fileInput = document.getElementById('profile-photo');
+            const file = fileInput.files[0];
+            
+            if (!name) {
+                showProfileMessage('El nombre es obligatorio', 'error');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                return;
+            }
+            
+            try {
+                let fotoUrl = currentUser.fotoPerfil;
+                
+                // Subir nueva foto si existe
+                if (file) {
+                    const compressedImg = await compressImage(file);
+                    
+                    try {
+                        const response = await fetch(SCRIPT_URL, {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                action: "uploadImage",
+                                image: compressedImg.split(',')[1] // Solo la parte base64
+                            })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.status === "success") {
+                            fotoUrl = data.url;
+                        } else {
+                            throw new Error(data.message);
+                        }
+                    } catch (error) {
+                        showProfileMessage('Error al subir foto: ' + error.message, 'error');
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                        return;
+                    }
+                }
+                
+                // Guardar perfil
+                try {
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            action: "updateProfile",
+                            email: currentUser.email,
+                            name: name,
+                            unidad: unidad,
+                            fotoPerfil: fotoUrl
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.status === "success") {
+                        showProfileMessage('Perfil actualizado con éxito', 'success');
+                        currentUser.name = name;
+                        currentUser.unidad = unidad;
+                        currentUser.fotoPerfil = fotoUrl;
+                        
+                        // Actualizar fotos inmediatamente
+                        document.getElementById('profile-picture').src = fotoUrl;
+                        document.getElementById('user-photo').src = fotoUrl;
+                        
+                        updateUserBar();
+                        document.getElementById('profile-photo').value = '';
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } catch (error) {
+                    showProfileMessage('Error al actualizar perfil: ' + error.message, 'error');
+                }
+            } catch (error) {
+                showProfileMessage('Error: ' + error.message, 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        // Cambiar contraseña
+        document.getElementById('change-password').addEventListener('click', async function() {
+            const btn = this;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+            btn.disabled = true;
+            
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showProfileMessage('Todos los campos son obligatorios', 'error');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showProfileMessage('Las contraseñas no coinciden', 'error');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                return;
+            }
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "changePassword",
+                        email: currentUser.email,
+                        currentPassword: currentPassword,
+                        newPassword: newPassword
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    showProfileMessage('Contraseña cambiada con éxito', 'success');
+                    document.getElementById('current-password').value = '';
+                    document.getElementById('new-password').value = '';
+                    document.getElementById('confirm-password').value = '';
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                showProfileMessage('Error al cambiar contraseña: ' + error.message, 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        // Mostrar mensajes en perfil
+        function showProfileMessage(message, type) {
+            const container = document.getElementById('profile-message');
+            container.innerHTML = `
+                <div class="alert alert-${type}">
+                    <i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}-circle"></i>
+                    ${message}
+                </div>
+            `;
+            
+            setTimeout(() => container.innerHTML = '', 5000);
+        }
+        
+        // Obtener áreas por unidad
+        async function cargarAreasPorUnidad() {
+            const unidad = document.getElementById('unidad-negocio').value;
+            const areaSelect = document.getElementById('area-auditada');
+            
+            if (!unidad) {
+                areaSelect.innerHTML = '<option value="">Selecciona un área</option>';
+                return;
+            }
+            
+            try {
+                // Verificar caché
+                if (areasCache[unidad]) {
+                    renderAreasSelect(areaSelect, areasCache[unidad]);
+                    return;
+                }
+                
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "getAreasByUnidad",
+                        unidad: unidad
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    areasCache[unidad] = data.areas;
+                    renderAreasSelect(areaSelect, data.areas);
+                } else {
+                    throw new Error(data.message || "Error al cargar áreas");
+                }
+            } catch (error) {
+                console.error('Error al cargar áreas:', error);
+                areaSelect.innerHTML = '<option value="">Error al cargar áreas</option>';
+            }
+        }
+
+        // Obtener áreas por unidad para dashboard
+        async function cargarAreasPorUnidadDashboard(unidad) {
+            const areaSelect = document.getElementById('filtro-area');
+            areaSelect.innerHTML = '<option value="">Cargando áreas...</option>';
+            
+            try {
+                // Si no se selecciona unidad (Todas las unidades), cargar todas las áreas
+                if (!unidad) {
+                    areaSelect.innerHTML = '<option value="">Todas las áreas</option>';
+                    if (allAreas && allAreas.length > 0) {
+                        allAreas.forEach(area => {
+                            const option = document.createElement('option');
+                            option.value = area;
+                            option.textContent = formatName(area);
+                            areaSelect.appendChild(option);
+                        });
+                    }
+                    return;
+                }
+                
+                // Verificar caché
+                if (areasCache[unidad]) {
+                    areaSelect.innerHTML = '<option value="">Todas las áreas</option>';
+                    areasCache[unidad].forEach(area => {
+                        const option = document.createElement('option');
+                        option.value = area;
+                        option.textContent = formatName(area);
+                        areaSelect.appendChild(option);
+                    });
+                    return;
+                }
+                
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "getAreasByUnidad",
+                        unidad: unidad
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    areasCache[unidad] = data.areas;
+                    areaSelect.innerHTML = '<option value="">Todas las áreas</option>';
+                    data.areas.forEach(area => {
+                        const option = document.createElement('option');
+                        option.value = area;
+                        option.textContent = formatName(area);
+                        areaSelect.appendChild(option);
+                    });
+                } else {
+                    throw new Error(data.message || "Error al cargar áreas");
+                }
+            } catch (error) {
+                console.error('Error al cargar áreas:', error);
+                areaSelect.innerHTML = '<option value="">Error al cargar áreas</option>';
+            }
+        }
+        
+        // Cargar todas las áreas
+        async function cargarTodasLasAreas() {
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "getAllAreas"
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    allAreas = data.areas;
+                    
+                    // Actualizar selects de áreas
+                    llenarSelectAreas('filtro-area-reporte', allAreas);
+                    llenarSelectAreas('area-exportar', allAreas);
+                }
+            } catch (error) {
+                console.error('Error cargando todas las áreas:', error);
+            }
+        }
+        
+        // Llenar select con áreas
+        function llenarSelectAreas(selectId, areas) {
+            const select = document.getElementById(selectId);
+            select.innerHTML = '<option value="">Todas las áreas</option>';
+            
+            areas.forEach(area => {
+                const option = document.createElement('option');
+                option.value = area;
+                option.textContent = formatName(area);
+                select.appendChild(option);
+            });
+        }
+        
+        // Cargar auditores
+        async function cargarAuditores() {
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: "getAuditores"
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    auditores = data.auditores;
+                    const select = document.getElementById('filtro-auditor-reporte');
+                    select.innerHTML = '<option value="">Todos los auditores</option>';
+                    
+                    auditores.forEach(auditor => {
+                        const option = document.createElement('option');
+                        option.value = auditor;
+                        option.textContent = auditor;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error cargando auditores:', error);
+            }
+        }
+
+        // Función para formatear nombres
+        function formatName(str) {
+            if (!str) return "";
+            return str.split('_')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .join(' ');
+        }
+        
+        // Renderizar áreas en select
+        function renderAreasSelect(selectElement, areas) {
+            selectElement.innerHTML = '<option value="">Selecciona un área</option>';
+            
+            areas.forEach(area => {
+                const option = document.createElement('option');
+                option.value = area;
+                option.textContent = formatName(area);
+                selectElement.appendChild(option);
+            });
+        }
     </script>
 </body>
 </html>
